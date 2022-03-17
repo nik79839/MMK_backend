@@ -137,5 +137,66 @@ namespace ForRastr
                 tgValue.Add((float)randtg.Next(48, 62) / 100);
             }
         }
+
+        /// <summary>
+        /// Изменяет состояние узлов в списке
+        /// </summary>
+        /// <param name="rastr"></param>
+        /// <param name="nodes">Список узлов</param>
+        /// <param name="state">0 - включено, 1 - отключено</param>
+        public static void ChangeNodeState(Rastr rastr, List<int> nodes, int state)
+        {
+            ITable node = rastr.Tables.Item("node");
+            ICol sta = node.Cols.Item("sta");
+
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                int index = FindNodeIndex(rastr, nodes[i]);
+                sta.set_ZN(index, state);
+            }
+        }
+
+        /// <summary>
+        /// Изменяет состояние узлов в списке случайным образом
+        /// </summary>
+        /// <param name="rastr"></param>
+        /// <param name="nodes"></param>
+        public static void ChangeNodeStateRandom(Rastr rastr, List<int> nodes)
+        {
+            ITable node = rastr.Tables.Item("node");
+            ICol sta = node.Cols.Item("sta");
+            Random random= new Random();
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                int index = FindNodeIndex(rastr, nodes[i]);
+                sta.set_ZN(index, random.Next(0,2));
+            }
+        }
+
+        /// <summary>
+        /// Возвращает индекс ветви по номерам узлов начала и конца и номеру параллельности
+        /// </summary>
+        /// <param name="rastr"></param>
+        /// <param name="ip">номер начала</param>
+        /// <param name="iq">номер  конца</param>
+        /// <param name="np">номер параллельности, 0 по умолчанию</param>
+        /// <returns></returns>
+        public static int FindBranchIndex(Rastr rastr, int ip, int iq, int np)
+        {
+            ITable vetv = rastr.Tables.Item("vetv");
+            ICol startNode = vetv.Cols.Item("ip");
+            ICol endNode = vetv.Cols.Item("iq");
+            ICol parallel = vetv.Cols.Item("np");
+
+            for (int index = 0; index < vetv.Count; index++)
+            {
+                if ((startNode.get_ZN(index) == ip) && (endNode.get_ZN(index) == iq)
+                    && (parallel.get_ZN(index) == np))
+                {
+                    return index;
+                }
+            }
+            return -1;
+        }
     }
 }

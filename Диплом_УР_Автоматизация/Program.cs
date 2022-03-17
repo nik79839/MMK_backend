@@ -18,21 +18,18 @@ namespace Диплом_УР_Автоматизация
         {
             Rastr rastr = new Rastr();
             Random rand = new Random();
-            string rg2Path = @"C:\Users\otrok\Desktop\Дипломмаг\Мой\Экспер2.rg2";
-            string ut2Path = @"C:\Users\otrok\Desktop\Дипломмаг\Мой\Экспер.ut2";
+            string rg2Path = @"C:\Users\otrok\Desktop\Дипломмаг\Мой\СБЭК.rg2";
+            string ut2Path = @"C:\Users\otrok\Desktop\Дипломмаг\Мой\СБЭК.ut2";
             rastr.Load(RG_KOD.RG_REPL, rg2Path, RastrTemplate.rg2);
             Console.WriteLine("Режим загружен.");
             rastr.Load(RG_KOD.RG_REPL, ut2Path, RastrTemplate.ut2);
             Console.WriteLine("Траектория утяжеления загружена.");
             List<int> NagrNodes = new List<int>() //Список узлов нагрузки
             {
-                1654, 2654, 2652,
-                2649, 2647,2646
-            };
-            List<int> NagrValue = new List<int>() //Список максимумов нагрузки
-            {
-                80, 92, 112,
-                139, 259,1411
+                1620, 1610, 2643,
+                2605, 1800,1654,1619,60408134,60408133,2630,60405013,1618,1616,2652,60405014,2644,60408115,60408116,2641,60408123,
+                60408124,60408125,60408126,60408122,60408121,60408120,60408119,2631,1617,641,2642,640,60405020,2653,1655,2647,2648,2649,
+                2639,60405028,1805,2645,2646,60405012,599,600,60405029,2603,
             };
             List<double> tgNodes = new List<double>(); //Список коэф мощности для каждой реализации
             List<List<double>> Unodes = new List<List<double>>(); // Список напряжений для каждого узла каждой реализации
@@ -44,14 +41,18 @@ namespace Диплом_УР_Автоматизация
             {
                 rastr.Load(RG_KOD.RG_REPL, rg2Path, RastrTemplate.rg2);
                 ASTRALib.ITable node = (ITable)rastr.Tables.Item("node");
+                ASTRALib.ITable vetv = (ITable)rastr.Tables.Item("vetv");
                 ICol P = (ICol)node.Cols.Item("pg");
                 ICol Pn = (ICol)node.Cols.Item("pn");
                 ICol Qn = (ICol)node.Cols.Item("qn");
+                ICol powerStart = (ICol)vetv.Cols.Item("pl_ip");
                 RastrFunc.ChangeTg(rastr, NagrNodes, tgNodes);
                 ChangePn(rastr, NagrNodes, tgNodes);
                 rastr.rgm("p");
-                WorseningRandom(rastr, NagrNodes, tgNodes,Unodes,30);
-                Console.WriteLine(Math.Round(Convert.ToDouble(P.Z[7]), 2));
+                //RastrFunc.Worsening(rastr, NagrNodes, tgNodes,Unodes,30);
+                RastrFunc.Worsening(rastr, ut2Path);
+                Console.WriteLine(-Math.Round(Convert.ToDouble(powerStart.Z[RastrFunc.FindBranchIndex(rastr, 2654, 2658, 0)])+
+                    Convert.ToDouble(powerStart.Z[RastrFunc.FindBranchIndex(rastr, 2654, 1656, 0)]), 2));
                 powerFlow.Add(Convert.ToDouble(P.Z[7]));
             }
             //ToExcel(powerFlow,Unodes, 4);

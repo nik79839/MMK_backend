@@ -5,8 +5,6 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Диплом_УР_Автоматизация", "Диплом_УР_Автоматизация\Диплом_УР_Автоматизация.csproj", "{752EABD9-E470-4A13-BE92-8B6C3CCA3997}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Автоматизация_СБЭК", "Автоматизация_СБЭК\Автоматизация_СБЭК.csproj", "{1E2F6F9B-9236-4A21-A33A-BFC59550C5E0}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForRastr", "ForRastr\ForRastr.csproj", "{5C8EFC66-6AC2-4919-98A4-132BFC2F0B2B}"
 EndProject
 Global
@@ -25,14 +23,6 @@ Global
 		{752EABD9-E470-4A13-BE92-8B6C3CCA3997}.Release|Any CPU.Build.0 = Release|Any CPU
 		{752EABD9-E470-4A13-BE92-8B6C3CCA3997}.Release|x86.ActiveCfg = Release|x86
 		{752EABD9-E470-4A13-BE92-8B6C3CCA3997}.Release|x86.Build.0 = Release|x86
-		{1E2F6F9B-9236-4A21-A33A-BFC59550C5E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E2F6F9B-9236-4A21-A33A-BFC59550C5E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E2F6F9B-9236-4A21-A33A-BFC59550C5E0}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1E2F6F9B-9236-4A21-A33A-BFC59550C5E0}.Debug|x86.Build.0 = Debug|Any CPU
-		{1E2F6F9B-9236-4A21-A33A-BFC59550C5E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E2F6F9B-9236-4A21-A33A-BFC59550C5E0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1E2F6F9B-9236-4A21-A33A-BFC59550C5E0}.Release|x86.ActiveCfg = Release|Any CPU
-		{1E2F6F9B-9236-4A21-A33A-BFC59550C5E0}.Release|x86.Build.0 = Release|Any CPU
 		{5C8EFC66-6AC2-4919-98A4-132BFC2F0B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5C8EFC66-6AC2-4919-98A4-132BFC2F0B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C8EFC66-6AC2-4919-98A4-132BFC2F0B2B}.Debug|x86.ActiveCfg = Debug|Any CPU
