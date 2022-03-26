@@ -110,9 +110,9 @@ namespace ForRastr
         public static void ChangePn(Rastr rastr, List<int> nodes, List<double> tgValues)
         {
             Random randPn = new Random();
-            ITable node = (ITable)rastr.Tables.Item("node");
-            ICol pn = (ICol)node.Cols.Item("pn");
-            ICol qn = (ICol)node.Cols.Item("qn");
+            ITable node = rastr.Tables.Item("node");
+            ICol pn = node.Cols.Item("pn");
+            ICol qn = node.Cols.Item("qn");
             RastrRetCode kod = rastr.rgm("p");
             for (int i = 0; i < nodes.Count; i++)
             {
@@ -165,11 +165,40 @@ namespace ForRastr
         {
             ITable node = rastr.Tables.Item("node");
             ICol sta = node.Cols.Item("sta");
-            Random random= new Random();
+            Random random = new Random();
             for (int i = 0; i < nodes.Count; i++)
             {
+                int randomNum = random.Next(0, 2);
                 int index = FindNodeIndex(rastr, nodes[i]);
-                sta.set_ZN(index, random.Next(0,2));
+                sta.set_ZN(index, randomNum);
+                ConnectedBranchState(rastr, nodes[i], 2, randomNum);
+            }
+        }
+
+        /// <summary>
+        /// Изменяет состояние примыкающей ветви.
+        /// Тип ветви: 0 - ЛЭП, 1 - Тр-р, 2 - Выкл.
+        /// Состояние: 0 - включено, 1 - отключено.
+        /// </summary>
+        /// <param name="rastr">Экземпляр класса Rastr.</param>
+        /// <param name="ny">Номер узла, к которому примыкают ветви.</param>
+        /// <param name="type">Тип ветви (0 - ЛЭП, 1 - Тр-р, 2 - Выкл).</param>
+        /// <param name="state">Состояние ветви (0 - включено, 1 - отключено).</param>
+        public static void ConnectedBranchState(Rastr rastr, int ny, int type, int state)
+        {
+            ITable vetv = (ITable)rastr.Tables.Item("vetv");
+            ICol startNode = (ICol)vetv.Cols.Item("ip");
+            ICol endNode = (ICol)vetv.Cols.Item("iq");
+            ICol tip = (ICol)vetv.Cols.Item("tip");
+            ICol sta = (ICol)vetv.Cols.Item("sta");
+
+            for (int i = 0; i < vetv.Count; i++)
+            {
+                if (((Convert.ToDouble(startNode.ZN[i]) == ny) || (Convert.ToDouble(endNode.ZN[i]) == ny))
+                    && (Convert.ToDouble(tip.ZN[i]) == type))
+                {
+                    sta.set_ZN(i, state);
+                }
             }
         }
 
@@ -198,5 +227,49 @@ namespace ForRastr
             }
             return -1;
         }
+
+        /// <summary>
+        /// Добавление номеров узлов с СКРМ в лист
+        /// </summary>
+        /// <param name="rastr"></param>
+        /// <param name="nodesWithSkrm">Заполняемый лист</param>
+        public static void SkrmNodesToList(Rastr rastr, List<int> nodesWithSkrm)
+        {
+            ITable node = rastr.Tables.Item("node");
+            ICol number = (ICol)node.Cols.Item("ny");
+            ICol bsh = node.Cols.Item("bsh");
+            for (int i=0;i<node.Count;i++)
+            {
+                if (Convert.ToDouble(bsh.ZN[i]) !=0)
+                {
+                    nodesWithSkrm.Add(number.ZN[i]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Добавляет в лист узлы с нагрузками указанного района
+        /// </summary>
+        /// <param name="rastr"></param>
+        /// <param name="nodesRayon">Лист, в который добавляются номера узлов</param>
+        /// <param name="numRayon">Номер района</param>
+        public static List<int> RayonNodesToList(Rastr rastr, int numRayon)
+        {
+            List<int> nodesRayon = new List<int>();
+            ITable node = rastr.Tables.Item("node");
+            ICol number = (ICol)node.Cols.Item("ny");
+            ICol na = node.Cols.Item("na");
+            for (int i = 0; i < node.Count; i++)
+            {
+                if (Convert.ToDouble(na.ZN[i]) == numRayon)
+                {
+                    nodesRayon.Add(number.ZN[i]);
+                }
+            }
+            return nodesRayon;
+        }
+
+
+
     }
 }
