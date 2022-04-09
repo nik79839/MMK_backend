@@ -50,11 +50,12 @@ namespace Диплом_УР_Автоматизация
                 RastrFunc.ChangeTg(rastr, NagrNodes, tgNodes);
                 ChangePn(rastr, NagrNodes, tgNodes);
                 rastr.rgm("p");
+                //RastrFunc.Worsening(rastr, ut2Path);
                 WorseningRandom(rastr, NagrNodes, tgNodes,Unodes,30);
                 Console.WriteLine(Math.Round(Convert.ToDouble(P.Z[7]), 2));
                 powerFlow.Add(Convert.ToDouble(P.Z[7]));
             }
-            //ToExcel(powerFlow,Unodes, 4);
+            ToExcel(powerFlow,Unodes, 5);
         }
         public static void WorseningRandom(Rastr rastr, List<int> nodes, List<double> tgvalues, List<List<double>> unode,int ex) // Осуществляет процедуру утяжеления, увеличивая нагрузку по процентам
         {
@@ -92,7 +93,7 @@ namespace Диплом_УР_Автоматизация
         }
         public static void ToExcel(List<double> powerFlow, List<List<double>> U, int list) // Запись в Excel мощностей и напряжений
         {
-            string path = @"C:\Users\otrok\Pictures\Книга1.xlsm";
+            string path = @"C:\Users\otrok\Desktop\Дипломмаг\Экспер.xlsm";
             using (var excel = new ExcelPackage(new System.IO.FileInfo(path)))
             {
                 var ws = excel.Workbook.Worksheets[list];
