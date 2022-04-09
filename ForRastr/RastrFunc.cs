@@ -153,6 +153,7 @@ namespace ForRastr
             {
                 int index = FindNodeIndex(rastr, nodes[i]);
                 sta.set_ZN(index, state);
+                ConnectedBranchState(rastr, nodes[i], 2, state);
             }
         }
 
