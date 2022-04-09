@@ -117,7 +117,7 @@ namespace ForRastr
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = RastrFunc.FindNodeIndex(rastr, nodes[i]);
-                pn.set_ZN(index, (float)randPn.Next(Convert.ToInt32(pn.ZN[index]) * 10 / 2, Convert.ToInt32(pn.ZN[index]) * 15) / 10f);
+                pn.set_ZN(index, (float)randPn.Next(Convert.ToInt32(pn.ZN[index]) * 5, Convert.ToInt32(pn.ZN[index]) * 15) / 10f);
                 qn.set_ZN(index, Convert.ToDouble(pn.ZN[index]) * tgValues[i]);
             }
         }

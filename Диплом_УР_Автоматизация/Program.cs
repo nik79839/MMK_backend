@@ -39,7 +39,7 @@ namespace Диплом_УР_Автоматизация
             List<double> powerFlow = new List<double>(); // Список значений Pпред
             List<List<double>> data = new List<List<double>>(); //Список реализаций факторов
             List<List<int>> factors = new List<List<int>>(); //Список списков значений факторов (всех)
-            int exp = 100; // Число реализаций
+            int exp = 300; // Число реализаций
             for (int i = 0; i < exp; i++)
             {
                 rastr.Load(RG_KOD.RG_REPL, rg2Path, RastrTemplate.rg2);
@@ -55,7 +55,7 @@ namespace Диплом_УР_Автоматизация
                 Console.WriteLine(Math.Round(Convert.ToDouble(P.Z[7]), 2));
                 powerFlow.Add(Convert.ToDouble(P.Z[7]));
             }
-            ToExcel(powerFlow,Unodes, 5);
+            ToExcel(powerFlow,Unodes, 8);
         }
         public static void WorseningRandom(Rastr rastr, List<int> nodes, List<double> tgvalues, List<List<double>> unode,int ex) // Осуществляет процедуру утяжеления, увеличивая нагрузку по процентам
         {
