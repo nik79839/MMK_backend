@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ForRastr\ForRastr.csproj" />
+    <ProjectReference Include="..\ForRastr\Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>

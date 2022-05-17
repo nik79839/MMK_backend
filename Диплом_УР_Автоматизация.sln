@@ -5,7 +5,7 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Диплом_УР_Автоматизация", "Диплом_УР_Автоматизация\Диплом_УР_Автоматизация.csproj", "{752EABD9-E470-4A13-BE92-8B6C3CCA3997}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ForRastr", "ForRastr\ForRastr.csproj", "{5C8EFC66-6AC2-4919-98A4-132BFC2F0B2B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "ForRastr\Model.csproj", "{5C8EFC66-6AC2-4919-98A4-132BFC2F0B2B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
