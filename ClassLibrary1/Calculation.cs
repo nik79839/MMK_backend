@@ -1,6 +1,7 @@
 ﻿using ASTRALib;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,9 +46,9 @@ namespace Model
         /// <param name="nodes">Узлы утяжеления</param>
         /// <param name="tgvalues">Список cos f, генерируется в другом методе случайным образом</param>
         /// <param name="unode">Список напряжений </param>
-        /// <param name="percent">Диапазон в процентах от 0</param>
+        /// <param name="percent">Процент приращения</param>
         public static double WorseningRandom(Rastr rastr, List<int> nodes, List<double> tgvalues, List<int> nodesWithKP,
-            List<int> brunchesWithAOPO, Dictionary<string, List<double>> UValueDict, Dictionary<string, List<double>> IValueDict) // Осуществляет процедуру утяжеления, увеличивая нагрузку по процентам
+            List<int> brunchesWithAOPO, Dictionary<string, List<double>> UValueDict, Dictionary<string, List<double>> IValueDict, int percent) 
         {
             Random randPercent = new Random();
             ITable node = (ITable)rastr.Tables.Item("node");
@@ -73,12 +74,12 @@ namespace Model
                     for (int i = 0; i < nodes.Count; i++)
                     {
                         index = RastrManager.FindNodeIndex(rastr, nodes[i]);
-                        randomPercent = 1 + (float)randPercent.Next(0, 10) / 100;
+                        randomPercent = 1 + (float)randPercent.Next(0, percent) / 100;
                         pn.set_ZN(index, (double)Convert.ToDouble(pn.Z[index]) * randomPercent);
                         qn.set_ZN(index, (double)Convert.ToDouble(pn.ZN[index]) * tgvalues[i]);
                     }
                     kd = rastr.rgm("p");
-                    for (int i = 0; i < nodesWithKP.Count; i++) // Изменение СКРМ
+                    /*for (int i = 0; i < nodesWithKP.Count; i++) // Изменение СКРМ
                     {
                         index = RastrManager.FindNodeIndex(rastr, nodesWithKP[i]);
                         if (Convert.ToDouble(Ur.Z[index]) < 225)
@@ -89,7 +90,7 @@ namespace Model
                             RastrManager.ConnectedBranchState(rastr, 60408136, 2, 0);
                         }
                     }
-                    kd = rastr.rgm("p");
+                    kd = rastr.rgm("p");*/
                 }
                 while (kd == 0);
                 while (kd != 0) // Откат на последний сходяийся режим
@@ -113,6 +114,67 @@ namespace Model
                 }
             }
             return Math.Round((double)powerSech.Z[1], 2);
+        }
+
+        /// <summary>
+        /// Расчет предельных перетоков для всех реализаций
+        /// </summary>
+        /// <param name="rastr"></param>
+        /// <param name="calculationSettings">Объект параметров расчета</param>
+        /// <returns>Массив предельных перетоков</returns>
+        public static List<double> CalculatePowerFlows(Rastr rastr,CalculationSettings calculationSettings)
+        {
+            Console.WriteLine("Режим загружен.");
+            //rastr.Load(RG_KOD.RG_REPL, ut2Path, ut2Path);
+            //Console.WriteLine("Траектория утяжеления загружена.");
+            rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToSech, calculationSettings.PathToSech);
+            Console.WriteLine("Сечения загружены.");
+            ITable sch = (ITable)rastr.Tables.Item("sechen");
+            ICol powerSech = (ICol)sch.Cols.Item("psech");
+            List<double> tgNodes = new List<double>(); //Список коэф мощности для каждой реализации
+            List<double> powerFlows = new List<double>(); // Список значений Pпред
+            List<int> nodesWithKP = new List<int>() { 2658, 2643, 60408105 };
+            List<int> nodesWithSkrm = new List<int>();
+            Dictionary<string, List<double>> UValueDict = new Dictionary<string, List<double>>(); //Словарь со значениями напряжений
+            Dictionary<string, List<double>> IValueDict = new Dictionary<string, List<double>>(); //Словарь со значениями токов
+            RastrManager.SkrmNodesToList(rastr, nodesWithSkrm); //Заполнение листа с узлами  СКРМ
+            List<int> brunchesWithAOPO = new List<int>() { RastrManager.FindBranchIndex(rastr, 2640, 2641, 0), RastrManager.FindBranchIndex(rastr, 2631, 2640, 0),
+                RastrManager.FindBranchIndex(rastr, 2639, 2640, 0),RastrManager.FindBranchIndex(rastr, 2639, 60408105, 0), RastrManager.FindBranchIndex(rastr, 60408105, 2630, 1),}; // Индексы
+
+            ITable node = (ITable)rastr.Tables.Item("node");
+            ICol name = (ICol)node.Cols.Item("name");
+            ITable vetv = (ITable)rastr.Tables.Item("vetv");
+            ICol vetvName = (ICol)vetv.Cols.Item("name");
+            for (int i = 0; i < nodesWithKP.Count; i++) // Создание ключей в словаре
+            {
+                int index = RastrManager.FindNodeIndex(rastr, nodesWithKP[i]);
+                UValueDict.Add(name.Z[index].ToString(), new List<double>());
+            }
+            foreach (var index in brunchesWithAOPO) IValueDict.Add(vetvName.Z[index].ToString(), new List<double>()); // Создание ключей в словаре
+
+            int exp = calculationSettings.CountOfImplementations; // Число реализаций
+            for (int i = 0; i < exp; i++)
+            {
+                var watch = Stopwatch.StartNew();
+                rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToRegim, calculationSettings.PathToRegim);
+                //RastrManager.ChangeNodeStateRandom(rastr, nodesWithSkrm); //вкл или выкл для СКРМ 50/50
+                RastrManager.ChangeTg(rastr, calculationSettings.NagrNodes, tgNodes);
+                RastrManager.ChangePn(rastr, calculationSettings.NagrNodes, tgNodes, calculationSettings.PercentLoad);
+                RastrRetCode test = rastr.rgm("p");
+                if (test == RastrRetCode.AST_NB)
+                {
+                    Console.WriteLine($"Итерация {i} не завершена из-за несходимости режима.");
+                    continue;
+                }
+                rastr.rgm("p");
+                //Calculation.Worsening(rastr, ut2Path);
+                double powerFlowValue = Calculation.WorseningRandom(rastr, calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, brunchesWithAOPO, UValueDict, IValueDict, calculationSettings.PercentLoad);
+                //double powerFlowValue = Math.Round(Convert.ToDouble(powerSech.Z[1]),2);
+                watch.Stop();
+                Console.WriteLine(powerFlowValue + " " + i + " Оставшееся время - " + watch.Elapsed.TotalMinutes * (exp - i + 1) + " минут");
+                powerFlows.Add(powerFlowValue);
+            }
+            return powerFlows;
         }
     }
 }

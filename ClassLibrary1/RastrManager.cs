@@ -21,7 +21,7 @@ namespace Model
             ICol number = (ICol)node.Cols.Item("ny");
             for (int index = 0; index < node.Count; index++)
             {
-                if ((double)number.ZN[index] == ny)
+                if (Convert.ToDouble(number.ZN[index]) == ny)
                 {
                     return index;
                 }
@@ -161,7 +161,8 @@ namespace Model
         /// <param name="rastr"></param>
         /// <param name="nodes">Список узлов с нагрузкой</param>
         /// <param name="tgValues">Списко cos а для узлов нагрузки</param>
-        public static void ChangePn(Rastr rastr, List<int> nodes, List<double> tgValues)
+        /// <param name="percent">Количество процентов по обе стороны от номинального значения</param>
+        public static void ChangePn(Rastr rastr, List<int> nodes, List<double> tgValues, int percent)
         {
             Random randPn = new Random();
             ITable node = (ITable)rastr.Tables.Item("node");
@@ -171,7 +172,7 @@ namespace Model
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = RastrManager.FindNodeIndex(rastr, nodes[i]);
-                pn.set_ZN(index, (double)randPn.Next(Convert.ToInt32(pn.ZN[index]) * 10 / 2, Convert.ToInt32(pn.ZN[index]) * 15) / 10f);
+                pn.set_ZN(index, (double)randPn.Next(Convert.ToInt32(pn.ZN[index]) * 100-percent, Convert.ToInt32(pn.ZN[index]) * 100+percent) / 100f);
                 qn.set_ZN(index, (double)pn.ZN[index] * tgValues[i]);
             }
         }

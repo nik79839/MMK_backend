@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using ASTRALib;
-using Model;
 
 namespace Диплом_УР_Автоматизация
 {
