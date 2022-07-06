@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using ASTRALib;
 using Model;
 
@@ -10,7 +12,6 @@ namespace Диплом_УР_Автоматизация
         static void Main(string[] args)
         {
             Rastr rastr = new Rastr();
-            Random rand = new Random();
             string rg2Path = @"C:\Users\otrok\Desktop\Дипломмаг\Мой\СБЭК_СХН.rg2";
             string ut2Path = @"C:\Users\otrok\Desktop\Дипломмаг\Мой\СБЭК.ut2";
             string schPath = @"C:\Users\otrok\Desktop\Дипломмаг\Мой\СБЭК_сечения.sch";
@@ -29,8 +30,8 @@ namespace Диплом_УР_Автоматизация
                 60408124,60408125,60408126,60408122,60408121,60408120,60408119,2631,1617,641,2642,640,60405020,2653,1655,2647,2648,2649,
                 2639,60405028,1805,2645,2646,60405012,599,600,60405029,2603
             };
-            List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
-            //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1).Union(RastrManager.RayonNodesToList(rastr, 2)).ToList();
+            //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
+            List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1).Union(new List<int>() { 1654}).ToList();
             List<double> tgNodes = new List<double>(); //Список коэф мощности для каждой реализации
             List<double> powerFlow = new List<double>(); // Список значений Pпред
             List<int> nodesWithKP = new List<int>() {2658,2643, 60408105 };
@@ -55,8 +56,9 @@ namespace Диплом_УР_Автоматизация
             int exp = 100; // Число реализаций
             for (int i = 0; i < exp; i++)
             {
+                var watch = Stopwatch.StartNew();
                 rastr.Load(RG_KOD.RG_REPL, rg2Path, rg2Path);
-                //RastrFunc.ChangeNodeStateRandom(rastr, nodesWithSkrm); //вкл или выкл для СКРМ 50/50
+                //RastrManager.ChangeNodeStateRandom(rastr, nodesWithSkrm); //вкл или выкл для СКРМ 50/50
                 RastrManager.ChangeTg(rastr, NagrNodes, tgNodes);
                 RastrManager.ChangePn(rastr, NagrNodes, tgNodes);
                 RastrRetCode test= rastr.rgm("p");
@@ -66,14 +68,17 @@ namespace Диплом_УР_Автоматизация
                     continue;
                 }
                 rastr.rgm("p");
-                //RastrFunc.Worsening(rastr, ut2Path);
+                //Calculation.Worsening(rastr, ut2Path);
                 double powerFlowValue = Calculation.WorseningRandom(rastr, nodesForWorsening, tgNodes, nodesWithKP,brunchesWithAOPO,UValueDict,IValueDict);
-                //double powerFlowSech = Math.Round(Convert.ToDouble(powerSech.Z[1]),2);
-                Console.WriteLine(powerFlowValue + " "+i);
+                //double powerFlowValue = Math.Round(Convert.ToDouble(powerSech.Z[1]),2);
+                watch.Stop();
+                Console.WriteLine(powerFlowValue + " "+i+" Оставшееся время - " + watch.Elapsed.TotalMinutes*(exp-i+1)+" минут");
                 powerFlow.Add(powerFlowValue);
             }
-            //FileManager.ToExcel(powerFlow, 6,UValueDict);
-            FileManager.ToExcel_I(IValueDict);
+            Console.WriteLine("Расчет завершен, нажмите любую кнопку");
+            Console.ReadKey();
+            FileManager.ToExcel(powerFlow, 6,UValueDict);
+            //FileManager.ToExcel_I(IValueDict);
         }        
     }
 }
