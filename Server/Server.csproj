@@ -4,10 +4,21 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary1\Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ASTRALib">
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\RastrWin3\ASTRALib.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

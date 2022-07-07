@@ -32,7 +32,7 @@ namespace Диплом_УР_Автоматизация
             List<double> powerFlows=Calculation.CalculatePowerFlows(rastr, calculationSettings);
             Console.WriteLine("Расчет завершен, нажмите любую кнопку");
             Console.ReadKey();
-            FileManager.ToExcel(powerFlows, 6, UValueDict);
+            //FileManager.ToExcel(powerFlows, 6, UValueDict);
             //FileManager.ToExcel_I(IValueDict);
         }
     }

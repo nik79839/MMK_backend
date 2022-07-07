@@ -14,12 +14,12 @@ namespace Model
         /// <summary>
         /// Узлы варьируемых нагрузок
         /// </summary>
-        public List<int> NagrNodes { get; set; }
+        public List<int>? NagrNodes { get; set; }
 
         /// <summary>
         /// Узлы утяжеления нагрузок
         /// </summary>
-        public List<int> NodesForWorsening { get; set; }
+        public List<int>? NodesForWorsening { get; set; }
 
         /// <summary>
         /// Число реализаций
@@ -29,12 +29,12 @@ namespace Model
         /// <summary>
         /// Путь к файлу формата .rg2
         /// </summary>
-        public string PathToRegim { get; set; }
+        public string? PathToRegim { get; set; }
 
         /// <summary>
         /// Путь к файлу формата sch
         /// </summary>
-        public string PathToSech { get; set; }
+        public string? PathToSech { get; set; }
 
         /// <summary>
         /// Диапазон начального состояния нагрузок
