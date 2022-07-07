@@ -4,18 +4,15 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <Platforms>AnyCPU;ARM32;ARM64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EPPlus" Version="4.5.3.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="ASTRALib">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\RastrWin3\ASTRALib.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\ClassLibrary1\Model.csproj" />
   </ItemGroup>
 
 </Project>
