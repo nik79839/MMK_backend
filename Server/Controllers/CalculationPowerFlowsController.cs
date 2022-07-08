@@ -1,4 +1,5 @@
 using ASTRALib;
+using DBRepository;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 
@@ -8,8 +9,14 @@ namespace Server.Controllers
     [Route("[controller]")]
     public class CalculationPowerFlowsController : ControllerBase
     {
+        RepositoryContext db;
+        public CalculationPowerFlowsController(RepositoryContext context)
+        {
+            db = context;
+        }
+
         [HttpPost]
-        public List<double> CalculatePowerFlows(CalculationSettings calculationSettings)
+        public List<CalculationResult> CalculatePowerFlows(CalculationSettings calculationSettings)
         {
             Rastr rastr = new Rastr();
             Console.WriteLine(calculationSettings.CountOfImplementations);
@@ -26,11 +33,12 @@ namespace Server.Controllers
             };
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
             calculationSettings.NodesForWorsening = RastrManager.RayonNodesToList(rastr, 1).Union(new List<int>() { 1654 }).ToList();
-            List<double> powerFlows = Calculation.CalculatePowerFlows(rastr, calculationSettings);
-            Console.WriteLine("Расчет завершен, нажмите любую кнопку");
-            Console.ReadKey();
+            List<CalculationResult> powerFlows = Calculation.CalculatePowerFlows(rastr, calculationSettings);
+            Console.WriteLine("Расчет завершен");
             //FileManager.ToExcel(powerFlows, 6, UValueDict);
             //FileManager.ToExcel_I(IValueDict);
+            foreach (CalculationResult calculationResult in powerFlows) db.CalculationResults.Add(calculationResult);
+            db.SaveChanges();
             return powerFlows;
         }
     }

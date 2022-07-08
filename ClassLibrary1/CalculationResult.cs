@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Model
 {
     /// <summary>
-    /// Результаты расчета
+    /// Результаты расчета для хранения в БД
     /// </summary>
     public class CalculationResult
     {
@@ -17,7 +17,7 @@ namespace Model
         /// Уникальный идентификатор расчета
         /// </summary>
         [Key, Column(Order = 0)]
-        public int CalculationId { get; set; }
+        public string CalculationId { get; set; }
 
         /// <summary>
         /// Номер реализации

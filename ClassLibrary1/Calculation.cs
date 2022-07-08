@@ -122,8 +122,10 @@ namespace Model
         /// <param name="rastr"></param>
         /// <param name="calculationSettings">Объект параметров расчета</param>
         /// <returns>Массив предельных перетоков</returns>
-        public static List<double> CalculatePowerFlows(Rastr rastr,CalculationSettings calculationSettings)
+        public static List<CalculationResult> CalculatePowerFlows(Rastr rastr,CalculationSettings calculationSettings)
         {
+            List<CalculationResult> calculationResults = new List<CalculationResult>(); // Список значений Pпред
+            string guid = Guid.NewGuid().ToString();
             Console.WriteLine("Режим загружен.");
             //rastr.Load(RG_KOD.RG_REPL, ut2Path, ut2Path);
             //Console.WriteLine("Траектория утяжеления загружена.");
@@ -132,7 +134,6 @@ namespace Model
             ITable sch = (ITable)rastr.Tables.Item("sechen");
             ICol powerSech = (ICol)sch.Cols.Item("psech");
             List<double> tgNodes = new List<double>(); //Список коэф мощности для каждой реализации
-            List<double> powerFlows = new List<double>(); // Список значений Pпред
             List<int> nodesWithKP = new List<int>() { 2658, 2643, 60408105 };
             List<int> nodesWithSkrm = new List<int>();
             Dictionary<string, List<double>> UValueDict = new Dictionary<string, List<double>>(); //Словарь со значениями напряжений
@@ -168,13 +169,13 @@ namespace Model
                 }
                 rastr.rgm("p");
                 //Calculation.Worsening(rastr, ut2Path);
-                double powerFlowValue = Calculation.WorseningRandom(rastr, calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, brunchesWithAOPO, UValueDict, IValueDict, calculationSettings.PercentLoad);
+                double powerFlowValue = WorseningRandom(rastr, calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, brunchesWithAOPO, UValueDict, IValueDict, calculationSettings.PercentLoad);
                 //double powerFlowValue = Math.Round(Convert.ToDouble(powerSech.Z[1]),2);
                 watch.Stop();
                 Console.WriteLine(powerFlowValue + " " + i + " Оставшееся время - " + watch.Elapsed.TotalMinutes * (exp - i + 1) + " минут");
-                powerFlows.Add(powerFlowValue);
+                calculationResults.Add(new CalculationResult() { CalculationId = guid, ImplementationId = i, PowerFlowLimit = powerFlowValue });
             }
-            return powerFlows;
+            return calculationResults;
         }
     }
 }
