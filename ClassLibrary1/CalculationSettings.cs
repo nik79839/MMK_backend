@@ -12,6 +12,11 @@ namespace Model
     public class CalculationSettings
     {
         /// <summary>
+        /// Название расчета
+        /// </summary>
+        public string Name { get; set; }
+        
+        /// <summary>
         /// Узлы варьируемых нагрузок
         /// </summary>
         public List<int>? NagrNodes { get; set; }

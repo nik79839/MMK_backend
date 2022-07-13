@@ -29,7 +29,7 @@ namespace Диплом_УР_Автоматизация
             calculationSettings.NodesForWorsening = RastrManager.RayonNodesToList(rastr, 1).Union(new List<int>() { 1654 }).ToList();
             calculationSettings.PercentForWorsening = 10;
             calculationSettings.PercentLoad = 50;
-            List<double> powerFlows=Calculation.CalculatePowerFlows(rastr, calculationSettings);
+            //List<double> powerFlows=Calculation.CalculatePowerFlows(rastr, calculationSettings);
             Console.WriteLine("Расчет завершен, нажмите любую кнопку");
             Console.ReadKey();
             //FileManager.ToExcel(powerFlows, 6, UValueDict);

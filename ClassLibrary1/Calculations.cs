@@ -11,7 +11,7 @@ namespace Model
     /// <summary>
     /// Результаты расчета для хранения в БД
     /// </summary>
-    public class CalculationResult
+    public class Calculations
     {
         /// <summary>
         /// Уникальный идентификатор расчета
@@ -20,19 +20,24 @@ namespace Model
         public string CalculationId { get; set; }
 
         /// <summary>
-        /// Номер реализации
+        /// Название расчета
         /// </summary>
         [Key, Column(Order = 1)]
-        public int ImplementationId { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
-        /// Предельный переток
+        /// Время начала расчета
         /// </summary>
-        public double PowerFlowLimit { get; set; }
+        public DateTime CalculationStart { get; set; }
 
         /// <summary>
-        /// Ссылка на расчет
+        /// Время Конца расчета
         /// </summary>
-        public Calculations? Calculations{ get; set; }
+        public DateTime CalculationEnd { get; set; }
+
+        /// <summary>
+        /// Ссылка на результаты расчетов
+        /// </summary>
+        public List<CalculationResult> CalculationResults { get; set; } = new();
     }
 }
