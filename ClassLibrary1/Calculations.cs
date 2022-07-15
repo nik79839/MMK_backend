@@ -33,7 +33,7 @@ namespace Model
         /// <summary>
         /// Время Конца расчета
         /// </summary>
-        public DateTime CalculationEnd { get; set; }
+        public DateTime? CalculationEnd { get; set; }
 
         /// <summary>
         /// Ссылка на результаты расчетов

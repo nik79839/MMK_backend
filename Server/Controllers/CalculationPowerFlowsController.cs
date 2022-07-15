@@ -20,8 +20,8 @@ namespace Server.Controllers
         public void PostCalculations(CalculationSettings calculationSettings)
         {
             Rastr rastr = new Rastr();
+            string guid = Guid.NewGuid().ToString();
             DateTime startTime = DateTime.Now;
-            Console.WriteLine(calculationSettings.CountOfImplementations);
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
             rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToRegim, calculationSettings.PathToRegim);
@@ -35,31 +35,36 @@ namespace Server.Controllers
             };
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
             calculationSettings.NodesForWorsening = RastrManager.RayonNodesToList(rastr, 1).Union(new List<int>() { 1654 }).ToList();
+
+            Calculations calculations = new() { CalculationId = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null };
+            db.Calculations.Add(calculations);
+            db.SaveChanges();
             List<CalculationResult> powerFlows = Calculation.CalculatePowerFlows(rastr, calculationSettings);
+            foreach (CalculationResult powerFlow in powerFlows) powerFlow.CalculationId = guid;
             DateTime endTime = DateTime.Now;
             Console.WriteLine("Расчет завершен. Запись в БД.");
             //FileManager.ToExcel(powerFlows, 6, UValueDict);
             //FileManager.ToExcel_I(IValueDict);
-            Calculations calculations = new() { CalculationId = powerFlows[0].CalculationId, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = endTime };
-            db.Calculations.Add(calculations);
-            db.CalculationResults.AddRange(powerFlows);            
+            db.CalculationResults.AddRange(powerFlows);
+            calculations.CalculationEnd = endTime;
+            db.Calculations.Update(calculations);
             db.SaveChanges();
             Console.WriteLine("Выполнена запись в БД");
         }
 
         [Route("CalculationPowerFlows/GetCalculations")]
         [HttpGet]
-        public List<Calculations> GetCalculations()
+        public List<Calculations> GetCalculations() //314 каб ленРДУ 2310
         {
             return db.Calculations.ToList();
         }
 
         [Route("CalculationPowerFlows/GetCalculations/{id}")]
         [HttpGet]
-        public List<Calculations> GetCalculationsById(int? id)
+        public List<CalculationResultProcessed> GetCalculationsById(string? id)
         {
-            Console.WriteLine(id);
-            return db.Calculations.ToList();
+            List<CalculationResult> calculationResults = (from calculations in db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
+            return CalculationResultProcessed.Processing(calculationResults);
         }
 
     }

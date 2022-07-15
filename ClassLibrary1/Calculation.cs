@@ -125,7 +125,6 @@ namespace Model
         public static List<CalculationResult> CalculatePowerFlows(Rastr rastr,CalculationSettings calculationSettings)
         {
             List<CalculationResult> calculationResults = new List<CalculationResult>(); // Список значений Pпред
-            string guid = Guid.NewGuid().ToString();
             Console.WriteLine("Режим загружен.");
             //rastr.Load(RG_KOD.RG_REPL, ut2Path, ut2Path);
             //Console.WriteLine("Траектория утяжеления загружена.");
@@ -172,8 +171,8 @@ namespace Model
                 double powerFlowValue = WorseningRandom(rastr, calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, brunchesWithAOPO, UValueDict, IValueDict, calculationSettings.PercentLoad);
                 //double powerFlowValue = Math.Round(Convert.ToDouble(powerSech.Z[1]),2);
                 watch.Stop();
-                Console.WriteLine(powerFlowValue + " " + i + " Оставшееся время - " + watch.Elapsed.TotalMinutes * (exp - i + 1) + " минут");
-                calculationResults.Add(new CalculationResult() { CalculationId = guid, ImplementationId = i, PowerFlowLimit = powerFlowValue });
+                Console.WriteLine(powerFlowValue + " " + i + " Оставшееся время - " + Math.Round(watch.Elapsed.TotalMinutes * (exp - i + 1),2) + " минут");
+                calculationResults.Add(new CalculationResult() { ImplementationId = i, PowerFlowLimit = powerFlowValue });
             }
             return calculationResults;
         }
