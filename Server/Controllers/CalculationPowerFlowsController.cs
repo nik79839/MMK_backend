@@ -36,6 +36,7 @@ namespace Server.Controllers
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //”злы района 1 (бодайб)
             calculationSettings.NodesForWorsening = RastrManager.RayonNodesToList(rastr, 1).Union(new List<int>() { 1654 }).ToList();
 
+            Calculation.Progress1 += EventHandler;
             Calculations calculations = new() { CalculationId = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null };
             db.Calculations.Add(calculations);
             db.SaveChanges();
@@ -54,7 +55,7 @@ namespace Server.Controllers
 
         [Route("CalculationPowerFlows/GetCalculations")]
         [HttpGet]
-        public List<Calculations> GetCalculations() //314 каб лен–ƒ” 2310
+        public List<Calculations> GetCalculations()
         {
             return db.Calculations.ToList();
         }
@@ -65,6 +66,11 @@ namespace Server.Controllers
         {
             List<CalculationResult> calculationResults = (from calculations in db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
             return CalculationResultProcessed.Processing(calculationResults);
+        }
+
+        public static void EventHandler(object sender, CalculationProgressEventArgs e)
+        {
+            Console.WriteLine(e.Percent+"%, осталось "+e.Time+" мин");
         }
 
     }

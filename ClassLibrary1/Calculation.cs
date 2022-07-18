@@ -9,7 +9,9 @@ using System.Threading.Tasks;
 namespace Model
 {
     public class Calculation
-    {      
+    {
+        public static event EventHandler<CalculationProgressEventArgs> Progress1;
+
         /// <summary>
         /// Утяжеление по заданной траектории
         /// </summary>
@@ -171,8 +173,9 @@ namespace Model
                 double powerFlowValue = WorseningRandom(rastr, calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, brunchesWithAOPO, UValueDict, IValueDict, calculationSettings.PercentLoad);
                 //double powerFlowValue = Math.Round(Convert.ToDouble(powerSech.Z[1]),2);
                 watch.Stop();
+                Progress1.Invoke(null, new CalculationProgressEventArgs((i+1)*100/exp, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
                 Console.WriteLine(powerFlowValue + " " + i + " Оставшееся время - " + Math.Round(watch.Elapsed.TotalMinutes * (exp - i + 1),2) + " минут");
-                calculationResults.Add(new CalculationResult() { ImplementationId = i, PowerFlowLimit = powerFlowValue });
+                calculationResults.Add(new CalculationResult() { ImplementationId = i+1, PowerFlowLimit = powerFlowValue });
             }
             return calculationResults;
         }
