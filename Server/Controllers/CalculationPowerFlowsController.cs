@@ -1,7 +1,9 @@
 using ASTRALib;
 using DBRepository;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Model;
+using Server.Hub;
 
 namespace Server.Controllers
 {
@@ -10,9 +12,11 @@ namespace Server.Controllers
     public class CalculationPowerFlowsController : ControllerBase
     {
         RepositoryContext db;
-        public CalculationPowerFlowsController(RepositoryContext context)
+        IHubContext<ProgressHub> hubContext;
+        public CalculationPowerFlowsController(RepositoryContext context, IHubContext<ProgressHub> hubContext)
         {
             db = context;
+            this.hubContext = hubContext;
         }
 
         [Route("CalculationPowerFlows/PostCalculations")]
@@ -35,18 +39,17 @@ namespace Server.Controllers
             };
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
             calculationSettings.NodesForWorsening = RastrManager.RayonNodesToList(rastr, 1).Union(new List<int>() { 1654 }).ToList();
-
-            Calculation.Progress1 += EventHandler;
+         
             Calculations calculations = new() { CalculationId = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null };
+            calculations.CalculationProgress += EventHandler;
             db.Calculations.Add(calculations);
             db.SaveChanges();
-            List<CalculationResult> powerFlows = Calculation.CalculatePowerFlows(rastr, calculationSettings);
-            foreach (CalculationResult powerFlow in powerFlows) powerFlow.CalculationId = guid;
+            calculations.CalculatePowerFlows(rastr, calculationSettings);
             DateTime endTime = DateTime.Now;
             Console.WriteLine("Расчет завершен. Запись в БД.");
             //FileManager.ToExcel(powerFlows, 6, UValueDict);
             //FileManager.ToExcel_I(IValueDict);
-            db.CalculationResults.AddRange(powerFlows);
+            db.CalculationResults.AddRange(calculations.CalculationResults);
             calculations.CalculationEnd = endTime;
             db.Calculations.Update(calculations);
             db.SaveChanges();
@@ -67,10 +70,19 @@ namespace Server.Controllers
             List<CalculationResult> calculationResults = (from calculations in db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
             return CalculationResultProcessed.Processing(calculationResults);
         }
+        int progress1;
+        [Route("CalculationPowerFlows/GetCalculations/status")]
+        [HttpGet]
+        public int GetCalculationStatus()
+        {
+            return progress1;
+        }
 
-        public static void EventHandler(object sender, CalculationProgressEventArgs e)
+        public void EventHandler(object sender, CalculationProgressEventArgs e)
         {
             Console.WriteLine(e.Percent+"%, осталось "+e.Time+" мин");
+            hubContext.Clients.All.SendAsync("SendProgress", e.Percent,e.CalculationId);
+            progress1 = e.Percent;
         }
 
     }

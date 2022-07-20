@@ -18,8 +18,14 @@ namespace Model
         /// </summary>
         public int Time { get; set; }
 
-        public CalculationProgressEventArgs(int percent,int time)
+        /// <summary>
+        /// Уникальный идентификатор расчета
+        /// </summary>
+        public string CalculationId { get; set; }
+
+        public CalculationProgressEventArgs(string calculationId,int percent,int time)
         {
+            CalculationId = calculationId;
             Percent = percent;
             Time = time;
         }
