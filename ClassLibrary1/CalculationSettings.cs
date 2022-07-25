@@ -19,7 +19,7 @@ namespace Model
         /// <summary>
         /// Узлы варьируемых нагрузок
         /// </summary>
-        public List<int>? NagrNodes { get; set; }
+        public List<int>? LoadNodes { get; set; }
 
         /// <summary>
         /// Узлы утяжеления нагрузок
@@ -50,5 +50,10 @@ namespace Model
         /// Процент приращения при утяжелениии
         /// </summary>
         public int PercentForWorsening { get; set; }
+
+        /// <summary>
+        /// Все ли узлы имеют случайный начальный характер
+        /// </summary>
+        public bool IsAllNodesInitial { get; set; }
     }
 }

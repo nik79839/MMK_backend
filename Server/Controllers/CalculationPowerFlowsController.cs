@@ -30,7 +30,7 @@ namespace Server.Controllers
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
             rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToRegim, calculationSettings.PathToRegim);
             Dictionary<string, List<double>> UValueDict = new Dictionary<string, List<double>>();
-            calculationSettings.NagrNodes = new List<int>() //Список узлов нагрузки
+            calculationSettings.LoadNodes = new List<int>() //Список узлов нагрузки
             {
                 1620, 1610, 2643,
                 2605, 1800,1654,1619,60408134,60408133,2630,60405013,1618,1616,2652,60405014,2644,60408115,60408116,2641,60408123,
@@ -65,24 +65,18 @@ namespace Server.Controllers
 
         [Route("CalculationPowerFlows/GetCalculations/{id}")]
         [HttpGet]
-        public List<CalculationResultProcessed> GetCalculationsById(string? id)
+        public CalculationStatistic GetCalculationsById(string? id)
         {
             List<CalculationResult> calculationResults = (from calculations in db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
-            return CalculationResultProcessed.Processing(calculationResults);
-        }
-        int progress1;
-        [Route("CalculationPowerFlows/GetCalculations/status")]
-        [HttpGet]
-        public int GetCalculationStatus()
-        {
-            return progress1;
+            CalculationStatistic calculationStatistic = new();
+            calculationStatistic.Processing(calculationResults);
+            return calculationStatistic;
         }
 
         public void EventHandler(object sender, CalculationProgressEventArgs e)
         {
             Console.WriteLine(e.Percent+"%, осталось "+e.Time+" мин");
             hubContext.Clients.All.SendAsync("SendProgress", e.Percent,e.CalculationId);
-            progress1 = e.Percent;
         }
 
     }

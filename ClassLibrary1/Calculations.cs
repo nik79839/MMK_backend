@@ -197,8 +197,8 @@ namespace Model
                 var watch = Stopwatch.StartNew();
                 rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToRegim, calculationSettings.PathToRegim);
                 //RastrManager.ChangeNodeStateRandom(rastr, nodesWithSkrm); //вкл или выкл для СКРМ 50/50
-                RastrManager.ChangeTg(rastr, calculationSettings.NagrNodes, tgNodes);
-                RastrManager.ChangePn(rastr, calculationSettings.NagrNodes, tgNodes, calculationSettings.PercentLoad);
+                RastrManager.ChangeTg(rastr, calculationSettings.LoadNodes, tgNodes);
+                RastrManager.ChangePn(rastr, calculationSettings.LoadNodes, tgNodes, calculationSettings.PercentLoad);
                 RastrRetCode test = rastr.rgm("p");
                 if (test == RastrRetCode.AST_NB)
                 {
