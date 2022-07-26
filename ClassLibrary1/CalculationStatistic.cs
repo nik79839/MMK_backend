@@ -53,7 +53,7 @@ namespace Model
             }
             Maximum = values.Max();
             Minimum = values.Min();
-            Mean = values.Average();
+            Mean = Math.Round(values.Average(),2);
             double range = Maximum - Minimum;
             double step = range / intervalCount;
             double sec = Minimum;

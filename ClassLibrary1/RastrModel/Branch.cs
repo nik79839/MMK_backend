@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace Model.RastrModel
 {
-    public class Branch
+    public class Brunch
     {
         private int _startNode;
         private int _endNode;

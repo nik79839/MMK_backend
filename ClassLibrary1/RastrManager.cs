@@ -1,4 +1,5 @@
 ﻿using ASTRALib;
+using Model.RastrModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public class RastrManager
+    public static class RastrManager
     {
         /// <summary>
         /// Возвращает индекс узла по номеру
@@ -141,8 +142,9 @@ namespace Model
         /// </summary>
         /// <param name="rastr"></param>
         /// <param name="nodesWithSkrm">Заполняемый лист</param>
-        public static void SkrmNodesToList(Rastr rastr, List<int> nodesWithSkrm)
+        public static List<int> SkrmNodesToList(Rastr rastr)
         {
+            List<int> nodesWithSkrm = new();
             ITable node = (ITable)rastr.Tables.Item("node");
             ICol number = (ICol)node.Cols.Item("ny");
             ICol bsh = (ICol)node.Cols.Item("bsh");
@@ -153,6 +155,27 @@ namespace Model
                     nodesWithSkrm.Add((int)number.ZN[i]);
                 }
             }
+            return nodesWithSkrm;
+        }
+
+        /// <summary>
+        /// Добавление всех узлов с нагрузкой в лист
+        /// </summary>
+        /// <param name="rastr"></param>
+        public static List<int> AllLoadNodesToList(Rastr rastr)
+        {
+            List<int> loadNodes = new();
+            ITable node = (ITable)rastr.Tables.Item("node");
+            ICol number = (ICol)node.Cols.Item("ny");
+            ICol pn = (ICol)node.Cols.Item("pn");
+            for (int i = 0; i < node.Count; i++)
+            {
+                if (Convert.ToDouble(pn.ZN[i]) != 0)
+                {
+                    loadNodes.Add((int)number.ZN[i]);
+                }
+            }
+            return loadNodes;
         }
 
         /// <summary>
@@ -183,9 +206,9 @@ namespace Model
         /// <param name="rastr"></param>
         /// <param name="nodesRayon">Лист, в который добавляются номера узлов</param>
         /// <param name="numRayon">Номер района</param>
-        public static List<int> RayonNodesToList(Rastr rastr, int numRayon)
+        public static List<int> DistrictNodesToList(Rastr rastr, int numRayon)
         {
-            List<int> nodesRayon = new List<int>();
+            List<int> nodesDistrict = new List<int>();
             ITable node = (ITable)rastr.Tables.Item("node");
             ICol number = (ICol)node.Cols.Item("ny");
             ICol na = (ICol)node.Cols.Item("na");
@@ -193,10 +216,23 @@ namespace Model
             {
                 if (Convert.ToDouble(na.ZN[i]) == numRayon)
                 {
-                    nodesRayon.Add((int)number.ZN[i]);
+                    nodesDistrict.Add((int)number.ZN[i]);
                 }
             }
-            return nodesRayon;
+            return nodesDistrict;
+        }
+
+        public static List<District> DistrictList(Rastr rastr)
+        {
+            List<District> districts = new();
+            ITable area = (ITable)rastr.Tables.Item("area");
+            ICol na = (ICol)area.Cols.Item("na");
+            ICol name = (ICol)area.Cols.Item("name");
+            for (int i = 0; i < area.Count; i++)
+            {
+                districts.Add(new District() { Name = name.ZN[i].ToString(), Number = (int)na.ZN[i] });
+            }
+                return districts;
         }
     }
 }

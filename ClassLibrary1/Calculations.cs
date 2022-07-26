@@ -173,10 +173,9 @@ namespace Model
             ICol powerSech = (ICol)sch.Cols.Item("psech");
             List<double> tgNodes = new List<double>(); //Список коэф мощности для каждой реализации
             List<int> nodesWithKP = new List<int>() { 2658, 2643, 60408105 };
-            List<int> nodesWithSkrm = new List<int>();
+            List<int> nodesWithSkrm = RastrManager.SkrmNodesToList(rastr); //Заполнение листа с узлами  СКРМ
             Dictionary<string, List<double>> UValueDict = new Dictionary<string, List<double>>(); //Словарь со значениями напряжений
             Dictionary<string, List<double>> IValueDict = new Dictionary<string, List<double>>(); //Словарь со значениями токов
-            RastrManager.SkrmNodesToList(rastr, nodesWithSkrm); //Заполнение листа с узлами  СКРМ
             List<int> brunchesWithAOPO = new List<int>() { RastrManager.FindBranchIndex(rastr, 2640, 2641, 0), RastrManager.FindBranchIndex(rastr, 2631, 2640, 0),
                 RastrManager.FindBranchIndex(rastr, 2639, 2640, 0),RastrManager.FindBranchIndex(rastr, 2639, 60408105, 0), RastrManager.FindBranchIndex(rastr, 60408105, 2630, 1),}; // Индексы
 

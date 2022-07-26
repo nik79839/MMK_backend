@@ -17,7 +17,6 @@ builder.Services.AddSignalR();
 
 var app = builder.Build();
 app.UseCors(builder => builder.AllowAnyMethod().WithOrigins("http://localhost:3000").AllowAnyHeader().AllowCredentials());
-app.MapGet("/a", (RepositoryContext db) => db.Calculations.ToList());
 
 
 // Configure the HTTP request pipeline.
