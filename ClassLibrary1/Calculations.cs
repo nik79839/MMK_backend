@@ -45,6 +45,11 @@ namespace Model
         public List<CalculationResult> CalculationResults { get; set; } = new();
 
         /// <summary>
+        /// Ссылка на результаты расчетов напряжений
+        /// </summary>
+        public List<VoltageResult> VoltageResults { get; set; } = new();
+
+        /// <summary>
         /// Процент прогресса расчета
         /// </summary>
         [NotMapped]
@@ -87,8 +92,8 @@ namespace Model
         /// <param name="tgvalues">Список cos f, генерируется в другом методе случайным образом</param>
         /// <param name="unode">Список напряжений </param>
         /// <param name="percent">Процент приращения</param>
-        public static double WorseningRandom(Rastr rastr, List<int> nodes, List<double> tgvalues, List<int> nodesWithKP,
-            List<int> brunchesWithAOPO, Dictionary<string, List<double>> UValueDict, Dictionary<string, List<double>> IValueDict, int percent) 
+        public static void WorseningRandom(Rastr rastr, List<int> nodes, List<double> tgvalues, List<int> nodesWithKP,
+            List<int> brunchesWithAOPO, Dictionary<string, List<double>> IValueDict, int percent) 
         {
             Random randPercent = new Random();
             ITable node = (ITable)rastr.Tables.Item("node");
@@ -96,7 +101,6 @@ namespace Model
             ICol powerSech = (ICol)sch.Cols.Item("psech");
             ICol pn = (ICol)node.Cols.Item("pn");
             ICol qn = (ICol)node.Cols.Item("qn");
-            ICol Ur = (ICol)node.Cols.Item("vras");
             ICol sta = (ICol)node.Cols.Item("sta");
             ICol name = (ICol)node.Cols.Item("name");
             ITable vetv = (ITable)rastr.Tables.Item("vetv");
@@ -143,17 +147,12 @@ namespace Model
                     }
                     kd = rastr.rgm("p");
                 }
-                for (int i = 0; i < nodesWithKP.Count; i++) // Запись напряжений
-                {
-                    index = RastrManager.FindNodeIndex(rastr, nodesWithKP[i]);
-                    UValueDict[name.Z[index].ToString()].Add(Convert.ToDouble(Ur.Z[index]));
-                }
                 for (int i = 0; i < brunchesWithAOPO.Count; i++) // Запись токов в ветвях с АОПО
                 {
                     IValueDict[vetvName.Z[brunchesWithAOPO[i]].ToString()].Add(Convert.ToDouble(iMax.Z[brunchesWithAOPO[i]]));
                 }
             }
-            return Math.Round((double)powerSech.Z[1], 2);
+            //return Math.Round((double)powerSech.Z[1], 2);
         }
 
         /// <summary>
@@ -162,32 +161,26 @@ namespace Model
         /// <param name="rastr"></param>
         /// <param name="calculationSettings">Объект параметров расчета</param>
         /// <returns>Массив предельных перетоков</returns>
-        public void CalculatePowerFlows(Rastr rastr,CalculationSettings calculationSettings)
+        public void CalculatePowerFlows(Rastr rastr, CalculationSettings calculationSettings)
         {
             Console.WriteLine("Режим загружен.");
             //rastr.Load(RG_KOD.RG_REPL, ut2Path, ut2Path);
             //Console.WriteLine("Траектория утяжеления загружена.");
+            rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToRegim, calculationSettings.PathToRegim);
             rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToSech, calculationSettings.PathToSech);
             Console.WriteLine("Сечения загружены.");
             ITable sch = (ITable)rastr.Tables.Item("sechen");
-            ICol powerSech = (ICol)sch.Cols.Item("psech");
+            ICol powerSech = (ICol)sch.Cols.Item("psech");          
             List<double> tgNodes = new List<double>(); //Список коэф мощности для каждой реализации
             List<int> nodesWithKP = new List<int>() { 2658, 2643, 60408105 };
             List<int> nodesWithSkrm = RastrManager.SkrmNodesToList(rastr); //Заполнение листа с узлами  СКРМ
-            Dictionary<string, List<double>> UValueDict = new Dictionary<string, List<double>>(); //Словарь со значениями напряжений
             Dictionary<string, List<double>> IValueDict = new Dictionary<string, List<double>>(); //Словарь со значениями токов
             List<int> brunchesWithAOPO = new List<int>() { RastrManager.FindBranchIndex(rastr, 2640, 2641, 0), RastrManager.FindBranchIndex(rastr, 2631, 2640, 0),
                 RastrManager.FindBranchIndex(rastr, 2639, 2640, 0),RastrManager.FindBranchIndex(rastr, 2639, 60408105, 0), RastrManager.FindBranchIndex(rastr, 60408105, 2630, 1),}; // Индексы
 
-            ITable node = (ITable)rastr.Tables.Item("node");
-            ICol name = (ICol)node.Cols.Item("name");
+            
             ITable vetv = (ITable)rastr.Tables.Item("vetv");
             ICol vetvName = (ICol)vetv.Cols.Item("name");
-            for (int i = 0; i < nodesWithKP.Count; i++) // Создание ключей в словаре
-            {
-                int index = RastrManager.FindNodeIndex(rastr, nodesWithKP[i]);
-                UValueDict.Add(name.Z[index].ToString(), new List<double>());
-            }
             foreach (var index in brunchesWithAOPO) IValueDict.Add(vetvName.Z[index].ToString(), new List<double>()); // Создание ключей в словаре
 
             int exp = calculationSettings.CountOfImplementations; // Число реализаций
@@ -195,6 +188,9 @@ namespace Model
             {
                 var watch = Stopwatch.StartNew();
                 rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToRegim, calculationSettings.PathToRegim);
+                ITable node = (ITable)rastr.Tables.Item("node");
+                ICol Ur = (ICol)node.Cols.Item("vras");
+                ICol name = (ICol)node.Cols.Item("name");
                 //RastrManager.ChangeNodeStateRandom(rastr, nodesWithSkrm); //вкл или выкл для СКРМ 50/50
                 RastrManager.ChangeTg(rastr, calculationSettings.LoadNodes, tgNodes);
                 RastrManager.ChangePn(rastr, calculationSettings.LoadNodes, tgNodes, calculationSettings.PercentLoad);
@@ -206,13 +202,24 @@ namespace Model
                 }
                 rastr.rgm("p");
                 //Calculation.Worsening(rastr, ut2Path);
-                double powerFlowValue = WorseningRandom(rastr, calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, brunchesWithAOPO, UValueDict, IValueDict, calculationSettings.PercentLoad);
+                WorseningRandom(rastr, calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, brunchesWithAOPO, IValueDict, calculationSettings.PercentLoad);
+                double powerFlowValue = Math.Round((double)powerSech.Z[calculationSettings.SechNumber], 2);
+
+                for (int j = 0; j < nodesWithKP.Count; j++) // Запись напряжений
+                {
+                    int index = RastrManager.FindNodeIndex(rastr, nodesWithKP[j]);
+                    VoltageResults.Add(new VoltageResult() { NodeName = name.Z[index].ToString(), NodeNumber = nodesWithKP[j], 
+                        VoltageValue = Convert.ToDouble(Ur.Z[index]),CalculationId= this.CalculationId, ImplementationId=i+1 });
+                }
+
                 //double powerFlowValue = Math.Round(Convert.ToDouble(powerSech.Z[1]),2);
                 watch.Stop();
                 Progress = (i + 1) * 100 / exp;
                 CalculationProgress.Invoke(this, new CalculationProgressEventArgs(CalculationId,(int)Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
                 Console.WriteLine(powerFlowValue + " " + i + " Оставшееся время - " + Math.Round(watch.Elapsed.TotalMinutes * (exp - i + 1),2) + " минут");
-                CalculationResults.Add(new CalculationResult() { ImplementationId = i+1, PowerFlowLimit = powerFlowValue,CalculationId=this.CalculationId });
+                CalculationResults.Add(new CalculationResult() { ImplementationId = i+1, PowerFlowLimit = powerFlowValue,CalculationId = this.CalculationId,VoltageResult=VoltageResults });
+                //foreach (VoltageResult voltageResult in voltageResults) VoltageResults.Add()
+                //VoltageResults.Add
             }
         }
     }

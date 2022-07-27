@@ -42,6 +42,11 @@ namespace Model
         public string? PathToSech { get; set; }
 
         /// <summary>
+        /// Номер сечения
+        /// </summary>
+        public int SechNumber { get; set; }
+
+        /// <summary>
         /// Диапазон начального состояния нагрузок
         /// </summary>
         public int PercentLoad { get; set; }

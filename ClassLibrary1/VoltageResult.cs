@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Model
 {
-    /// <summary>
-    /// Результаты расчета для хранения в БД
-    /// </summary>
-    public class CalculationResult
+    public class VoltageResult
     {
         /// <summary>
         /// Уникальный идентификатор расчета
@@ -26,19 +23,25 @@ namespace Model
         public int ImplementationId { get; set; }
 
         /// <summary>
-        /// Предельный переток
+        /// Номер реализации
         /// </summary>
-        public double PowerFlowLimit { get; set; }
+        [Key, Column(Order = 2)]
+        public int NodeNumber { get; set; }
+
+        /// <summary>
+        /// Номер реализации
+        /// </summary>
+        [NotMapped]
+        public string? NodeName { get; set; }
+
+        /// <summary>
+        /// Значение напряжения
+        /// </summary>
+        public double VoltageValue { get; set; }
 
         /// <summary>
         /// Ссылка на расчет
         /// </summary>
         public Calculations? Calculations { get; set; }
-
-        /// <summary>
-        /// Напряжение
-        /// </summary>
-        [NotMapped]
-        public List<VoltageResult>? VoltageResult { get; set; }
     }
 }

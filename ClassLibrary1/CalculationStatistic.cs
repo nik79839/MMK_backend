@@ -40,6 +40,11 @@ namespace Model
         public List<CalculationResultProcessed> CalculationResultProcessed { get; set; } = new();
 
         /// <summary>
+        ///  Обработанные значения
+        /// </summary>
+        public List<VoltageResultProcessed> VoltageResultProcessed { get; set; } = new();
+
+        /// <summary>
         /// Обработка результатов расчета
         /// </summary>
         /// <param name="calculationResults"></param>
@@ -73,6 +78,49 @@ namespace Model
                 double height = Convert.ToDouble(count) / Convert.ToDouble(values.Count) / step;
                 CalculationResultProcessed.Add(new CalculationResultProcessed() { Interval = Math.Round(first, 2).ToString() + " - " + Math.Round(sec, 2).ToString(), Height = height });
             }
+        }
+
+        /// <summary>
+        /// Обработка результатов расчета
+        /// </summary>
+        /// <param name="calculationResults"></param>
+        public void Processing(List<VoltageResult> voltageResults)
+        {
+            var nodeNumbers = voltageResults.Select(x => x.NodeNumber).ToArray().Distinct<int>();
+            foreach (var nodeNumber in nodeNumbers)
+            {
+                List<double> values = new();
+                foreach (var voltageResult in voltageResults)
+                {
+                    if (voltageResult.NodeNumber==nodeNumber)
+                    {
+                        values.Add(voltageResult.VoltageValue);
+                    }
+                }
+                int intervalCount = Convert.ToInt32(Math.Log10(values.Count) + Math.Sqrt(values.Count));
+                double maximum = values.Max();
+                double minimum = values.Min();
+                double mean = Math.Round(values.Average(), 2);
+                double range = maximum - minimum;
+                double step = range / intervalCount;
+                double sec = minimum;
+                double first;
+                for (int i = 0; i < intervalCount; i++)
+                {
+                    int count = 0;
+                    sec = sec + step;
+                    first = sec - step;
+                    for (int j = 0; j < values.Count; j++)
+                    {
+                        if (values[j] >= first && values[j] <= sec)
+                        {
+                            count++;
+                        }
+                    }
+                    double height = Convert.ToDouble(count) / Convert.ToDouble(values.Count) / step;
+                    VoltageResultProcessed.Add(new VoltageResultProcessed() { Interval = Math.Round(first, 2).ToString() + " - " + Math.Round(sec, 2).ToString(), Height = height, NodeNumber=nodeNumber });
+                }
+            }           
         }
     }
 }

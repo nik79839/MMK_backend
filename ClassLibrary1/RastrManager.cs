@@ -105,7 +105,7 @@ namespace Model
         /// <param name="state">Состояние ветви (0 - включено, 1 - отключено).</param>
         public static void ConnectedBranchState(Rastr rastr, int ny, int type, int state)
         {
-            ITable vetv = (ITable)rastr.Tables.Item(RastrTable.vetv);
+            ITable vetv = (ITable)rastr.Tables.Item("vetv");
             ICol startNode = (ICol)vetv.Cols.Item("ip");
             ICol endNode = (ICol)vetv.Cols.Item("iq");
             ICol tip = (ICol)vetv.Cols.Item("tip");
