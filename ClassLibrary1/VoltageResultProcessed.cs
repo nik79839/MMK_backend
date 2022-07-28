@@ -9,22 +9,34 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Model
 {
     /// <summary>
-    /// Результаты расчета для хранения в БД
+    /// Результаты расчета обработанные
     /// </summary>
     public class VoltageResultProcessed
     {
 
+        public int NodeNumber { get; set; }
+
         /// <summary>
-        /// Диапазон
+        /// Максимум выборки
         /// </summary>
-        public string Interval { get; set; }
+        public double Maximum { get; set; }
 
         /// <summary>
         /// Высота прямоугольника
         /// </summary>
-        public double Height { get; set; }
+        public double Minimum { get; set; }
 
-        public int NodeNumber { get; set; }
+        /// <summary>
+        /// Математическое ожидание
+        /// </summary>
+        public double Mean { get; set; }
+
+        /// <summary>
+        /// Среднеквадратическое отклонение
+        /// </summary>
+        public double StD { get; set; }
+
+        public List<CalculationResultProcessed> CalculationResultProcesseds { get; set; } = new();
         
     }
 }

@@ -104,7 +104,8 @@ namespace Model
                 double range = maximum - minimum;
                 double step = range / intervalCount;
                 double sec = minimum;
-                double first;
+                double first=0, height = 0;
+                List<CalculationResultProcessed> calculationResultProcesseds = new();
                 for (int i = 0; i < intervalCount; i++)
                 {
                     int count = 0;
@@ -117,10 +118,12 @@ namespace Model
                             count++;
                         }
                     }
-                    double height = Convert.ToDouble(count) / Convert.ToDouble(values.Count) / step;
-                    VoltageResultProcessed.Add(new VoltageResultProcessed() { Interval = Math.Round(first, 2).ToString() + " - " + Math.Round(sec, 2).ToString(), Height = height, NodeNumber=nodeNumber });
+                    height = Convert.ToDouble(count) / Convert.ToDouble(values.Count) / step;
+                    calculationResultProcesseds.Add(new CalculationResultProcessed() { Interval = Math.Round(first, 2).ToString() + " - " + Math.Round(sec, 2).ToString(), Height = height });
                 }
-            }           
+                VoltageResultProcessed.Add(new VoltageResultProcessed() { CalculationResultProcesseds = calculationResultProcesseds, NodeNumber = nodeNumber, Maximum=maximum, Minimum=minimum, Mean=mean});
+
+            }
         }
     }
 }
