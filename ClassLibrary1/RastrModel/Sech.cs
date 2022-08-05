@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace Model.RastrModel
 {
-    public class Brunch
+    public class Sech
     {
-        public int StartNode { get; set; }
-        public int EndNode { get; set; }
-        public int ParallelNumber { get; set; }
+        public int Num { get; set; }
 
+        public string NameSech { get; set; }
+
+        public List<Brunch>? Brunches { get; set; }
     }
 }

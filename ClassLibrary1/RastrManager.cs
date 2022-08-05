@@ -222,6 +222,11 @@ namespace Model
             return nodesDistrict;
         }
 
+        /// <summary>
+        /// Возвращает список районов
+        /// </summary>
+        /// <param name="rastr"></param>
+        /// <returns></returns>
         public static List<District> DistrictList(Rastr rastr)
         {
             List<District> districts = new();
@@ -233,6 +238,24 @@ namespace Model
                 districts.Add(new District() { Name = name.ZN[i].ToString(), Number = (int)na.ZN[i] });
             }
                 return districts;
+        }
+
+        /// <summary>
+        /// Возвращает список сечений
+        /// </summary>
+        /// <param name="rastr"></param>
+        /// <returns></returns>
+        public static List<Sech> SechList(Rastr rastr)
+        {
+            List<Sech> seches = new();
+            ITable sechen = (ITable)rastr.Tables.Item("sechen");
+            ICol ns = (ICol)sechen.Cols.Item("ns");
+            ICol name = (ICol)sechen.Cols.Item("name");
+            for (int i = 0; i < sechen.Count; i++)
+            {
+                seches.Add(new Sech() { NameSech = name.ZN[i].ToString(), Num = (int)ns.ZN[i] });
+            }
+            return seches;
         }
     }
 }

@@ -39,6 +39,8 @@ namespace Model
         /// </summary>
         public DateTime? CalculationEnd { get; set; }
 
+        public string? NameOfSech { get; set; }
+
         /// <summary>
         /// Ссылка на результаты расчетов
         /// </summary>
@@ -161,7 +163,7 @@ namespace Model
         /// <param name="rastr"></param>
         /// <param name="calculationSettings">Объект параметров расчета</param>
         /// <returns>Массив предельных перетоков</returns>
-        public void CalculatePowerFlows(Rastr rastr, CalculationSettings calculationSettings)
+        public void CalculatePowerFlows(Rastr rastr, CalculationSettings calculationSettings, CancellationToken cancellationToken)
         {
             Console.WriteLine("Режим загружен.");
             //rastr.Load(RG_KOD.RG_REPL, ut2Path, ut2Path);
@@ -186,6 +188,11 @@ namespace Model
             int exp = calculationSettings.CountOfImplementations; // Число реализаций
             for (int i = 0; i < exp; i++)
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    Console.WriteLine("Отмена расчета");
+                    break;
+                }
                 var watch = Stopwatch.StartNew();
                 rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToRegim, calculationSettings.PathToRegim);
                 ITable node = (ITable)rastr.Tables.Item("node");

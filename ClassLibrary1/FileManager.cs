@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Model.Repairs;
+using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,6 +55,30 @@ namespace Model
                 }
                 excel.SaveAs(new System.IO.FileInfo(@"C:\Users\otrok\Desktop\Дипломмаг\Тест_I.xlsx"));
             }
+        }
+
+        public static List<Repair> GetRepairsFromExcel()
+        {
+            List<Repair> repairList = new();
+            string path = @"C:\Users\otrok\Downloads\ИЮЛЬ СБЭК+.xlsx";
+            using (var excel = new ExcelPackage(new System.IO.FileInfo(path)))
+            {
+                var ws = excel.Workbook.Worksheets[0];
+                int rowCount = ws.Dimension.Rows;
+                for (int i = 5; i <= rowCount; i=i+5)
+                {
+                    repairList.Add(new Repair()
+                    {
+                        EquipmentName = ws.Cells[i, 3].Value.ToString(),
+                        Object = ws.Cells[i, 2].Value.ToString(),
+                        StartTimeRepair = DateTime.Parse(ws.Cells[i, 4].Value.ToString()),
+                        EndTimeRepair = DateTime.Parse(ws.Cells[i, 5].Value.ToString()),
+                        Status = ws.Cells[i, 7].Value.ToString()
+                    });
+                }
+            }
+            return repairList;
+
         }
     }
 }
