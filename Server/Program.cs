@@ -1,5 +1,6 @@
 using DBRepository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Server.Hub;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -38,6 +39,13 @@ app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<ProgressHub>("/progress");
     endpoints.MapDefaultControllerRoute();
+});
+
+app.UseDirectoryBrowser(new DirectoryBrowserOptions()
+{
+    FileProvider = new PhysicalFileProvider(
+            @"C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\RastrFiles"),
+    RequestPath = new PathString("/files")
 });
 
 app.Run();

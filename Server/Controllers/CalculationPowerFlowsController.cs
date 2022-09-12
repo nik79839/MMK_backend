@@ -47,8 +47,7 @@ namespace Server.Controllers
             calculations.CalculatePowerFlows(rastr, calculationSettings, cancellationToken);
             DateTime endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second); ;
             Console.WriteLine("Расчет завершен. Запись в БД.");
-            //FileManager.ToExcel(powerFlows, 6, UValueDict);
-            //FileManager.ToExcel_I(IValueDict);
+
             db.CalculationResults.AddRange(calculations.CalculationResults);
             db.VoltageResults.AddRange(calculations.VoltageResults);
             calculations.CalculationEnd = endTime;
@@ -61,7 +60,7 @@ namespace Server.Controllers
         [HttpGet]
         public List<Calculations> GetCalculations()
         {
-            return db.Calculations.ToList();
+            return db.Calculations.ToList().OrderByDescending(c => c.CalculationEnd).ToList();
         }
 
         [Route("CalculationPowerFlows/GetCalculations/{id}")]
@@ -78,7 +77,7 @@ namespace Server.Controllers
 
         [Route("CalculationPowerFlows/DeleteCalculations/{id}")]
         [HttpDelete]
-        public void DeleteCalculationsById(string? id)
+        public List<Calculations> DeleteCalculationsById(string? id)
         {
             Calculations calculations1 = (from calculations in db.Calculations where calculations.CalculationId == id select calculations).FirstOrDefault();
             List<CalculationResult> calculationResults = (from calculations in db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
@@ -87,6 +86,7 @@ namespace Server.Controllers
             db.CalculationResults.RemoveRange(calculationResults);
             db.VoltageResults.RemoveRange(voltageResults);
             db.SaveChanges();
+            return db.Calculations.ToList();
         }
 
         public void EventHandler(object sender, CalculationProgressEventArgs e)

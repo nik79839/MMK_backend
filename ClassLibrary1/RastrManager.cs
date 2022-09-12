@@ -257,5 +257,15 @@ namespace Model
             }
             return seches;
         }
+
+        public static void DoRepairs(Rastr rastr)
+        {
+            ITable vetv = (ITable)rastr.Tables.Item("vetv");
+            ICol name = (ICol)vetv.Cols.Item("name");
+            for (int i = 0; i < vetv.Count; i++)
+            { 
+
+            }
+        }
     }
 }
