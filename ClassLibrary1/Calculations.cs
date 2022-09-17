@@ -186,6 +186,9 @@ namespace Model
             foreach (var index in brunchesWithAOPO) IValueDict.Add(vetvName.Z[index].ToString(), new List<double>()); // Создание ключей в словаре
 
             int exp = calculationSettings.CountOfImplementations; // Число реализаций
+
+            List<int> numberLoadNodes = calculationSettings.LoadNodes.Select(x => x.Number).ToList(); //Массив номеров узлов
+
             for (int i = 0; i < exp; i++)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -199,8 +202,8 @@ namespace Model
                 ICol Ur = (ICol)node.Cols.Item("vras");
                 ICol name = (ICol)node.Cols.Item("name");
                 //RastrManager.ChangeNodeStateRandom(rastr, nodesWithSkrm); //вкл или выкл для СКРМ 50/50
-                RastrManager.ChangeTg(rastr, calculationSettings.LoadNodes, tgNodes);
-                RastrManager.ChangePn(rastr, calculationSettings.LoadNodes, tgNodes, calculationSettings.PercentLoad);
+                RastrManager.ChangeTg(rastr, numberLoadNodes, tgNodes);
+                RastrManager.ChangePn(rastr, numberLoadNodes, tgNodes, calculationSettings.PercentLoad);
                 RastrRetCode test = rastr.rgm("p");
                 if (test == RastrRetCode.AST_NB)
                 {

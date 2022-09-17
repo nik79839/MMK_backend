@@ -159,20 +159,24 @@ namespace Model
         }
 
         /// <summary>
-        /// Добавление всех узлов с нагрузкой в лист
+        /// Получение листа всех узлов с нагрузкой
         /// </summary>
         /// <param name="rastr"></param>
-        public static List<int> AllLoadNodesToList(Rastr rastr)
+        public static List<Node> AllLoadNodesToList(Rastr rastr)
         {
-            List<int> loadNodes = new();
+            List<Node> loadNodes = new();
             ITable node = (ITable)rastr.Tables.Item("node");
             ICol number = (ICol)node.Cols.Item("ny");
+            ICol name = (ICol)node.Cols.Item("name");
             ICol pn = (ICol)node.Cols.Item("pn");
+            ICol na = (ICol)node.Cols.Item("na");
+            ICol nameArea = (ICol)node.Cols.Item("na_name");
             for (int i = 0; i < node.Count; i++)
             {
                 if (Convert.ToDouble(pn.ZN[i]) != 0)
                 {
-                    loadNodes.Add((int)number.ZN[i]);
+                    loadNodes.Add(new Node() { Number= (int)number.ZN[i], Name = name.ZN[i].ToString(), 
+                        District= new District() {Number=(int)na.ZN[i], Name= nameArea.ZN[i].ToString() } });
                 }
             }
             return loadNodes;
@@ -191,6 +195,7 @@ namespace Model
             ITable node = (ITable)rastr.Tables.Item("node");
             ICol pn = (ICol)node.Cols.Item("pn");
             ICol qn = (ICol)node.Cols.Item("qn");
+            ICol na = (ICol)node.Cols.Item("na");
             RastrRetCode kod = rastr.rgm("p");
             for (int i = 0; i < nodes.Count; i++)
             {

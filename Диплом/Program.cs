@@ -28,7 +28,7 @@ namespace Диплом_УР_Автоматизация
             calculationSettings.NodesForWorsening = RastrManager.DistrictNodesToList(rastr, 1).Union(new List<int>() { 1654 }).ToList();
             calculationSettings.SechNumber = 1;
             //db.SaveChanges();
-            calculations.CalculatePowerFlows(rastr, calculationSettings);
+            //calculations.CalculatePowerFlows(rastr, calculationSettings);
             //Calculations.CalculationProgress += EventHandler;
             //List<CalculationResult> powerFlows = Calculations.CalculatePowerFlows(rastr, calculationSettings);
             //List<double> powerFlows=Calculation.CalculatePowerFlows(rastr, calculationSettings);

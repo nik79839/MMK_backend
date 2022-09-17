@@ -10,5 +10,6 @@ namespace Model.RastrModel
     {
         public string Name { get; set; }
         public int Number { get; set; }
+        public District? District { get; set; }
     }
 }

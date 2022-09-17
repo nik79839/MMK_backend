@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Model.RastrModel;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ namespace Model
         /// <summary>
         /// Узлы варьируемых нагрузок
         /// </summary>
-        public List<int>? LoadNodes { get; set; }
+        public List<Node>? LoadNodes { get; set; }
 
         /// <summary>
         /// Узлы утяжеления нагрузок

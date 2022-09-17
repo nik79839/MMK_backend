@@ -30,5 +30,15 @@ namespace Server.Controllers
             rastr.Load(RG_KOD.RG_REPL, PathToSech, PathToSech);
             return RastrManager.SechList(rastr);
         }
+
+        [Route("SchemeInfo/GetLoadNodes")]
+        [HttpGet]
+        public List<Node> GetLoadNodes()
+        {
+            Rastr rastr = new Rastr();
+            string PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
+            rastr.Load(RG_KOD.RG_REPL, PathToRegim, PathToRegim);
+            return RastrManager.AllLoadNodesToList(rastr);
+        }
     }
 }
