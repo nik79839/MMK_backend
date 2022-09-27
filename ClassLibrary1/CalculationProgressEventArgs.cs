@@ -8,9 +8,9 @@ namespace Model
 {
     public class CalculationProgressEventArgs : EventArgs
     {
-       /// <summary>
-       /// Прогресс в процентах
-       /// </summary>
+        /// <summary>
+        /// Прогресс в процентах
+        /// </summary>
         public int Percent { get; set; }
 
         /// <summary>
@@ -23,7 +23,7 @@ namespace Model
         /// </summary>
         public string CalculationId { get; set; }
 
-        public CalculationProgressEventArgs(string calculationId,int percent,int time)
+        public CalculationProgressEventArgs(string calculationId, int percent, int time)
         {
             CalculationId = calculationId;
             Percent = percent;

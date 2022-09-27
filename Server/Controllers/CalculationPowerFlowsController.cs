@@ -3,6 +3,7 @@ using DBRepository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Model;
+using Model.Statistic;
 using Server.Hub;
 
 namespace Server.Controllers

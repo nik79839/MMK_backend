@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Model
+namespace Model.Statistic
 {
     /// <summary>
     /// Результаты расчета для хранения в БД
     /// </summary>
-    public class CalculationResultProcessed
+    public class HistogramData
     {
 
         /// <summary>
@@ -24,6 +24,6 @@ namespace Model
         /// </summary>
         public double Height { get; set; }
 
-        
+
     }
 }

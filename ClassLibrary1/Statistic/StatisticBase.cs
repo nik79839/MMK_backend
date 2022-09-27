@@ -3,19 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Model
+namespace Model.Statistic
 {
-    /// <summary>
-    /// Результаты расчета обработанные
-    /// </summary>
-    public class VoltageResultProcessed
+    public class StatisticBase
     {
-
-        public int NodeNumber { get; set; }
-
         /// <summary>
         /// Максимум выборки
         /// </summary>
@@ -36,7 +28,9 @@ namespace Model
         /// </summary>
         public double StD { get; set; }
 
-        public List<CalculationResultProcessed> CalculationResultProcesseds { get; set; } = new();
-        
+        /// <summary>
+        /// Столбцы гистограммы
+        /// </summary>
+        public List<HistogramData> HistogramData { get; set; } = new();
     }
 }
