@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "Model\Model.csproj", "{B3D353FF-78D3-4B9F-8DA8-50AF6E0E92A4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Model", "ClassLibrary1\Model.csproj", "{B3D353FF-78D3-4B9F-8DA8-50AF6E0E92A4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Диплом", "Диплом\Диплом.csproj", "{5F06E0C0-C8F7-4E37-903F-9B63364DC44E}"
 EndProject

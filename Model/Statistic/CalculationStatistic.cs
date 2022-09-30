@@ -55,7 +55,7 @@ namespace Model.Statistic
                 double step = range / intervalCount;
                 double sec = minimum;
                 double first = 0, height = 0;
-                List<HistogramData> histogramData = new();
+                List<HistogramData> histogramData = new(); 
                 for (int i = 0; i < intervalCount; i++)
                 {
                     int count = 0;
