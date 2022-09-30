@@ -1,4 +1,3 @@
-using ASTRALib;
 using Microsoft.AspNetCore.Mvc;
 using Model;
 using Model.RastrModel;

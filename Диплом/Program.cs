@@ -18,7 +18,7 @@ namespace Диплом_УР_Автоматизация
             calculationSettings.PathToSech= @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
             rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToRegim, calculationSettings.PathToRegim);
             Dictionary<string, List<double>> UValueDict = new Dictionary<string, List<double>>();
-            calculationSettings.LoadNodes = RastrManager.AllLoadNodesToList(rastr); //Список узлов нагрузки
+            calculationSettings.LoadNodes = RastrManager.AllLoadNodesToList(calculationSettings.PathToRegim); //Список узлов нагрузки
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
             calculationSettings.NodesForWorsening = RastrManager.DistrictNodesToList(rastr, 1).Union(new List<int>() { 1654 }).ToList();
             calculationSettings.PercentForWorsening = 10;

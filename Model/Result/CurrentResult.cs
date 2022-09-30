@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace Model.Result
 {
-    public class VoltageResult
+    public class CurrentResult
     {
         /// <summary>
         /// Уникальный идентификатор расчета
@@ -27,22 +27,30 @@ namespace Model
         /// Номер реализации
         /// </summary>
         [Key, Column(Order = 2)]
-        public int NodeNumber { get; set; }
-
+        public int StartNode { get; set; }
         /// <summary>
         /// Номер реализации
         /// </summary>
-        [NotMapped]
-        public string? NodeName { get; set; }
+        [Key, Column(Order = 3)]
+        public int EndNode { get; set; }
 
         /// <summary>
         /// Значение напряжения
         /// </summary>
-        public double VoltageValue { get; set; }
+        public double CurrentValue { get; set; }
 
         /// <summary>
         /// Ссылка на расчет
         /// </summary>
         public Calculations? Calculations { get; set; }
+
+        public CurrentResult(string calculationId, int implementationId, int startNode, int endNode, double currentValue)
+        {
+            CalculationId = calculationId;
+            ImplementationId = implementationId;
+            StartNode = startNode;
+            EndNode = endNode;
+            CurrentValue = currentValue;
+        }
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Model
+namespace Model.Result
 {
     /// <summary>
     /// Результаты расчета для хранения в БД
@@ -40,5 +40,13 @@ namespace Model
         /// </summary>
         [NotMapped]
         public List<VoltageResult>? VoltageResult { get; set; }
+
+        public CalculationResult(string calculationId, int implementationId, double powerFlowLimit, List<VoltageResult>? voltageResult)
+        {
+            CalculationId = calculationId;
+            ImplementationId = implementationId;
+            PowerFlowLimit = powerFlowLimit;
+            VoltageResult = voltageResult;
+        }
     }
 }

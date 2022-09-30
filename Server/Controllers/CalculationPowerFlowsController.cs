@@ -1,8 +1,8 @@
-using ASTRALib;
 using DBRepository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Model;
+using Model.Result;
 using Model.Statistic;
 using Server.Hub;
 
@@ -25,27 +25,17 @@ namespace Server.Controllers
         public void PostCalculations(CalculationSettings calculationSettings)
         {
             CancellationToken cancellationToken = HttpContext.RequestAborted;
-            Rastr rastr = new();
             string guid = Guid.NewGuid().ToString();
             DateTime startTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
-            calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
-            rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToRegim, calculationSettings.PathToRegim);
-            rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToSech, calculationSettings.PathToSech);
-            if (calculationSettings.IsAllNodesInitial)
-            {
-                calculationSettings.LoadNodes = RastrManager.AllLoadNodesToList(rastr); //Список узлов нагрузки со случайными начальными параметрами (все узлы)
-            }
+            calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";;
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
-            calculationSettings.NodesForWorsening = RastrManager.DistrictNodesToList(rastr, 1).Union(new List<int>() { 1654 }).ToList();
-
-            string sechName = RastrManager.SechList(rastr).Where(sech => sech.Num == calculationSettings.SechNumber).FirstOrDefault().NameSech;
-
-            Calculations calculations = new() { CalculationId = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null,NameOfSech =sechName };
+            
+            Calculations calculations = new() { CalculationId = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null };
             calculations.CalculationProgress += EventHandler;
             db.Calculations.Add(calculations);
             db.SaveChanges();
-            calculations.CalculatePowerFlows(rastr, calculationSettings, cancellationToken);
+            calculations.CalculatePowerFlows( calculationSettings, cancellationToken);
             DateTime endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second); ;
             Console.WriteLine("Расчет завершен. Запись в БД.");
 

@@ -127,14 +127,15 @@ namespace Model
         /// <param name="rastr"></param>
         /// <param name="nodes">Узлы</param>
         /// <param name="tgValue">Список значений cos f</param>
-        public static void ChangeTg(Rastr rastr, List<int> nodes, List<double> tgValue)
+        public static List<double> ChangeTg(Rastr rastr, List<int> nodes)
         {
-            tgValue.Clear();
+            List<double> tgValues = new();
             Random randtg = new Random();
             for (int i = 0; i < nodes.Count; i++)
             {
-                tgValue.Add((float)randtg.Next(48, 62) / 100);
+                tgValues.Add((float)randtg.Next(48, 62) / 100);
             }
+            return tgValues;
         }
 
         /// <summary>
@@ -162,8 +163,10 @@ namespace Model
         /// Получение листа всех узлов с нагрузкой
         /// </summary>
         /// <param name="rastr"></param>
-        public static List<Node> AllLoadNodesToList(Rastr rastr)
+        public static List<Node> AllLoadNodesToList(string pathToRegim)
         {
+            Rastr rastr = new();
+            rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
             List<Node> loadNodes = new();
             ITable node = (ITable)rastr.Tables.Item("node");
             ICol number = (ICol)node.Cols.Item("ny");
@@ -232,8 +235,10 @@ namespace Model
         /// </summary>
         /// <param name="rastr"></param>
         /// <returns></returns>
-        public static List<District> DistrictList(Rastr rastr)
+        public static List<District> DistrictList(string pathToRegim)
         {
+            Rastr rastr = new Rastr();
+            rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
             List<District> districts = new();
             ITable area = (ITable)rastr.Tables.Item("area");
             ICol na = (ICol)area.Cols.Item("na");
@@ -250,8 +255,12 @@ namespace Model
         /// </summary>
         /// <param name="rastr"></param>
         /// <returns></returns>
-        public static List<Sech> SechList(Rastr rastr)
+        public static List<Sech> SechList(string pathToRegim)
         {
+            Rastr rastr = new();
+            string PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
+            rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
+            rastr.Load(RG_KOD.RG_REPL, PathToSech, PathToSech);
             List<Sech> seches = new();
             ITable sechen = (ITable)rastr.Tables.Item("sechen");
             ICol ns = (ICol)sechen.Cols.Item("ns");
