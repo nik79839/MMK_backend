@@ -48,5 +48,11 @@ namespace Model.Result
             PowerFlowLimit = powerFlowLimit;
             VoltageResult = voltageResult;
         }
+        public CalculationResult(string calculationId, int implementationId, double powerFlowLimit)
+        {
+            CalculationId = calculationId;
+            ImplementationId = implementationId;
+            PowerFlowLimit = powerFlowLimit;
+        }
     }
 }

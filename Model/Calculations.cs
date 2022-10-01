@@ -65,6 +65,7 @@ namespace Model
         [NotMapped]
         public int? Progress { get; set; } = null;
 
+        [NotMapped]
         public Rastr _Rastr { get; set; }
 
         /// <summary>
@@ -175,16 +176,17 @@ namespace Model
             ITable node = (ITable)_Rastr.Tables.Item("node");
             ICol Ur = (ICol)node.Cols.Item("vras");
             ICol name = (ICol)node.Cols.Item("name");
+            string asf = name.Z[1].ToString();
+            double afs = Convert.ToDouble(Ur.Z[1]);
             List<int> nodesWithKP = new () { 2658, 2643, 60408105 };
             List<int> nodesWithSkrm = RastrManager.SkrmNodesToList(_Rastr); //Заполнение листа с узлами  СКРМ
-            List<Brunch> brunchesWithAOPO = new List<Brunch>() { new Brunch(2640,2641,0), new Brunch(2631, 2640, 0), new Brunch(2639, 2640, 0),
-            new Brunch(2639,60408105,0), new Brunch(60408105,2630,1)}; // Ветви для замеров тока
-            if (calculationSettings.IsAllNodesInitial)
-            {
+            List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0),
+            new(2639,60408105,0), new (60408105,2630,1)}; // Ветви для замеров тока
+           /* if (calculationSettings.IsAllNodesInitial)
+            {*/
                 calculationSettings.LoadNodes = RastrManager.AllLoadNodesToList(calculationSettings.PathToRegim); //Список узлов нагрузки со случайными начальными параметрами (все узлы)
-            }
+            //}
             List<int> numberLoadNodes = calculationSettings.LoadNodes.Select(x => x.Number).ToList(); //Массив номеров узлов
-            calculationSettings.NodesForWorsening = RastrManager.DistrictNodesToList(_Rastr, 1).Union(new List<int>() { 1654 }).ToList();
             int exp = calculationSettings.CountOfImplementations; // Число реализаций
             NameOfSech = RastrManager.SechList(calculationSettings.PathToRegim).Where(sech => sech.Num == calculationSettings.SechNumber).FirstOrDefault().NameSech;
             for (int i = 0; i < exp; i++)
@@ -195,7 +197,17 @@ namespace Model
                     break;
                 }
                 var watch = Stopwatch.StartNew();
+                Console.WriteLine(node.Count);
                 _Rastr.Load(RG_KOD.RG_REPL, calculationSettings.PathToRegim, calculationSettings.PathToRegim);
+                sch = (ITable)_Rastr.Tables.Item("sechen");
+                powerSech = (ICol)sch.Cols.Item("psech");
+                vetv = (ITable)_Rastr.Tables.Item("vetv");
+                vetvName = (ICol)vetv.Cols.Item("name");
+                iMax = (ICol)vetv.Cols.Item("i_max");
+                node = (ITable)_Rastr.Tables.Item("node");
+                Ur = (ICol)node.Cols.Item("vras");
+                name = (ICol)node.Cols.Item("name");
+                Console.WriteLine(node.Count);
                 //RastrManager.ChangeNodeStateRandom(rastr, nodesWithSkrm); //вкл или выкл для СКРМ 50/50
                 List<double> tgNodes = RastrManager.ChangeTg(_Rastr, numberLoadNodes); //Список коэф мощности для каждой реализации
                 RastrManager.ChangePn(_Rastr, numberLoadNodes, tgNodes, calculationSettings.PercentLoad); //Случайная нагрузка
@@ -208,13 +220,13 @@ namespace Model
                 _Rastr.rgm("p");
                 WorseningRandom(_Rastr, calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, calculationSettings.PercentLoad);
                 double powerFlowValue = Math.Round((double)powerSech.Z[calculationSettings.SechNumber], 2);
-
                 for (int j = 0; j < nodesWithKP.Count; j++) // Запись напряжений
                 {
                     int index = RastrManager.FindNodeIndex(_Rastr, nodesWithKP[j]);
+                    string as1f = name.Z[1].ToString();
+                    double afs1 = Convert.ToDouble(Ur.Z[1]);
                     VoltageResults.Add(new VoltageResult(CalculationId, i + 1, nodesWithKP[j], name.Z[index].ToString(), Convert.ToDouble(Ur.Z[index])));
                 }
-
                 for (int j = 0; j < brunchesWithAOPO.Count; j++) // Запись токов
                 {
                     int index = RastrManager.FindBranchIndex(_Rastr, brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, brunchesWithAOPO[j].ParallelNumber);

@@ -17,9 +17,14 @@ namespace Model.Statistic
         public StatisticBase PowerFlowResultProcessed { get; set; } = new();
 
         /// <summary>
-        ///  Обработанные значения
+        ///  Обработанные значения напряжения
         /// </summary>
-        public List<VoltageResultProcessed> VoltageResultProcessed { get; set; } = new();
+        public List<VoltageResultProcessed>? VoltageResultProcessed { get; set; } = new();
+
+        /// <summary>
+        ///  Обработанные значения тока
+        /// </summary>
+        public List<CurrentResultProcessed>? CurrentResultProcessed { get; set; } = new();
 
         /// <summary>
         /// Обработка результатов расчета

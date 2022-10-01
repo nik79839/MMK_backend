@@ -53,5 +53,13 @@ namespace Model.Result
             NodeName = nodeName;
             VoltageValue = voltageValue;
         }
+
+        public VoltageResult(string calculationId, int implementationId, int nodeNumber, double voltageValue)
+        {
+            CalculationId = calculationId;
+            ImplementationId = implementationId;
+            NodeNumber = nodeNumber;
+            VoltageValue = voltageValue;
+        }
     }
 }

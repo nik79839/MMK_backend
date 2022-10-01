@@ -12,17 +12,17 @@ namespace Server.Controllers
     //[Route("[controller]")]
     public class CalculationPowerFlowsController : ControllerBase
     {
-        RepositoryContext db;
-        IHubContext<ProgressHub> hubContext;
+        public RepositoryContext Db { get; set; }
+        public IHubContext<ProgressHub> HubContext { get; set; }
         public CalculationPowerFlowsController(RepositoryContext context, IHubContext<ProgressHub> hubContext)
         {
-            db = context;
-            this.hubContext = hubContext;
+            Db = context;
+            this.HubContext = hubContext;
         }
 
         [Route("CalculationPowerFlows/PostCalculations")]
         [HttpPost]
-        public void PostCalculations(CalculationSettings calculationSettings)
+        public void PostCalculations([FromBody] CalculationSettings calculationSettings)
         {
             CancellationToken cancellationToken = HttpContext.RequestAborted;
             string guid = Guid.NewGuid().ToString();
@@ -33,17 +33,17 @@ namespace Server.Controllers
             
             Calculations calculations = new() { CalculationId = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null };
             calculations.CalculationProgress += EventHandler;
-            db.Calculations.Add(calculations);
-            db.SaveChanges();
+            Db.Calculations.Add(calculations);
+            Db.SaveChanges();
             calculations.CalculatePowerFlows( calculationSettings, cancellationToken);
             DateTime endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second); ;
             Console.WriteLine("Расчет завершен. Запись в БД.");
 
-            db.CalculationResults.AddRange(calculations.CalculationResults);
-            db.VoltageResults.AddRange(calculations.VoltageResults);
+            Db.CalculationResults.AddRange(calculations.CalculationResults);
+            Db.VoltageResults.AddRange(calculations.VoltageResults);
             calculations.CalculationEnd = endTime;
-            db.Calculations.Update(calculations);
-            db.SaveChanges();
+            Db.Calculations.Update(calculations);
+            Db.SaveChanges();
             Console.WriteLine("Выполнена запись в БД");
         }
 
@@ -51,15 +51,15 @@ namespace Server.Controllers
         [HttpGet]
         public List<Calculations> GetCalculations()
         {
-            return db.Calculations.ToList().OrderByDescending(c => c.CalculationEnd).ToList();
+            return Db.Calculations.ToList().OrderByDescending(c => c.CalculationEnd).ToList();
         }
 
         [Route("CalculationPowerFlows/GetCalculations/{id}")]
         [HttpGet]
         public CalculationStatistic GetCalculationsById(string? id)
         {
-            List<CalculationResult> calculationResults = (from calculations in db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
-            List<VoltageResult> voltageResults = (from calculations in db.VoltageResults where calculations.CalculationId == id select calculations).ToList();
+            List<CalculationResult> calculationResults = (from calculations in Db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
+            List<VoltageResult> voltageResults = (from calculations in Db.VoltageResults where calculations.CalculationId == id select calculations).ToList();
             CalculationStatistic calculationStatistic = new();
             calculationStatistic.Processing(calculationResults);
             calculationStatistic.Processing(voltageResults);
@@ -70,20 +70,20 @@ namespace Server.Controllers
         [HttpDelete]
         public List<Calculations> DeleteCalculationsById(string? id)
         {
-            Calculations calculations1 = (from calculations in db.Calculations where calculations.CalculationId == id select calculations).FirstOrDefault();
-            List<CalculationResult> calculationResults = (from calculations in db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
-            List<VoltageResult> voltageResults = (from calculations in db.VoltageResults where calculations.CalculationId == id select calculations).ToList();
-            db.Calculations.Remove(calculations1);
-            db.CalculationResults.RemoveRange(calculationResults);
-            db.VoltageResults.RemoveRange(voltageResults);
-            db.SaveChanges();
-            return db.Calculations.ToList();
+            Calculations calculations1 = (from calculations in Db.Calculations where calculations.CalculationId == id select calculations).FirstOrDefault();
+            List<CalculationResult> calculationResults = (from calculations in Db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
+            List<VoltageResult> voltageResults = (from calculations in Db.VoltageResults where calculations.CalculationId == id select calculations).ToList();
+            Db.Calculations.Remove(calculations1);
+            Db.CalculationResults.RemoveRange(calculationResults);
+            Db.VoltageResults.RemoveRange(voltageResults);
+            Db.SaveChanges();
+            return Db.Calculations.ToList();
         }
 
         public void EventHandler(object sender, CalculationProgressEventArgs e)
         {
             Console.WriteLine(e.Percent+"%, осталось "+e.Time+" мин");
-            hubContext.Clients.All.SendAsync("SendProgress", e.Percent,e.CalculationId);
+            HubContext.Clients.All.SendAsync("SendProgress", e.Percent,e.CalculationId);
         }
 
     }

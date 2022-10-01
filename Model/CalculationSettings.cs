@@ -25,7 +25,7 @@ namespace Model
         /// <summary>
         /// Узлы утяжеления нагрузок
         /// </summary>
-        public List<int>? NodesForWorsening { get; set; }
+        public List<int> NodesForWorsening { get; set; }
 
         /// <summary>
         /// Число реализаций
@@ -60,6 +60,6 @@ namespace Model
         /// <summary>
         /// Все ли узлы имеют случайный начальный характер
         /// </summary>
-        public bool IsAllNodesInitial { get; set; }
+        public bool? IsAllNodesInitial { get; set; } = true;
     }
 }

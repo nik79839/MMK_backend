@@ -10,6 +10,7 @@ namespace Model
 {
     public static class RastrManager
     {
+
         /// <summary>
         /// Возвращает индекс узла по номеру
         /// </summary>
