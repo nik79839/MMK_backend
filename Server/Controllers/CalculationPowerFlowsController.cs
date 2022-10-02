@@ -26,7 +26,7 @@ namespace Server.Controllers
         {
             CancellationToken cancellationToken = HttpContext.RequestAborted;
             string guid = Guid.NewGuid().ToString();
-            DateTime startTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
+            DateTime startTime = new(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second);
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";;
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
@@ -36,7 +36,7 @@ namespace Server.Controllers
             Db.Calculations.Add(calculations);
             Db.SaveChanges();
             calculations.CalculatePowerFlows( calculationSettings, cancellationToken);
-            DateTime endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second); ;
+            DateTime endTime = new(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second); ;
             Console.WriteLine("Расчет завершен. Запись в БД.");
 
             Db.CalculationResults.AddRange(calculations.CalculationResults);

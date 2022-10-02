@@ -8,8 +8,69 @@ using System.Threading.Tasks;
 
 namespace Model
 {
-    public static class RastrManager
+    public class RastrManager
     {
+        private ITable _node;
+        private ITable _vetv;
+        private ITable _sechen;
+        private ITable _area;
+        public Rastr _Rastr { get; set; }
+        public ICol NumberNode { get; set; }
+        public ICol NameNode { get; set; }
+        public ICol StaNode { get; set; }
+        public ICol BshNode { get; set; }
+        public ICol Pn { get; set; }
+        public ICol Qn { get; set; }
+        public ICol Na { get; set; }
+        public ICol NameArea { get; set; }
+        public ICol Ur { get; set; }
+        public ICol StartNode { get; set; }
+        public ICol EndNode { get; set; }
+        public ICol Parallel { get; set; }
+        public ICol NameVetv { get; set; }
+        public ICol TipVetv { get; set; }
+        public ICol StaVetv { get; set; }
+        public ICol IMax { get; set; }
+        public ICol Nsech { get; set; }
+        public ICol NameSech { get; set; }
+        public ICol PowerSech { get; set; }
+        public ICol NaArea { get; set; }
+        public ICol NameAreaArea { get; set; }
+
+        public RastrManager(string pathToRegim,string? pathToSech = null)
+        {
+            _Rastr = new();
+            _Rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
+            _node = (ITable)_Rastr.Tables.Item("node");
+            _vetv = (ITable)_Rastr.Tables.Item("vetv");
+            _area = (ITable)_Rastr.Tables.Item("area");
+            NumberNode = (ICol)_node.Cols.Item("ny");
+            NameNode = (ICol)_node.Cols.Item("name");
+            StaNode = (ICol)_node.Cols.Item("sta");
+            BshNode = (ICol)_node.Cols.Item("bsh");
+            Pn = (ICol)_node.Cols.Item("pn");
+            Qn = (ICol)_node.Cols.Item("qn");
+            Na = (ICol)_node.Cols.Item("na");
+            NameArea = (ICol)_node.Cols.Item("na_name");
+            Ur = (ICol)_node.Cols.Item("vras");
+            StartNode = (ICol)_vetv.Cols.Item("ip");
+            EndNode = (ICol)_vetv.Cols.Item("iq");
+            Parallel = (ICol)_vetv.Cols.Item("ip");
+            NameVetv = (ICol)_vetv.Cols.Item("name");
+            IMax = (ICol)_vetv.Cols.Item("i_max");
+            TipVetv = (ICol)_vetv.Cols.Item("tip");
+            StaVetv = (ICol)_vetv.Cols.Item("sta");
+            NaArea = (ICol)_area.Cols.Item("na");
+            NameAreaArea = (ICol)_area.Cols.Item("name");
+            if (!String.IsNullOrEmpty(pathToSech))
+            {
+                _Rastr.Load(RG_KOD.RG_REPL, pathToSech, pathToSech);
+                _sechen = (ITable)_Rastr.Tables.Item("sechen");
+                Nsech = (ICol)_sechen.Cols.Item("ns");
+                NameSech = (ICol)_sechen.Cols.Item("name");
+                PowerSech = (ICol)_sechen.Cols.Item("psech");
+            }
+        }
 
         /// <summary>
         /// Возвращает индекс узла по номеру
@@ -17,13 +78,11 @@ namespace Model
         /// <param name="rastr">Объект растра</param>
         /// <param name="ny">Номер узла</param>
         /// <returns></returns>
-        public static int FindNodeIndex(Rastr rastr, int ny)
+        public int FindNodeIndex(int ny)
         {
-            ITable node = (ITable)rastr.Tables.Item("node");
-            ICol number = (ICol)node.Cols.Item("ny");
-            for (int index = 0; index < node.Count; index++)
+            for (int index = 0; index < _node.Count; index++)
             {
-                if (Convert.ToDouble(number.ZN[index]) == ny)
+                if (Convert.ToDouble(NumberNode.ZN[index]) == ny)
                 {
                     return index;
                 }
@@ -37,16 +96,13 @@ namespace Model
         /// <param name="rastr"></param>
         /// <param name="nodes">Список узлов</param>
         /// <param name="state">0 - включено, 1 - отключено</param>
-        public static void ChangeNodeState(Rastr rastr, List<int> nodes, int state)
+        public void ChangeNodeState(List<int> nodes, int state)
         {
-            ITable node = (ITable)rastr.Tables.Item("node");
-            ICol sta = (ICol)node.Cols.Item("sta");
-
             for (int i = 0; i < nodes.Count; i++)
             {
-                int index = RastrManager.FindNodeIndex(rastr, nodes[i]);
-                sta.set_ZN(index, state);
-                ConnectedBranchState(rastr, nodes[i], 2, state);
+                int index = FindNodeIndex(nodes[i]);
+                StaNode.set_ZN(index, state);
+                ConnectedBranchState(nodes[i], 2, state);
             }
         }
 
@@ -55,17 +111,15 @@ namespace Model
         /// </summary>
         /// <param name="rastr"></param>
         /// <param name="nodes"></param>
-        public static void ChangeNodeStateRandom(Rastr rastr, List<int> nodes)
+        public void ChangeNodeStateRandom(List<int> nodes)
         {
-            ITable node = (ITable)rastr.Tables.Item("node");
-            ICol sta = (ICol)node.Cols.Item("sta");
             Random random = new Random();
             for (int i = 0; i < nodes.Count; i++)
             {
                 int randomNum = random.Next(0, 2);
-                int index = FindNodeIndex(rastr, nodes[i]);
-                sta.set_ZN(index, randomNum);
-                ConnectedBranchState(rastr, nodes[i], 2, randomNum);
+                int index = FindNodeIndex(nodes[i]);
+                StaNode.set_ZN(index, randomNum);
+                ConnectedBranchState(nodes[i], 2, randomNum);
             }
         }
 
@@ -77,17 +131,12 @@ namespace Model
         /// <param name="iq">номер  конца</param>
         /// <param name="np">номер параллельности, 0 по умолчанию</param>
         /// <returns></returns>
-        public static int FindBranchIndex(Rastr rastr, int ip, int iq, int np)
+        public int FindBranchIndex( int ip, int iq, int np)
         {
-            ITable vetv = (ITable)rastr.Tables.Item("vetv");
-            ICol startNode = (ICol)vetv.Cols.Item("ip");
-            ICol endNode = (ICol)vetv.Cols.Item("iq");
-            ICol parallel = (ICol)vetv.Cols.Item("np");
-
-            for (int index = 0; index < vetv.Count; index++)
+            for (int index = 0; index < _vetv.Count; index++)
             {
-                if ((Convert.ToInt32(startNode.get_ZN(index)) == ip) && (Convert.ToInt32(endNode.get_ZN(index)) == iq)
-                    && (Convert.ToInt32(parallel.get_ZN(index)) == np))
+                if ((Convert.ToInt32(StartNode.get_ZN(index)) == ip) && (Convert.ToInt32(EndNode.get_ZN(index)) == iq)
+                    && (Convert.ToInt32(Parallel.get_ZN(index)) == np))
                 {
                     return index;
                 }
@@ -104,20 +153,14 @@ namespace Model
         /// <param name="ny">Номер узла, к которому примыкают ветви.</param>
         /// <param name="type">Тип ветви (0 - ЛЭП, 1 - Тр-р, 2 - Выкл).</param>
         /// <param name="state">Состояние ветви (0 - включено, 1 - отключено).</param>
-        public static void ConnectedBranchState(Rastr rastr, int ny, int type, int state)
+        public void ConnectedBranchState(int ny, int type, int state)
         {
-            ITable vetv = (ITable)rastr.Tables.Item("vetv");
-            ICol startNode = (ICol)vetv.Cols.Item("ip");
-            ICol endNode = (ICol)vetv.Cols.Item("iq");
-            ICol tip = (ICol)vetv.Cols.Item("tip");
-            ICol sta = (ICol)vetv.Cols.Item("sta");
-
-            for (int i = 0; i < vetv.Count; i++)
+            for (int i = 0; i < _vetv.Count; i++)
             {
-                if (((Convert.ToDouble(startNode.ZN[i]) == ny) || (Convert.ToDouble(endNode.ZN[i]) == ny))
-                    && (Convert.ToDouble(tip.ZN[i]) == type))
+                if (((Convert.ToDouble(StaNode.ZN[i]) == ny) || (Convert.ToDouble(EndNode.ZN[i]) == ny))
+                    && (Convert.ToDouble(TipVetv.ZN[i]) == type))
                 {
-                    sta.set_ZN(i, state);
+                    StaVetv.set_ZN(i, state);
                 }
             }
         }
@@ -128,7 +171,7 @@ namespace Model
         /// <param name="rastr"></param>
         /// <param name="nodes">Узлы</param>
         /// <param name="tgValue">Список значений cos f</param>
-        public static List<double> ChangeTg(Rastr rastr, List<int> nodes)
+        public List<double> ChangeTg(List<int> nodes)
         {
             List<double> tgValues = new();
             Random randtg = new Random();
@@ -144,17 +187,14 @@ namespace Model
         /// </summary>
         /// <param name="rastr"></param>
         /// <param name="nodesWithSkrm">Заполняемый лист</param>
-        public static List<int> SkrmNodesToList(Rastr rastr)
+        public List<int> SkrmNodesToList()
         {
             List<int> nodesWithSkrm = new();
-            ITable node = (ITable)rastr.Tables.Item("node");
-            ICol number = (ICol)node.Cols.Item("ny");
-            ICol bsh = (ICol)node.Cols.Item("bsh");
-            for (int i = 0; i < node.Count; i++)
+            for (int i = 0; i < _node.Count; i++)
             {
-                if (Convert.ToDouble(bsh.ZN[i]) != 0)
+                if (Convert.ToDouble(BshNode.ZN[i]) != 0)
                 {
-                    nodesWithSkrm.Add((int)number.ZN[i]);
+                    nodesWithSkrm.Add((int)NumberNode.ZN[i]);
                 }
             }
             return nodesWithSkrm;
@@ -164,23 +204,15 @@ namespace Model
         /// Получение листа всех узлов с нагрузкой
         /// </summary>
         /// <param name="rastr"></param>
-        public static List<Node> AllLoadNodesToList(string pathToRegim)
+        public List<Node> AllLoadNodesToList()
         {
-            Rastr rastr = new();
-            rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
             List<Node> loadNodes = new();
-            ITable node = (ITable)rastr.Tables.Item("node");
-            ICol number = (ICol)node.Cols.Item("ny");
-            ICol name = (ICol)node.Cols.Item("name");
-            ICol pn = (ICol)node.Cols.Item("pn");
-            ICol na = (ICol)node.Cols.Item("na");
-            ICol nameArea = (ICol)node.Cols.Item("na_name");
-            for (int i = 0; i < node.Count; i++)
+            for (int i = 0; i < _node.Count; i++)
             {
-                if (Convert.ToDouble(pn.ZN[i]) != 0)
+                if (Convert.ToDouble(Pn.ZN[i]) != 0)
                 {
-                    loadNodes.Add(new Node() { Number= (int)number.ZN[i], Name = name.ZN[i].ToString(), 
-                        District= new District() {Number=(int)na.ZN[i], Name= nameArea.ZN[i].ToString() } });
+                    loadNodes.Add(new Node() { Number= (int)NumberNode.ZN[i], Name = NameNode.ZN[i].ToString(), 
+                        District= new District() {Number=(int)Na.ZN[i], Name= NameArea.ZN[i].ToString() } });
                 }
             }
             return loadNodes;
@@ -193,19 +225,15 @@ namespace Model
         /// <param name="nodes">Список узлов с нагрузкой</param>
         /// <param name="tgValues">Списко cos а для узлов нагрузки</param>
         /// <param name="percent">Количество процентов по обе стороны от номинального значения</param>
-        public static void ChangePn(Rastr rastr, List<int> nodes, List<double> tgValues, int percent)
+        public void ChangePn(List<int> nodes, List<double> tgValues, int percent)
         {
             Random randPn = new Random();
-            ITable node = (ITable)rastr.Tables.Item("node");
-            ICol pn = (ICol)node.Cols.Item("pn");
-            ICol qn = (ICol)node.Cols.Item("qn");
-            ICol na = (ICol)node.Cols.Item("na");
-            RastrRetCode kod = rastr.rgm("p");
+            _Rastr.rgm("p");
             for (int i = 0; i < nodes.Count; i++)
             {
-                int index = RastrManager.FindNodeIndex(rastr, nodes[i]);
-                pn.set_ZN(index, (double)randPn.Next(Convert.ToInt32(pn.ZN[index]) * 100-percent, Convert.ToInt32(pn.ZN[index]) * 100+percent) / 100f);
-                qn.set_ZN(index, (double)pn.ZN[index] * tgValues[i]);
+                int index = FindNodeIndex(nodes[i]);
+                Pn.set_ZN(index, (double)randPn.Next(Convert.ToInt32(Pn.ZN[index]) * 100-percent, Convert.ToInt32(Pn.ZN[index]) * 100+percent) / 100f);
+                Qn.set_ZN(index, (double)Pn.ZN[index] * tgValues[i]);
             }
         }
 
@@ -215,17 +243,14 @@ namespace Model
         /// <param name="rastr"></param>
         /// <param name="nodesRayon">Лист, в который добавляются номера узлов</param>
         /// <param name="numRayon">Номер района</param>
-        public static List<int> DistrictNodesToList(Rastr rastr, int numRayon)
+        public List<int> DistrictNodesToList(int numRayon)
         {
             List<int> nodesDistrict = new List<int>();
-            ITable node = (ITable)rastr.Tables.Item("node");
-            ICol number = (ICol)node.Cols.Item("ny");
-            ICol na = (ICol)node.Cols.Item("na");
-            for (int i = 0; i < node.Count; i++)
+            for (int i = 0; i < _node.Count; i++)
             {
-                if (Convert.ToDouble(na.ZN[i]) == numRayon)
+                if (Convert.ToDouble(Na.ZN[i]) == numRayon)
                 {
-                    nodesDistrict.Add((int)number.ZN[i]);
+                    nodesDistrict.Add((int)NumberNode.ZN[i]);
                 }
             }
             return nodesDistrict;
@@ -236,17 +261,12 @@ namespace Model
         /// </summary>
         /// <param name="rastr"></param>
         /// <returns></returns>
-        public static List<District> DistrictList(string pathToRegim)
+        public List<District> DistrictList()
         {
-            Rastr rastr = new Rastr();
-            rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
             List<District> districts = new();
-            ITable area = (ITable)rastr.Tables.Item("area");
-            ICol na = (ICol)area.Cols.Item("na");
-            ICol name = (ICol)area.Cols.Item("name");
-            for (int i = 0; i < area.Count; i++)
+            for (int i = 0; i < _area.Count; i++)
             {
-                districts.Add(new District() { Name = name.ZN[i].ToString(), Number = (int)na.ZN[i] });
+                districts.Add(new District() { Name =NameAreaArea .ZN[i].ToString(), Number = (int)NaArea.ZN[i] });
             }
                 return districts;
         }
@@ -256,19 +276,12 @@ namespace Model
         /// </summary>
         /// <param name="rastr"></param>
         /// <returns></returns>
-        public static List<Sech> SechList(string pathToRegim)
+        public List<Sech> SechList()
         {
-            Rastr rastr = new();
-            string PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
-            rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
-            rastr.Load(RG_KOD.RG_REPL, PathToSech, PathToSech);
             List<Sech> seches = new();
-            ITable sechen = (ITable)rastr.Tables.Item("sechen");
-            ICol ns = (ICol)sechen.Cols.Item("ns");
-            ICol name = (ICol)sechen.Cols.Item("name");
-            for (int i = 0; i < sechen.Count; i++)
+            for (int i = 0; i < _sechen.Count; i++)
             {
-                seches.Add(new Sech() { NameSech = name.ZN[i].ToString(), Num = (int)ns.ZN[i] });
+                seches.Add(new Sech() { NameSech = this.NameSech.ZN[i].ToString(), Num = (int)Nsech.ZN[i] });
             }
             return seches;
         }
@@ -280,6 +293,83 @@ namespace Model
             for (int i = 0; i < vetv.Count; i++)
             { 
 
+            }
+        }
+
+        /// <summary>
+        /// Утяжеление по заданной траектории
+        /// </summary>
+        /// <param name="rastr">объект растра</param>
+        /// <param name="ut2Path">Путь к файлу утяжеления в формате ut2</param>
+        public void Worsening(string ut2Path) // Осуществляет процедуру утяжеления.
+        {
+            if (_Rastr.ut_Param[ParamUt.UT_FORM_P] == 0)
+            {
+                RastrRetCode kod = _Rastr.step_ut("i");
+                if (kod == 0)
+                {
+                    RastrRetCode kd;
+                    do
+                    {
+                        kd = _Rastr.step_ut("z");
+                    }
+                    while (kd == 0);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Случайное утяжеление, утяжеляет нагрузки на случайный процент до расхождения режима
+        /// </summary>
+        /// <param name="rastr"></param>
+        /// <param name="nodes">Узлы утяжеления</param>
+        /// <param name="tgvalues">Список cos f, генерируется в другом методе случайным образом</param>
+        /// <param name="unode">Список напряжений </param>
+        /// <param name="percent">Процент приращения</param>
+        public void WorseningRandom( List<int> nodes, List<double> tgvalues, List<int> nodesWithKP, int percent)
+        {
+            Random randPercent = new();
+            RastrRetCode kod = _Rastr.rgm("p");
+            float randomPercent;
+            int index;
+
+            if (kod == 0)
+            {
+                RastrRetCode kd;
+                do // Основное утяжеление
+                {
+                    for (int i = 0; i < nodes.Count; i++)
+                    {
+                        index = FindNodeIndex(nodes[i]);
+                        randomPercent = 1 + (float)randPercent.Next(0, percent) / 100;
+                        Pn.set_ZN(index, (double)Convert.ToDouble(Pn.Z[index]) * randomPercent);
+                        Qn.set_ZN(index, (double)Convert.ToDouble(Pn.ZN[index]) * tgvalues[i]);
+                    }
+                    kd = _Rastr.rgm("p");
+                    /*for (int i = 0; i < nodesWithKP.Count; i++) // Изменение СКРМ
+                    {
+                        index = RastrManager.FindNodeIndex(rastr, nodesWithKP[i]);
+                        if (Convert.ToDouble(Ur.Z[index]) < 225)
+                        {
+                            Console.WriteLine("Включение БСК");
+                            index = RastrManager.FindNodeIndex(rastr, 60408136);
+                            sta.set_ZN(index, 0);
+                            RastrManager.ConnectedBranchState(rastr, 60408136, 2, 0);
+                        }
+                    }
+                    kd = rastr.rgm("p");*/
+                }
+                while (kd == 0);
+                while (kd != 0) // Откат на последний сходяийся режим
+                {
+                    for (int i = 0; i < nodes.Count; i++)
+                    {
+                        index = FindNodeIndex(nodes[i]);
+                        Pn.set_ZN(index, (double)Pn.Z[index] / 1.02);
+                        Qn.set_ZN(index, (double)Pn.ZN[index] * tgvalues[i]);
+                    }
+                    kd = _Rastr.rgm("p");
+                }
             }
         }
     }

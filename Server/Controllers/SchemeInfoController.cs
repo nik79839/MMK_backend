@@ -12,24 +12,25 @@ namespace Server.Controllers
         [HttpGet]
         public List<District> GetDistricts()
         {
-            string pathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
-            return RastrManager.DistrictList(pathToRegim);
+            RastrManager rastrManager = new(@"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2");
+            return rastrManager.DistrictList();
         }
 
         [Route("SchemeInfo/GetSech")]
         [HttpGet]
         public List<Sech> GetSech()
         {
-            string pathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
-            return RastrManager.SechList(pathToRegim);
+            RastrManager rastrManager = new(@"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2",
+                @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch");
+            return rastrManager.SechList();
         }
 
         [Route("SchemeInfo/GetLoadNodes")]
         [HttpGet]
         public List<Node> GetLoadNodes()
         {
-            string pathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
-            return RastrManager.AllLoadNodesToList(pathToRegim);
+            RastrManager rastrManager = new(@"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2");
+            return rastrManager.AllLoadNodesToList();
         }
     }
 }
