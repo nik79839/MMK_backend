@@ -9,20 +9,8 @@ using System.Threading.Tasks;
 
 namespace Model.Result
 {
-    public class CurrentResult
+    public class CurrentResult : CalculationResultBase
     {
-        /// <summary>
-        /// Уникальный идентификатор расчета
-        /// </summary>
-        [Key, Column(Order = 0)]
-        public string CalculationId { get; set; }
-
-        /// <summary>
-        /// Номер реализации
-        /// </summary>
-        [Key, Column(Order = 1)]
-        public int ImplementationId { get; set; }
-
         /// <summary>
         /// Номер реализации
         /// </summary>
@@ -39,15 +27,9 @@ namespace Model.Result
         /// </summary>
         public double CurrentValue { get; set; }
 
-        /// <summary>
-        /// Ссылка на расчет
-        /// </summary>
-        public Calculations? Calculations { get; set; }
-
         public CurrentResult(string calculationId, int implementationId, int startNode, int endNode, double currentValue)
+            :base(calculationId, implementationId)
         {
-            CalculationId = calculationId;
-            ImplementationId = implementationId;
             StartNode = startNode;
             EndNode = endNode;
             CurrentValue = currentValue;

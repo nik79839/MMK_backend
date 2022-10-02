@@ -55,7 +55,7 @@ namespace Model
             Ur = (ICol)_node.Cols.Item("vras");
             StartNode = (ICol)_vetv.Cols.Item("ip");
             EndNode = (ICol)_vetv.Cols.Item("iq");
-            Parallel = (ICol)_vetv.Cols.Item("ip");
+            Parallel = (ICol)_vetv.Cols.Item("np");
             NameVetv = (ICol)_vetv.Cols.Item("name");
             IMax = (ICol)_vetv.Cols.Item("i_max");
             TipVetv = (ICol)_vetv.Cols.Item("tip");

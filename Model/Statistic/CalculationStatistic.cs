@@ -29,10 +29,10 @@ namespace Model.Statistic
         /// <summary>
         /// Обработка результатов расчета
         /// </summary>
-        /// <param name="calculationResults"></param>
-        public void Processing(List<CalculationResult> calculationResults)
+        /// <param name="powerFlowResults"></param>
+        public void Processing(List<PowerFlowResult> powerFlowResults)
         {
-            List<double> values = calculationResults.Select(x => x.PowerFlowLimit).ToList();
+            List<double> values = powerFlowResults.Select(x => x.PowerFlowLimit).ToList();
             PowerFlowResultProcessed = GetStatistic(values);
         }
 

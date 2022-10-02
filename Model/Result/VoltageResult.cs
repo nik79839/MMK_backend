@@ -9,30 +9,17 @@ using System.Threading.Tasks;
 
 namespace Model.Result
 {
-    public class VoltageResult
+
+    public class VoltageResult : CalculationResultBase
     {
-        /// <summary>
-        /// Уникальный идентификатор расчета
-        /// </summary>
-        [Key, Column(Order = 0)]
-        public string CalculationId { get; set; }
-
-        /// <summary>
-        /// Номер реализации
-        /// </summary>
-        [Key, Column(Order = 1)]
-        public int ImplementationId { get; set; }
-
         /// <summary>
         /// Номер узла
         /// </summary>
-        [Key, Column(Order = 2)]
         public int NodeNumber { get; set; }
 
         /// <summary>
         /// Номер реализации
         /// </summary>
-        [NotMapped]
         public string? NodeName { get; set; }
 
         /// <summary>
@@ -40,25 +27,11 @@ namespace Model.Result
         /// </summary>
         public double VoltageValue { get; set; }
 
-        /// <summary>
-        /// Ссылка на расчет
-        /// </summary>
-        public Calculations? Calculations { get; set; }
-
-        public VoltageResult(string calculationId, int implementationId, int nodeNumber, string? nodeName, double voltageValue)
+        public VoltageResult(string calculationId, int implementationId, int nodeNumber, string nodeName, double voltageValue)
+            : base(calculationId,implementationId)
         {
-            CalculationId = calculationId;
-            ImplementationId = implementationId;
             NodeNumber = nodeNumber;
             NodeName = nodeName;
-            VoltageValue = voltageValue;
-        }
-
-        public VoltageResult(string calculationId, int implementationId, int nodeNumber, double voltageValue)
-        {
-            CalculationId = calculationId;
-            ImplementationId = implementationId;
-            NodeNumber = nodeNumber;
             VoltageValue = voltageValue;
         }
     }

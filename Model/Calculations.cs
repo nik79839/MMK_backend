@@ -46,7 +46,7 @@ namespace Model
         /// <summary>
         /// Ссылка на результаты расчетов
         /// </summary>
-        public List<CalculationResult> CalculationResults { get; set; } = new();
+        public List<PowerFlowResult> PowerFlowResults { get; set; } = new();
 
         /// <summary>
         /// Ссылка на результаты расчетов напряжений
@@ -121,7 +121,7 @@ namespace Model
                 Progress = (i + 1) * 100 / exp;
                 CalculationProgress.Invoke(this, new CalculationProgressEventArgs(CalculationId,(int)Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
                 Console.WriteLine(powerFlowValue + " " + i + " Оставшееся время - " + Math.Round(watch.Elapsed.TotalMinutes * (exp - i + 1),2) + " минут");
-                CalculationResults.Add(new CalculationResult(CalculationId, i + 1, powerFlowValue, VoltageResults));
+                PowerFlowResults.Add(new PowerFlowResult(CalculationId, i + 1, powerFlowValue));
             }
         }
     }

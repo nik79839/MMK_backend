@@ -11,7 +11,7 @@ namespace Model.Result
     /// <summary>
     /// Результаты расчета для хранения в БД
     /// </summary>
-    public class CalculationResult
+    public abstract class CalculationResultBase
     {
         /// <summary>
         /// Уникальный идентификатор расчета
@@ -26,33 +26,14 @@ namespace Model.Result
         public int ImplementationId { get; set; }
 
         /// <summary>
-        /// Предельный переток
-        /// </summary>
-        public double PowerFlowLimit { get; set; }
-
-        /// <summary>
         /// Ссылка на расчет
         /// </summary>
         public Calculations? Calculations { get; set; }
 
-        /// <summary>
-        /// Напряжение
-        /// </summary>
-        [NotMapped]
-        public List<VoltageResult>? VoltageResult { get; set; }
-
-        public CalculationResult(string calculationId, int implementationId, double powerFlowLimit, List<VoltageResult>? voltageResult)
+        public CalculationResultBase(string calculationId, int implementationId)
         {
             CalculationId = calculationId;
             ImplementationId = implementationId;
-            PowerFlowLimit = powerFlowLimit;
-            VoltageResult = voltageResult;
-        }
-        public CalculationResult(string calculationId, int implementationId, double powerFlowLimit)
-        {
-            CalculationId = calculationId;
-            ImplementationId = implementationId;
-            PowerFlowLimit = powerFlowLimit;
         }
     }
 }

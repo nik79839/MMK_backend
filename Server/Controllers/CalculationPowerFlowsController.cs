@@ -39,7 +39,7 @@ namespace Server.Controllers
             DateTime endTime = new(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second); ;
             Console.WriteLine("Расчет завершен. Запись в БД.");
 
-            Db.CalculationResults.AddRange(calculations.CalculationResults);
+            Db.PowerFlowResults.AddRange(calculations.PowerFlowResults);
             Db.VoltageResults.AddRange(calculations.VoltageResults);
             calculations.CalculationEnd = endTime;
             Db.Calculations.Update(calculations);
@@ -58,10 +58,10 @@ namespace Server.Controllers
         [HttpGet]
         public CalculationStatistic GetCalculationsById(string? id)
         {
-            List<CalculationResult> calculationResults = (from calculations in Db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
+            List<PowerFlowResult> powerFlowResults = (from calculations in Db.PowerFlowResults where calculations.CalculationId == id select calculations).ToList();
             List<VoltageResult> voltageResults = (from calculations in Db.VoltageResults where calculations.CalculationId == id select calculations).ToList();
             CalculationStatistic calculationStatistic = new();
-            calculationStatistic.Processing(calculationResults);
+            calculationStatistic.Processing(powerFlowResults);
             calculationStatistic.Processing(voltageResults);
             return calculationStatistic;
         }
@@ -71,10 +71,10 @@ namespace Server.Controllers
         public List<Calculations> DeleteCalculationsById(string? id)
         {
             Calculations calculations1 = (from calculations in Db.Calculations where calculations.CalculationId == id select calculations).FirstOrDefault();
-            List<CalculationResult> calculationResults = (from calculations in Db.CalculationResults where calculations.CalculationId == id select calculations).ToList();
+            List<PowerFlowResult> calculationResults = (from calculations in Db.PowerFlowResults where calculations.CalculationId == id select calculations).ToList();
             List<VoltageResult> voltageResults = (from calculations in Db.VoltageResults where calculations.CalculationId == id select calculations).ToList();
             Db.Calculations.Remove(calculations1);
-            Db.CalculationResults.RemoveRange(calculationResults);
+            Db.PowerFlowResults.RemoveRange(calculationResults);
             Db.VoltageResults.RemoveRange(voltageResults);
             Db.SaveChanges();
             return Db.Calculations.ToList();
