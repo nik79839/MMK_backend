@@ -1,7 +1,9 @@
-using DBRepository;
+using Data;
+using Data.Repositories.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Model;
+using Model.Events;
 using Model.Result;
 using Model.Statistic;
 using Server.Hub;
@@ -12,78 +14,75 @@ namespace Server.Controllers
     //[Route("[controller]")]
     public class CalculationPowerFlowsController : ControllerBase
     {
-        public RepositoryContext Db { get; set; }
-        public IHubContext<ProgressHub> HubContext { get; set; }
-        public CalculationPowerFlowsController(RepositoryContext context, IHubContext<ProgressHub> hubContext)
+        private IHubContext<ProgressHub> _hubContext;
+        private ICalculationResultRepository _repository;
+        public CalculationPowerFlowsController(IHubContext<ProgressHub> hubContext, ICalculationResultRepository repository)
         {
-            Db = context;
-            this.HubContext = hubContext;
+            _hubContext = hubContext;
+            _repository = repository;
         }
 
         [Route("CalculationPowerFlows/PostCalculations")]
         [HttpPost]
-        public void PostCalculations([FromBody] CalculationSettings calculationSettings)
+        public async Task<IActionResult> PostCalculations([FromBody] CalculationSettings calculationSettings)
         {
             CancellationToken cancellationToken = HttpContext.RequestAborted;
             string guid = Guid.NewGuid().ToString();
             DateTime startTime = DateTime.UtcNow;
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
-            calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";;
+            calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch"; ;
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
-            
+
             Calculations calculations = new() { CalculationId = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null };
             calculations.CalculationProgress += EventHandler;
-            Db.Calculations.Add(calculations);
-            Db.SaveChanges();
-            calculations.CalculatePowerFlows( calculationSettings, cancellationToken);
-            DateTime endTime =DateTime.UtcNow;
+            await _repository.AddCalculation(calculations);
+            calculations.CalculatePowerFlows(calculationSettings, cancellationToken);
+            DateTime endTime = DateTime.UtcNow;
             Console.WriteLine("Расчет завершен. Запись в БД.");
 
-            Db.PowerFlowResults.AddRange(calculations.PowerFlowResults);
-            Db.VoltageResults.AddRange(calculations.VoltageResults);
+            await _repository.AddPowerFlowResults(calculations.PowerFlowResults);
+            await _repository.AddVoltageResults(calculations.VoltageResults);
             calculations.CalculationEnd = endTime;
-            Db.Calculations.Update(calculations);
-            Db.SaveChanges();
+            await _repository.UpdateCalculation(calculations);
             Console.WriteLine("Выполнена запись в БД");
+            return StatusCode(200, $"Расчет завершен.");
         }
 
         [Route("CalculationPowerFlows/GetCalculations")]
         [HttpGet]
-        public List<Calculations> GetCalculations()
+        public async Task<IActionResult> GetCalculations()
         {
-            return Db.Calculations.ToList().OrderByDescending(c => c.CalculationEnd).ToList();
+            return StatusCode(200, _repository.GetCalculations().Result);
         }
 
         [Route("CalculationPowerFlows/GetCalculations/{id}")]
         [HttpGet]
-        public CalculationStatistic GetCalculationsById(string? id)
+        public async Task<IActionResult> GetCalculationsById(string? id)
         {
-            List<PowerFlowResult> powerFlowResults = (from calculations in Db.PowerFlowResults where calculations.CalculationId == id select calculations).ToList();
-            List<VoltageResult> voltageResults = (from calculations in Db.VoltageResults where calculations.CalculationId == id select calculations).ToList();
+            List<PowerFlowResult> powerFlowResults = _repository.GetPowerFlowResultById(id).Result;
+            List<VoltageResult> voltageResults = _repository.GetVoltageResultById(id).Result;
             CalculationStatistic calculationStatistic = new();
+            if (powerFlowResults.Count == 0)
+            {
+                return StatusCode(400, $"Ошибка. Расчета с ID {id} не существует.");
+            }
             calculationStatistic.Processing(powerFlowResults);
             calculationStatistic.Processing(voltageResults);
-            return calculationStatistic;
+            return StatusCode(200, calculationStatistic);
         }
 
         [Route("CalculationPowerFlows/DeleteCalculations/{id}")]
         [HttpDelete]
-        public List<Calculations> DeleteCalculationsById(string? id)
+        public async Task<IActionResult> DeleteCalculationsById(string? id)
         {
-            Calculations calculations1 = (from calculations in Db.Calculations where calculations.CalculationId == id select calculations).FirstOrDefault();
-            List<PowerFlowResult> calculationResults = (from calculations in Db.PowerFlowResults where calculations.CalculationId == id select calculations).ToList();
-            List<VoltageResult> voltageResults = (from calculations in Db.VoltageResults where calculations.CalculationId == id select calculations).ToList();
-            Db.Calculations.Remove(calculations1);
-            Db.PowerFlowResults.RemoveRange(calculationResults);
-            Db.VoltageResults.RemoveRange(voltageResults);
-            Db.SaveChanges();
-            return Db.Calculations.ToList();
+            await _repository.DeleteCalculationsById(id);
+            return StatusCode(200, _repository.GetCalculations().Result);
         }
 
         public void EventHandler(object sender, CalculationProgressEventArgs e)
         {
             Console.WriteLine(e.Percent+"%, осталось "+e.Time+" мин");
-            HubContext.Clients.All.SendAsync("SendProgress", e.Percent,e.CalculationId);
+            _hubContext.Clients.All.SendAsync("SendProgress", e.Percent,e.CalculationId);
         }
 
     }

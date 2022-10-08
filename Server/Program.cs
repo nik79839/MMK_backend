@@ -1,4 +1,6 @@
-using DBRepository;
+using Data;
+using Data.Repositories;
+using Data.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Server.Hub;
@@ -8,12 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 // Add services to the container.
 
+
+
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<RepositoryContext>(options => options.UseNpgsql(connection));
-//builder.Services.AddControllers();
+builder.Services.AddDbContext<CalculationResultContext>(options => options.UseNpgsql(connection), ServiceLifetime.Singleton);
+
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
+builder.Services.AddSingleton<ICalculationResultRepository, CalculationResultRepository>();
 
 var app = builder.Build();
 app.UseCors(builder => builder.AllowAnyMethod().WithOrigins("http://localhost:3000").AllowAnyHeader().AllowCredentials());

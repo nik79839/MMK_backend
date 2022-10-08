@@ -1,4 +1,5 @@
 ﻿using ASTRALib;
+using Model.Events;
 using Model.RastrModel;
 using Model.Result;
 using System;

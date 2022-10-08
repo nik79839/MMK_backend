@@ -7,16 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DBRepository
+namespace Data
 {
-    public class RepositoryContext : DbContext
+    public class CalculationResultContext : DbContext
     {
         public DbSet<PowerFlowResult> PowerFlowResults { get; set; } = null!;
         public DbSet<Calculations> Calculations { get; set; } = null!;
         public DbSet<VoltageResult> VoltageResults { get; set; } = null!;
-        public RepositoryContext() => Database.EnsureCreated();
+        public CalculationResultContext() => Database.EnsureCreated();
 
-        public RepositoryContext(DbContextOptions<RepositoryContext> options)
+        public CalculationResultContext(DbContextOptions<CalculationResultContext> options)
             : base(options)
         {
             //Database.EnsureDeleted();
