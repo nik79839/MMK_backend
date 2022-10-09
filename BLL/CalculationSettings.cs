@@ -1,11 +1,11 @@
-﻿using Model.RastrModel;
+﻿using BLL.RastrModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace BLL
 {
     /// <summary>
     /// Параметры расчета, приходящие от клиента

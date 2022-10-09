@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.Statistic
+namespace BLL.Statistic
 {
     public class StatisticBase
     {

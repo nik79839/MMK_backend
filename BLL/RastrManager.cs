@@ -1,12 +1,12 @@
 ﻿using ASTRALib;
-using Model.RastrModel;
+using BLL.RastrModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace BLL
 {
     public class RastrManager
     {
@@ -153,7 +153,7 @@ namespace Model
         /// <param name="ny">Номер узла, к которому примыкают ветви.</param>
         /// <param name="type">Тип ветви (0 - ЛЭП, 1 - Тр-р, 2 - Выкл).</param>
         /// <param name="state">Состояние ветви (0 - включено, 1 - отключено).</param>
-        public void ConnectedBranchState(int ny, int type, int state)
+        private void ConnectedBranchState(int ny, int type, int state)
         {
             for (int i = 0; i < _vetv.Count; i++)
             {

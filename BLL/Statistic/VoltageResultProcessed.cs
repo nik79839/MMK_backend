@@ -5,18 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Model.RastrModel;
 
-namespace Model.Statistic
+namespace BLL.Statistic
 {
     /// <summary>
     /// Результаты расчета обработанные напряжение
     /// </summary>
-    public class CurrentResultProcessed: StatisticBase
+    public class VoltageResultProcessed: StatisticBase
     {
         /// <summary>
         /// Номер узла
         /// </summary>
-        public Brunch Brunch { get; set; }
+        public int NodeNumber { get; set; } = 0;
     }
 }

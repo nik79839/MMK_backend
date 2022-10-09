@@ -1,6 +1,6 @@
 ﻿using ASTRALib;
-using Model;
-using Model.Repairs;
+using BLL;
+using BLL.Repairs;
 
 
 List<Repair> repairs = FileManager.GetRepairsFromExcel();

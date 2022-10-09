@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Model.Result
+namespace BLL.Result
 {
     /// <summary>
     /// Результаты расчета для хранения в БД

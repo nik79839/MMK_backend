@@ -2,10 +2,10 @@ using Data;
 using Data.Repositories.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Model;
-using Model.Events;
-using Model.Result;
-using Model.Statistic;
+using BLL;
+using BLL.Events;
+using BLL.Result;
+using BLL.Statistic;
 using Server.Hub;
 
 namespace Server.Controllers

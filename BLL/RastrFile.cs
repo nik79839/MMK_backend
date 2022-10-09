@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model.RastrModel
+namespace BLL
 {
-    public class District
+    public class RastrFile
     {
         public string Name { get; set; }
-        public int Number { get; set; }
+        public DateTime LastModified { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Model.Repairs;
+﻿using BLL.Repairs;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace BLL
 {
     public class FileManager
     {

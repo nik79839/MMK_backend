@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Model;
-using Model.RastrModel;
+using BLL;
+using BLL.RastrModel;
 
 namespace Server.Controllers
 {

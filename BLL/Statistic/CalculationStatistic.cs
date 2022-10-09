@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Model.Result;
+using BLL.Result;
 
-namespace Model.Statistic
+namespace BLL.Statistic
 {
     /// <summary>
     /// Результаты расчета обработанные

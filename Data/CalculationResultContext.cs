@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Model;
-using Model.Result;
+using BLL;
+using BLL.Result;
 using System;
 using System.Collections.Generic;
 using System.Linq;

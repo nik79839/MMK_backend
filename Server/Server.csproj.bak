@@ -15,8 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
-    <ProjectReference Include="..\Model\Model.csproj" />
-    <ProjectReference Include="..\DBRepository\Data.csproj" />
+    <ProjectReference Include="..\Model\BLL.csproj" />
   </ItemGroup>
 
 </Project>

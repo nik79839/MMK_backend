@@ -1,7 +1,7 @@
 ﻿using ASTRALib;
-using Model.Events;
-using Model.RastrModel;
-using Model.Result;
+using BLL.Events;
+using BLL.RastrModel;
+using BLL.Result;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Model
+namespace BLL
 {
     public class Calculations
     {
