@@ -1,5 +1,6 @@
-﻿using BLL;
-using BLL.Result;
+﻿using Data;
+using Data.Entities;
+using Data.Entities.Result;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,13 +11,13 @@ namespace Data.Repositories.Abstract
 {
     public interface ICalculationResultRepository
     {
-        Task<List<Calculations>> GetCalculations();
-        Task<List<PowerFlowResult>> GetPowerFlowResultById(string? id);
-        Task<List<VoltageResult>> GetVoltageResultById(string? id);
-        Task AddCalculation(Calculations calculations);
-        Task UpdateCalculation(Calculations calculations);
-        Task AddPowerFlowResults(List<PowerFlowResult> powerFlowResults);
-        Task AddVoltageResults(List<VoltageResult> voltageResults);
+        Task<List<CalculationEntity>> GetCalculations();
+        Task<List<PowerFlowResultEntity>> GetPowerFlowResultById(string? id);
+        Task<List<VoltageResultEntity>> GetVoltageResultById(string? id);
+        Task AddCalculation(CalculationEntity calculations);
+        Task UpdateCalculation(CalculationEntity calculations);
+        Task AddPowerFlowResults(List<PowerFlowResultEntity> powerFlowResults);
+        Task AddVoltageResults(List<VoltageResultEntity> voltageResults);
         Task DeleteCalculationsById(string? id);
     }
 }

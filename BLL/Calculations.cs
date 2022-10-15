@@ -1,7 +1,7 @@
 ﻿using ASTRALib;
-using BLL.Events;
-using BLL.RastrModel;
-using BLL.Result;
+using Data.Events;
+using Data.RastrModel;
+using Data.Result;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLL
+namespace Data
 {
     public class Calculations
     {
@@ -23,13 +23,11 @@ namespace BLL
         /// <summary>
         /// Уникальный идентификатор расчета
         /// </summary>
-        [Key, Column(Order = 0)]
-        public string CalculationId { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Название расчета
         /// </summary>
-        [Key, Column(Order = 1)]
         public string Name { get; set; }
 
         /// <summary>
@@ -42,7 +40,10 @@ namespace BLL
         /// </summary>
         public DateTime? CalculationEnd { get; set; }
 
-        public string? NameOfSech { get; set; }
+        public string? SechName { get; set; }
+        public string? PathToRegim { get; set; }
+        public int? PercentLoad { get; set; }
+        public int? PercentForWorsening { get; set; }
 
         /// <summary>
         /// Ссылка на результаты расчетов
@@ -57,13 +58,11 @@ namespace BLL
         /// <summary>
         /// Ссылка на результаты расчетов токов
         /// </summary>
-        [NotMapped]
         public List<CurrentResult> CurrentResults { get; set; } = new();
 
         /// <summary>
         /// Процент прогресса расчета
         /// </summary>
-        [NotMapped]
         public int? Progress { get; set; } = null;
 
         /// <summary>
@@ -86,7 +85,7 @@ namespace BLL
             //}
             List<int> numberLoadNodes = calculationSettings.LoadNodes.Select(x => x.Number).ToList(); //Массив номеров узлов
             int exp = calculationSettings.CountOfImplementations; // Число реализаций
-            NameOfSech = rastrManager.SechList().Where(sech => sech.Num == calculationSettings.SechNumber).FirstOrDefault().NameSech;
+            SechName = rastrManager.SechList().Where(sech => sech.Num == calculationSettings.SechNumber).FirstOrDefault().NameSech;
             for (int i = 0; i < exp; i++)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -110,19 +109,19 @@ namespace BLL
                 for (int j = 0; j < nodesWithKP.Count; j++) // Запись напряжений
                 {
                     int index = rastrManager.FindNodeIndex(nodesWithKP[j]);
-                    VoltageResults.Add(new VoltageResult(CalculationId, i + 1, nodesWithKP[j], rastrManager.NameNode.Z[index].ToString(), Convert.ToDouble(rastrManager.Ur.Z[index])));
+                    VoltageResults.Add(new VoltageResult(Id, i + 1, nodesWithKP[j], rastrManager.NameNode.Z[index].ToString(), Convert.ToDouble(rastrManager.Ur.Z[index])));
                 }
                 for (int j = 0; j < brunchesWithAOPO.Count; j++) // Запись токов
                 {
                     int index = rastrManager.FindBranchIndex(brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, brunchesWithAOPO[j].ParallelNumber);
-                    CurrentResults.Add(new CurrentResult(CalculationId, i + 1, brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, Convert.ToDouble(rastrManager.IMax.Z[index])));
+                    CurrentResults.Add(new CurrentResult(Id, i + 1, brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, Convert.ToDouble(rastrManager.IMax.Z[index])));
                 }
 
                 watch.Stop();
                 Progress = (i + 1) * 100 / exp;
-                CalculationProgress.Invoke(this, new CalculationProgressEventArgs(CalculationId,(int)Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
+                CalculationProgress.Invoke(this, new CalculationProgressEventArgs(Id,(int)Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
                 Console.WriteLine(powerFlowValue + " " + i + " Оставшееся время - " + Math.Round(watch.Elapsed.TotalMinutes * (exp - i + 1),2) + " минут");
-                PowerFlowResults.Add(new PowerFlowResult(CalculationId, i + 1, powerFlowValue));
+                PowerFlowResults.Add(new PowerFlowResult(Id, i + 1, powerFlowValue));
             }
         }
     }

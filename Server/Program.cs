@@ -1,9 +1,13 @@
+using BLL.Interfaces;
+using BLL.Services;
 using Data;
 using Data.Repositories;
 using Data.Repositories.Abstract;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Server;
 using Server.Hub;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,13 +17,16 @@ builder.Services.AddControllersWithViews();
 
 
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<CalculationResultContext>(options => options.UseNpgsql(connection), ServiceLifetime.Singleton);
+builder.Services.AddDbContext<CalculationResultContext>(options => { options.UseNpgsql(connection);}, ServiceLifetime.Singleton);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
-builder.Services.AddSingleton<ICalculationResultRepository, CalculationResultRepository>();
+builder.Services.AddTransient<ICalculationResultRepository, CalculationResultRepository>();
+var assembly = Assembly.GetAssembly(typeof(MappingProfile));
+builder.Services.AddAutoMapper(assembly);
+builder.Services.AddTransient<ICalculationService, CalculationService>();
 
 var app = builder.Build();
 app.UseCors(builder => builder.AllowAnyMethod().WithOrigins("http://localhost:3000").AllowAnyHeader().AllowCredentials());

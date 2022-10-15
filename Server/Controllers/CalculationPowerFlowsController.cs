@@ -2,11 +2,13 @@ using Data;
 using Data.Repositories.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using BLL;
-using BLL.Events;
-using BLL.Result;
-using BLL.Statistic;
+using Data;
+using Data.Events;
+using Data.Result;
+using Data.Statistic;
 using Server.Hub;
+using AutoMapper;
+using BLL.Interfaces;
 
 namespace Server.Controllers
 {
@@ -15,11 +17,13 @@ namespace Server.Controllers
     public class CalculationPowerFlowsController : ControllerBase
     {
         private IHubContext<ProgressHub> _hubContext;
-        private ICalculationResultRepository _repository;
-        public CalculationPowerFlowsController(IHubContext<ProgressHub> hubContext, ICalculationResultRepository repository)
+        private readonly ICalculationService _calculationService;
+        private IMapper _mapper;
+        public CalculationPowerFlowsController(IHubContext<ProgressHub> hubContext, ICalculationService calculationService, IMapper mapper)
         {
             _hubContext = hubContext;
-            _repository = repository;
+            _mapper = mapper;
+            _calculationService = calculationService;
         }
 
         [Route("CalculationPowerFlows/PostCalculations")]
@@ -33,18 +37,11 @@ namespace Server.Controllers
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch"; ;
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
 
-            Calculations calculations = new() { CalculationId = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null };
-            calculations.CalculationProgress += EventHandler;
-            await _repository.AddCalculation(calculations);
-            calculations.CalculatePowerFlows(calculationSettings, cancellationToken);
-            DateTime endTime = DateTime.UtcNow;
-            Console.WriteLine("Расчет завершен. Запись в БД.");
+            Calculations calculations = new() { Id = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null };
+            //calculations.CalculationProgress += EventHandler;
+            await _calculationService.StartCalculation(calculations, calculationSettings, cancellationToken);
 
-            await _repository.AddPowerFlowResults(calculations.PowerFlowResults);
-            await _repository.AddVoltageResults(calculations.VoltageResults);
-            calculations.CalculationEnd = endTime;
-            await _repository.UpdateCalculation(calculations);
-            Console.WriteLine("Выполнена запись в БД");
+            Console.WriteLine("Расчет завершен");
             return StatusCode(200, $"Расчет завершен.");
         }
 
@@ -52,31 +49,22 @@ namespace Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCalculations()
         {
-            return StatusCode(200, _repository.GetCalculations().Result);
+            return StatusCode(200, _calculationService.GetCalculations());
         }
 
         [Route("CalculationPowerFlows/GetCalculations/{id}")]
         [HttpGet]
         public async Task<IActionResult> GetCalculationsById(string? id)
         {
-            List<PowerFlowResult> powerFlowResults = _repository.GetPowerFlowResultById(id).Result;
-            List<VoltageResult> voltageResults = _repository.GetVoltageResultById(id).Result;
-            CalculationStatistic calculationStatistic = new();
-            if (powerFlowResults.Count == 0)
-            {
-                return StatusCode(400, $"Ошибка. Расчета с ID {id} не существует.");
-            }
-            calculationStatistic.Processing(powerFlowResults);
-            calculationStatistic.Processing(voltageResults);
-            return StatusCode(200, calculationStatistic);
+            return StatusCode(200, _calculationService.GetCalculationsById(id));
         }
 
         [Route("CalculationPowerFlows/DeleteCalculations/{id}")]
         [HttpDelete]
         public async Task<IActionResult> DeleteCalculationsById(string? id)
         {
-            await _repository.DeleteCalculationsById(id);
-            return StatusCode(200, _repository.GetCalculations().Result);
+            await _calculationService.DeleteCalculationById(id);
+            return StatusCode(200);
         }
 
         public void EventHandler(object sender, CalculationProgressEventArgs e)

@@ -1,4 +1,4 @@
-﻿using BLL.Repairs;
+﻿using Data.Repairs;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BLL
+namespace BLL.Services
 {
-    public class FileManager
+    public class FileService
     {
         public static void ToExcel(List<double> powerFlow, int list, Dictionary<string, List<double>> UValueDict) // Запись в Excel мощностей и напряжений
         {
             string path = @"C:\Users\otrok\Desktop\Дипломмаг\СБЭКv3.xlsx";
-            using (var excel = new ExcelPackage(new System.IO.FileInfo(path)))
+            using (var excel = new ExcelPackage(new FileInfo(path)))
             {
                 var ws = excel.Workbook.Worksheets[list];
                 for (int k = 0; k < powerFlow.Count; k++)
@@ -53,7 +53,7 @@ namespace BLL
                     }
                     column++; // increment for next key.
                 }
-                excel.SaveAs(new System.IO.FileInfo(@"C:\Users\otrok\Desktop\Дипломмаг\Тест_I.xlsx"));
+                excel.SaveAs(new FileInfo(@"C:\Users\otrok\Desktop\Дипломмаг\Тест_I.xlsx"));
             }
         }
 
@@ -61,11 +61,11 @@ namespace BLL
         {
             List<Repair> repairList = new();
             string path = @"C:\Users\otrok\Downloads\ИЮЛЬ СБЭК+.xlsx";
-            using (var excel = new ExcelPackage(new System.IO.FileInfo(path)))
+            using (var excel = new ExcelPackage(new FileInfo(path)))
             {
                 var ws = excel.Workbook.Worksheets[0];
                 int rowCount = ws.Dimension.Rows;
-                for (int i = 5; i <= rowCount; i=i+5)
+                for (int i = 5; i <= rowCount; i = i + 5)
                 {
                     repairList.Add(new Repair()
                     {

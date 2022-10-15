@@ -1,7 +1,15 @@
-﻿namespace Data.Result
-{
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-    public class VoltageResult : CalculationResultBase
+namespace Data.Entities.Result
+{
+    [Table("VoltageResult")]
+    public class VoltageResultEntity : CalculationResultBase
     {
         /// <summary>
         /// Номер узла
@@ -17,13 +25,5 @@
         /// Значение напряжения
         /// </summary>
         public double VoltageValue { get; set; }
-
-        public VoltageResult(string calculationId, int implementationId, int nodeNumber, string nodeName, double voltageValue)
-            : base(calculationId,implementationId)
-        {
-            NodeNumber = nodeNumber;
-            NodeName = nodeName;
-            VoltageValue = voltageValue;
-        }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using ASTRALib;
-using BLL;
-using BLL.Repairs;
+using BLL.Services;
+using Data.Repairs;
 
 
-List<Repair> repairs = FileManager.GetRepairsFromExcel();
+List<Repair> repairs = FileService.GetRepairsFromExcel();
 List<Repair> repairLines = repairs.Where(r => r.EquipmentName.Contains("ВЛ ")).ToList();
 Console.WriteLine(repairLines.Count()+" линий");
 List<List<string>> uniq = new();

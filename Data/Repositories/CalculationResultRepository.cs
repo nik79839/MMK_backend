@@ -1,11 +1,13 @@
 ﻿using Data.Repositories.Abstract;
-using BLL;
-using BLL.Result;
+using Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Data.Entities.Result;
+using Data.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repositories
 {
@@ -18,57 +20,58 @@ namespace Data.Repositories
             _context = context;
         }
 
-        public async Task AddCalculation(Calculations calculations)
+        public async Task AddCalculation(CalculationEntity calculations)
         {
-            await _context.Calculations.AddAsync(calculations);
+            _context.Calculations.Add(calculations);
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddPowerFlowResults(List<PowerFlowResult> powerFlowResults)
+        public async Task AddPowerFlowResults(List<PowerFlowResultEntity> powerFlowResults)
         {
             await _context.PowerFlowResults.AddRangeAsync(powerFlowResults);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task AddVoltageResults(List<VoltageResult> voltageResults)
+        public async Task AddVoltageResults(List<VoltageResultEntity> voltageResults)
         {
             await _context.VoltageResults.AddRangeAsync(voltageResults);
+            await _context.SaveChangesAsync();
         }
 
         public async Task DeleteCalculationsById(string? id)
         {
-            Calculations calculations1 = (from calculations in _context.Calculations where calculations.CalculationId == id select calculations).FirstOrDefault();
-            List<PowerFlowResult> calculationResults = (from calculations in _context.PowerFlowResults where calculations.CalculationId == id select calculations).ToList();
-            List<VoltageResult> voltageResults = (from calculations in _context.VoltageResults where calculations.CalculationId == id select calculations).ToList();
+            CalculationEntity calculations1 = (from calculations in _context.Calculations where calculations.Id == id select calculations).FirstOrDefault();
+            List<PowerFlowResultEntity> calculationResults = (from calculations in _context.PowerFlowResults where calculations.CalculationId == id select calculations).ToList();
+            List<VoltageResultEntity> voltageResults = (from calculations in _context.VoltageResults where calculations.CalculationId == id select calculations).ToList();
             _context.Calculations.Remove(calculations1);
             _context.PowerFlowResults.RemoveRange(calculationResults);
             _context.VoltageResults.RemoveRange(voltageResults);
             _context.SaveChanges();
         }
 
-        public async Task<List<Calculations>> GetCalculations()
+        public async Task<List<CalculationEntity>> GetCalculations()
         {
             return _context.Calculations.OrderByDescending(c => c.CalculationEnd).ToList();
         }
 
-        public Task<Calculations> GetCalculationsById(string? id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<List<PowerFlowResult>> GetPowerFlowResultById(string? id)
+        public async Task<List<PowerFlowResultEntity>> GetPowerFlowResultById(string? id)
         {
             return (from calculations in _context.PowerFlowResults where calculations.CalculationId == id select calculations).ToList();
         }
 
-        public async Task<List<VoltageResult>> GetVoltageResultById(string? id)
+        public async Task<List<VoltageResultEntity>> GetVoltageResultById(string? id)
         {
             return (from calculations in _context.VoltageResults where calculations.CalculationId == id select calculations).ToList();
         }
 
-        public async Task UpdateCalculation(Calculations calculations)
+        public async Task UpdateCalculation(CalculationEntity calculations)
         {
-            _context.Calculations.Update(calculations);
-            _context.SaveChanges();
+            _context.ChangeTracker.Clear();
+            CalculationEntity calculation1 = _context.Calculations.AsNoTracking().FirstOrDefault(u => u.Id == calculations.Id);
+            DateTime endTime = DateTime.UtcNow;
+            calculation1.CalculationEnd = endTime;
+            _context.Calculations.Update(calculation1);
+            await _context.SaveChangesAsync();
         }
     }
 }
