@@ -1,7 +1,5 @@
+using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Data.RastrModel;
-using BLL.Rastrwin3;
-using BLL.Interfaces;
 
 namespace Server.Controllers
 {

@@ -1,14 +1,10 @@
-using Data;
-using Data.Repositories.Abstract;
+using Application.Interfaces;
+using AutoMapper;
+using Domain;
+using Domain.Events;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Data;
-using Data.Events;
-using Data.Result;
-using Data.Statistic;
 using Server.Hub;
-using AutoMapper;
-using BLL.Interfaces;
 
 namespace Server.Controllers
 {

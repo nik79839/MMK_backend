@@ -1,8 +1,7 @@
-using BLL.Interfaces;
-using BLL.Services;
-using Data;
-using Data.Repositories;
-using Data.Repositories.Abstract;
+using Application.Interfaces;
+using Infrastructure.Persistance;
+using Infrastructure.Persistance.Repositories;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Server;

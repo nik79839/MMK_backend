@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Data;
-using Data.Entities;
+using Domain;
+using Infrastructure.Persistance.Entities;
 
 namespace Server
 {
