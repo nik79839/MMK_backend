@@ -6,14 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data
+namespace BLL.Rastrwin3
 {
-    public class RastrManager
+    public class RastrProvider
     {
-        private ITable _node;
-        private ITable _vetv;
-        private ITable _sechen;
-        private ITable _area;
+        private readonly ITable _node;
+        private readonly ITable _vetv;
+        private readonly ITable _sechen;
+        private readonly ITable _area;
         public Rastr _Rastr { get; set; }
         public ICol NumberNode { get; set; }
         public ICol NameNode { get; set; }
@@ -37,7 +37,7 @@ namespace Data
         public ICol NaArea { get; set; }
         public ICol NameAreaArea { get; set; }
 
-        public RastrManager(string pathToRegim,string? pathToSech = null)
+        public RastrProvider(string pathToRegim, string? pathToSech = null)
         {
             _Rastr = new();
             _Rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
@@ -62,7 +62,7 @@ namespace Data
             StaVetv = (ICol)_vetv.Cols.Item("sta");
             NaArea = (ICol)_area.Cols.Item("na");
             NameAreaArea = (ICol)_area.Cols.Item("name");
-            if (!String.IsNullOrEmpty(pathToSech))
+            if (!string.IsNullOrEmpty(pathToSech))
             {
                 _Rastr.Load(RG_KOD.RG_REPL, pathToSech, pathToSech);
                 _sechen = (ITable)_Rastr.Tables.Item("sechen");
@@ -91,39 +91,6 @@ namespace Data
         }
 
         /// <summary>
-        /// Изменяет состояние узлов в списке
-        /// </summary>
-        /// <param name="rastr"></param>
-        /// <param name="nodes">Список узлов</param>
-        /// <param name="state">0 - включено, 1 - отключено</param>
-        public void ChangeNodeState(List<int> nodes, int state)
-        {
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                int index = FindNodeIndex(nodes[i]);
-                StaNode.set_ZN(index, state);
-                ConnectedBranchState(nodes[i], 2, state);
-            }
-        }
-
-        /// <summary>
-        /// Изменяет состояние узлов в списке случайным образом
-        /// </summary>
-        /// <param name="rastr"></param>
-        /// <param name="nodes"></param>
-        public void ChangeNodeStateRandom(List<int> nodes)
-        {
-            Random random = new Random();
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                int randomNum = random.Next(0, 2);
-                int index = FindNodeIndex(nodes[i]);
-                StaNode.set_ZN(index, randomNum);
-                ConnectedBranchState(nodes[i], 2, randomNum);
-            }
-        }
-
-        /// <summary>
         /// Возвращает индекс ветви по номерам узлов начала и конца и номеру параллельности
         /// </summary>
         /// <param name="rastr"></param>
@@ -131,38 +98,17 @@ namespace Data
         /// <param name="iq">номер  конца</param>
         /// <param name="np">номер параллельности, 0 по умолчанию</param>
         /// <returns></returns>
-        public int FindBranchIndex( int ip, int iq, int np)
+        public int FindBranchIndex(int ip, int iq, int np)
         {
             for (int index = 0; index < _vetv.Count; index++)
             {
-                if ((Convert.ToInt32(StartNode.get_ZN(index)) == ip) && (Convert.ToInt32(EndNode.get_ZN(index)) == iq)
-                    && (Convert.ToInt32(Parallel.get_ZN(index)) == np))
+                if (Convert.ToInt32(StartNode.get_ZN(index)) == ip && Convert.ToInt32(EndNode.get_ZN(index)) == iq
+                    && Convert.ToInt32(Parallel.get_ZN(index)) == np)
                 {
                     return index;
                 }
             }
             return -1;
-        }
-
-        /// <summary>
-        /// Изменяет состояние примыкающей ветви.
-        /// Тип ветви: 0 - ЛЭП, 1 - Тр-р, 2 - Выкл.
-        /// Состояние: 0 - включено, 1 - отключено.
-        /// </summary>
-        /// <param name="rastr">Экземпляр класса Rastr.</param>
-        /// <param name="ny">Номер узла, к которому примыкают ветви.</param>
-        /// <param name="type">Тип ветви (0 - ЛЭП, 1 - Тр-р, 2 - Выкл).</param>
-        /// <param name="state">Состояние ветви (0 - включено, 1 - отключено).</param>
-        private void ConnectedBranchState(int ny, int type, int state)
-        {
-            for (int i = 0; i < _vetv.Count; i++)
-            {
-                if (((Convert.ToDouble(StaNode.ZN[i]) == ny) || (Convert.ToDouble(EndNode.ZN[i]) == ny))
-                    && (Convert.ToDouble(TipVetv.ZN[i]) == type))
-                {
-                    StaVetv.set_ZN(i, state);
-                }
-            }
         }
 
         /// <summary>
@@ -211,8 +157,12 @@ namespace Data
             {
                 if (Convert.ToDouble(Pn.ZN[i]) != 0)
                 {
-                    loadNodes.Add(new Node() { Number= (int)NumberNode.ZN[i], Name = NameNode.ZN[i].ToString(), 
-                        District= new District() {Number=(int)Na.ZN[i], Name= NameArea.ZN[i].ToString() } });
+                    loadNodes.Add(new Node()
+                    {
+                        Number = (int)NumberNode.ZN[i],
+                        Name = NameNode.ZN[i].ToString(),
+                        District = new District() { Number = (int)Na.ZN[i], Name = NameArea.ZN[i].ToString() }
+                    });
                 }
             }
             return loadNodes;
@@ -227,33 +177,14 @@ namespace Data
         /// <param name="percent">Количество процентов по обе стороны от номинального значения</param>
         public void ChangePn(List<int> nodes, List<double> tgValues, int percent)
         {
-            Random randPn = new Random();
+            Random randPn = new ();
             _Rastr.rgm("p");
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = FindNodeIndex(nodes[i]);
-                Pn.set_ZN(index, (double)randPn.Next(Convert.ToInt32(Pn.ZN[index]) * 100-percent, Convert.ToInt32(Pn.ZN[index]) * 100+percent) / 100f);
+                Pn.set_ZN(index, (double)randPn.Next(Convert.ToInt32(Pn.ZN[index]) * 100 - percent, Convert.ToInt32(Pn.ZN[index]) * 100 + percent) / 100f);
                 Qn.set_ZN(index, (double)Pn.ZN[index] * tgValues[i]);
             }
-        }
-
-        /// <summary>
-        /// Добавляет в лист узлы с нагрузками указанного района
-        /// </summary>
-        /// <param name="rastr"></param>
-        /// <param name="nodesRayon">Лист, в который добавляются номера узлов</param>
-        /// <param name="numRayon">Номер района</param>
-        public List<int> DistrictNodesToList(int numRayon)
-        {
-            List<int> nodesDistrict = new List<int>();
-            for (int i = 0; i < _node.Count; i++)
-            {
-                if (Convert.ToDouble(Na.ZN[i]) == numRayon)
-                {
-                    nodesDistrict.Add((int)NumberNode.ZN[i]);
-                }
-            }
-            return nodesDistrict;
         }
 
         /// <summary>
@@ -266,9 +197,9 @@ namespace Data
             List<District> districts = new();
             for (int i = 0; i < _area.Count; i++)
             {
-                districts.Add(new District() { Name =NameAreaArea .ZN[i].ToString(), Number = (int)NaArea.ZN[i] });
+                districts.Add(new District() { Name = NameAreaArea.ZN[i].ToString(), Number = (int)NaArea.ZN[i] });
             }
-                return districts;
+            return districts;
         }
 
         /// <summary>
@@ -281,41 +212,9 @@ namespace Data
             List<Sech> seches = new();
             for (int i = 0; i < _sechen.Count; i++)
             {
-                seches.Add(new Sech() { NameSech = this.NameSech.ZN[i].ToString(), Num = (int)Nsech.ZN[i] });
+                seches.Add(new Sech() { NameSech = NameSech.ZN[i].ToString(), Num = (int)Nsech.ZN[i] });
             }
             return seches;
-        }
-
-        public static void DoRepairs(Rastr rastr)
-        {
-            ITable vetv = (ITable)rastr.Tables.Item("vetv");
-            ICol name = (ICol)vetv.Cols.Item("name");
-            for (int i = 0; i < vetv.Count; i++)
-            { 
-
-            }
-        }
-
-        /// <summary>
-        /// Утяжеление по заданной траектории
-        /// </summary>
-        /// <param name="rastr">объект растра</param>
-        /// <param name="ut2Path">Путь к файлу утяжеления в формате ut2</param>
-        public void Worsening(string ut2Path) // Осуществляет процедуру утяжеления.
-        {
-            if (_Rastr.ut_Param[ParamUt.UT_FORM_P] == 0)
-            {
-                RastrRetCode kod = _Rastr.step_ut("i");
-                if (kod == 0)
-                {
-                    RastrRetCode kd;
-                    do
-                    {
-                        kd = _Rastr.step_ut("z");
-                    }
-                    while (kd == 0);
-                }
-            }
         }
 
         /// <summary>
@@ -326,7 +225,7 @@ namespace Data
         /// <param name="tgvalues">Список cos f, генерируется в другом методе случайным образом</param>
         /// <param name="unode">Список напряжений </param>
         /// <param name="percent">Процент приращения</param>
-        public void WorseningRandom( List<int> nodes, List<double> tgvalues, List<int> nodesWithKP, int percent)
+        public void WorseningRandom(List<int> nodes, List<double> tgvalues, List<int> nodesWithKP, int percent)
         {
             Random randPercent = new();
             RastrRetCode kod = _Rastr.rgm("p");
@@ -370,6 +269,15 @@ namespace Data
                     }
                     kd = _Rastr.rgm("p");
                 }
+            }
+        }
+        
+        public void RastrTestBalance()
+        {
+            RastrRetCode test = _Rastr.rgm("p");
+            if (test == RastrRetCode.AST_NB)
+            { 
+                throw new Exception($"Итерация не завершена из-за несходимости режима.");
             }
         }
     }

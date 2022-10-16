@@ -16,9 +16,9 @@ namespace Server.Controllers
     //[Route("[controller]")]
     public class CalculationPowerFlowsController : ControllerBase
     {
-        private IHubContext<ProgressHub> _hubContext;
+        private readonly IHubContext<ProgressHub> _hubContext;
         private readonly ICalculationService _calculationService;
-        private IMapper _mapper;
+        private readonly IMapper _mapper;
         public CalculationPowerFlowsController(IHubContext<ProgressHub> hubContext, ICalculationService calculationService, IMapper mapper)
         {
             _hubContext = hubContext;
@@ -36,11 +36,9 @@ namespace Server.Controllers
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch"; ;
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
-
             Calculations calculations = new() { Id = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null };
             //calculations.CalculationProgress += EventHandler;
             await _calculationService.StartCalculation(calculations, calculationSettings, cancellationToken);
-
             Console.WriteLine("Расчет завершен");
             return StatusCode(200, $"Расчет завершен.");
         }

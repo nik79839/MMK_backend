@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BLL.Interfaces;
+using BLL.Rastrwin3;
 using Data;
 using Data.Entities;
 using Data.Entities.Result;
@@ -61,21 +62,18 @@ namespace BLL.Services
         //TODO: События
         public async Task StartCalculation(Calculations calculations, CalculationSettings calculationSettings, CancellationToken cancellationToken)
         {
-            RastrManager rastrManager = new(calculationSettings.PathToRegim, calculationSettings.PathToSech);
+            RastrProvider rastrProvider = new(calculationSettings.PathToRegim, calculationSettings.PathToSech);
             Console.WriteLine("Режим и сечения загружены.");
-
             await _calculationResultRepository.AddCalculation(_mapper.Map<Calculations, CalculationEntity>(calculations));
             List<int> nodesWithKP = new() { 2658, 2643, 60408105 };
-            List<int> nodesWithSkrm = rastrManager.SkrmNodesToList(); //Заполнение листа с узлами  СКРМ
+            List<int> nodesWithSkrm = rastrProvider.SkrmNodesToList(); //Заполнение листа с узлами  СКРМ
             List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0),
             new(2639,60408105,0), new (60408105,2630,1)}; // Ветви для замеров тока
-            /* if (calculationSettings.IsAllNodesInitial)
-             {*/
-            calculationSettings.LoadNodes = rastrManager.AllLoadNodesToList(); //Список узлов нагрузки со случайными начальными параметрами (все узлы)
+            calculationSettings.LoadNodes = rastrProvider.AllLoadNodesToList(); //Список узлов нагрузки со случайными начальными параметрами (все узлы)
                                                                                //}
             List<int> numberLoadNodes = calculationSettings.LoadNodes.Select(x => x.Number).ToList(); //Массив номеров узлов
             int exp = calculationSettings.CountOfImplementations; // Число реализаций
-            calculations.SechName = rastrManager.SechList().Where(sech => sech.Num == calculationSettings.SechNumber).FirstOrDefault().NameSech;
+            calculations.SechName = rastrProvider.SechList().Where(sech => sech.Num == calculationSettings.SechNumber).FirstOrDefault().NameSech;
             for (int i = 0; i < exp; i++)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -84,27 +82,22 @@ namespace BLL.Services
                     break;
                 }
                 var watch = Stopwatch.StartNew();
-                rastrManager = new(calculationSettings.PathToRegim, calculationSettings.PathToSech);
+                rastrProvider = new(calculationSettings.PathToRegim, calculationSettings.PathToSech);
                 //RastrManager.ChangeNodeStateRandom(rastr, nodesWithSkrm); //вкл или выкл для СКРМ 50/50
-                List<double> tgNodes = rastrManager.ChangeTg(numberLoadNodes); //Список коэф мощности для каждой реализации
-                rastrManager.ChangePn(numberLoadNodes, tgNodes, calculationSettings.PercentLoad); //Случайная нагрузка
-                /*RastrRetCode test = rastrManager._Rastr.rgm("p");
-                if (test == RastrRetCode.AST_NB)
-                {
-                    Console.WriteLine($"Итерация {i} не завершена из-за несходимости режима.");
-                    continue;
-                }*/
-                rastrManager.WorseningRandom(calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, calculationSettings.PercentLoad);
-                double powerFlowValue = Math.Round((double)rastrManager.PowerSech.Z[calculationSettings.SechNumber], 2);
+                List<double> tgNodes = rastrProvider.ChangeTg(numberLoadNodes); //Список коэф мощности для каждой реализации
+                rastrProvider.ChangePn(numberLoadNodes, tgNodes, calculationSettings.PercentLoad); //Случайная нагрузка
+                rastrProvider.RastrTestBalance();
+                rastrProvider.WorseningRandom(calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, calculationSettings.PercentLoad);
+                double powerFlowValue = Math.Round((double)rastrProvider.PowerSech.Z[calculationSettings.SechNumber], 2);
                 for (int j = 0; j < nodesWithKP.Count; j++) // Запись напряжений
                 {
-                    int index = rastrManager.FindNodeIndex(nodesWithKP[j]);
-                    calculations.VoltageResults.Add(new VoltageResult(calculations.Id, i + 1, nodesWithKP[j], rastrManager.NameNode.Z[index].ToString(), Convert.ToDouble(rastrManager.Ur.Z[index])));
+                    int index = rastrProvider.FindNodeIndex(nodesWithKP[j]);
+                    calculations.VoltageResults.Add(new VoltageResult(calculations.Id, i + 1, nodesWithKP[j], rastrProvider.NameNode.Z[index].ToString(), Convert.ToDouble(rastrProvider.Ur.Z[index])));
                 }
                 for (int j = 0; j < brunchesWithAOPO.Count; j++) // Запись токов
                 {
-                    int index = rastrManager.FindBranchIndex(brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, brunchesWithAOPO[j].ParallelNumber);
-                    calculations.CurrentResults.Add(new CurrentResult(calculations.Id, i + 1, brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, Convert.ToDouble(rastrManager.IMax.Z[index])));
+                    int index = rastrProvider.FindBranchIndex(brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, brunchesWithAOPO[j].ParallelNumber);
+                    calculations.CurrentResults.Add(new CurrentResult(calculations.Id, i + 1, brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, Convert.ToDouble(rastrProvider.IMax.Z[index])));
                 }
 
                 watch.Stop();

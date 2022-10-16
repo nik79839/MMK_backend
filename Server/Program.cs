@@ -23,10 +23,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
-builder.Services.AddTransient<ICalculationResultRepository, CalculationResultRepository>();
+builder.Services.AddScoped<ICalculationResultRepository, CalculationResultRepository>();
 var assembly = Assembly.GetAssembly(typeof(MappingProfile));
 builder.Services.AddAutoMapper(assembly);
-builder.Services.AddTransient<ICalculationService, CalculationService>();
+builder.Services.AddScoped<ICalculationService, CalculationService>();
+builder.Services.AddScoped<IRastrSchemeInfoService, RastrSchemeInfoService>();
 
 var app = builder.Build();
 app.UseCors(builder => builder.AllowAnyMethod().WithOrigins("http://localhost:3000").AllowAnyHeader().AllowCredentials());

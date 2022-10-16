@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Data;
 using Data.RastrModel;
+using BLL.Rastrwin3;
 
 namespace Server.Controllers
 {
