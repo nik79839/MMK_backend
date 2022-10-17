@@ -5,10 +5,6 @@ namespace Domain
 {
     public class Calculations
     {
-        /// <summary>
-        /// Событие описания прогресса расчета
-        /// </summary>
-        public event EventHandler<CalculationProgressEventArgs> CalculationProgress;
 
         /// <summary>
         /// Уникальный идентификатор расчета

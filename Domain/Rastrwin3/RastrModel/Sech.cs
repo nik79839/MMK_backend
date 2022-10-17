@@ -4,7 +4,7 @@
     {
         public int Num { get; set; }
 
-        public string NameSech { get; set; }
+        public string SechName { get; set; }
 
         public List<Brunch>? Brunches { get; set; }
     }

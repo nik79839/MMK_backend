@@ -33,7 +33,7 @@ namespace Server.Controllers
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch"; ;
             //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
             Calculations calculations = new() { Id = guid, Name = calculationSettings.Name, CalculationStart = startTime, CalculationEnd = null };
-            //calculations.CalculationProgress += EventHandler;
+            _calculationService.CalculationProgress += EventHandler;
             await _calculationService.StartCalculation(calculations, calculationSettings, cancellationToken);
             Console.WriteLine("Расчет завершен");
             return StatusCode(200, $"Расчет завершен.");

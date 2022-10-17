@@ -1,7 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain;
 using Domain.Events;
-using Domain.Rastrwin3;
 using Domain.Rastrwin3.RastrModel;
 using Domain.Result;
 using Domain.Statistic;
@@ -56,7 +55,7 @@ namespace Infrastructure.Services
                                                                                 //}
             List<int> numberLoadNodes = calculationSettings.LoadNodes.Select(x => x.Number).ToList(); //Массив номеров узлов
             int exp = calculationSettings.CountOfImplementations; // Число реализаций
-            calculations.SechName = rastrProvider.SechList().Where(sech => sech.Num == calculationSettings.SechNumber).FirstOrDefault().NameSech;
+            calculations.SechName = rastrProvider.SechList().Where(sech => sech.Num == calculationSettings.SechNumber).FirstOrDefault().SechName;
             for (int i = 0; i < exp; i++)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -85,7 +84,7 @@ namespace Infrastructure.Services
 
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;
-                //CalculationProgress.Invoke(this, new CalculationProgressEventArgs(calculations.CalculationId, (int)calculations.Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
+                CalculationProgress.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
                 Console.WriteLine(powerFlowValue + " " + i + " Оставшееся время - " + Math.Round(watch.Elapsed.TotalMinutes * (exp - i + 1), 2) + " минут");
                 calculations.PowerFlowResults.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
             }

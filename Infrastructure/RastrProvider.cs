@@ -1,7 +1,7 @@
 ﻿using ASTRALib;
 using Domain.Rastrwin3.RastrModel;
 
-namespace Domain.Rastrwin3
+namespace Infrastructure
 {
     public class RastrProvider
     {
@@ -207,7 +207,7 @@ namespace Domain.Rastrwin3
             List<Sech> seches = new();
             for (int i = 0; i < _sechen.Count; i++)
             {
-                seches.Add(new Sech() { NameSech = NameSech.ZN[i].ToString(), Num = (int)Nsech.ZN[i] });
+                seches.Add(new Sech() { SechName = NameSech.ZN[i].ToString(), Num = (int)Nsech.ZN[i] });
             }
             return seches;
         }
