@@ -10,15 +10,12 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 // Add services to the container.
-
-
 
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<CalculationResultContext>(options => { options.UseNpgsql(connection);}, ServiceLifetime.Singleton);
 
-builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
@@ -35,24 +32,17 @@ app.UseCors(builder => builder.AllowAnyMethod().WithOrigins("http://localhost:30
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
 app.UseRouting();
-
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapHub<ProgressHub>("/progress");
-    endpoints.MapDefaultControllerRoute();
+    endpoints.MapControllers();
 });
-
 app.UseDirectoryBrowser(new DirectoryBrowserOptions()
 {
     FileProvider = new PhysicalFileProvider(

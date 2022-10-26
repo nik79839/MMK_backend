@@ -17,6 +17,11 @@ namespace Domain
         public string Name { get; set; }
 
         /// <summary>
+        /// Описание расчета
+        /// </summary>
+        public string? Description { get; set; }
+
+        /// <summary>
         /// Время начала расчета
         /// </summary>
         public DateTime CalculationStart { get; set; }
@@ -26,6 +31,9 @@ namespace Domain
         /// </summary>
         public DateTime? CalculationEnd { get; set; }
 
+        /// <summary>
+        /// Название сечения
+        /// </summary>
         public string? SechName { get; set; }
         public string? PathToRegim { get; set; }
         public int? PercentLoad { get; set; }

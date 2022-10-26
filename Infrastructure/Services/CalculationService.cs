@@ -45,17 +45,17 @@ namespace Infrastructure.Services
         public async Task StartCalculation(Calculations calculations, CalculationSettings calculationSettings, CancellationToken cancellationToken)
         {
             RastrProvider rastrProvider = new(calculationSettings.PathToRegim, calculationSettings.PathToSech);
+            calculations.SechName = rastrProvider.SechList().FirstOrDefault(sech => sech.Num == calculationSettings.SechNumber).SechName;
             Console.WriteLine("Режим и сечения загружены.");
             await _calculationResultRepository.AddCalculation(calculations);
             List<int> nodesWithKP = new() { 2658, 2643, 60408105 };
             List<int> nodesWithSkrm = rastrProvider.SkrmNodesToList(); //Заполнение листа с узлами  СКРМ
             List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0),
             new(2639,60408105,0), new (60408105,2630,1)}; // Ветви для замеров тока
-            calculationSettings.LoadNodes = rastrProvider.AllLoadNodesToList(); //Список узлов нагрузки со случайными начальными параметрами (все узлы)
-                                                                                //}
+            calculationSettings.LoadNodes = rastrProvider.AllLoadNodesToList(); //Список узлов нагрузки со случайными начальными параметрами (все узлы)                                                                   //}
             List<int> numberLoadNodes = calculationSettings.LoadNodes.Select(x => x.Number).ToList(); //Массив номеров узлов
             int exp = calculationSettings.CountOfImplementations; // Число реализаций
-            calculations.SechName = rastrProvider.SechList().Where(sech => sech.Num == calculationSettings.SechNumber).FirstOrDefault().SechName;
+                                                                  // 
             for (int i = 0; i < exp; i++)
             {
                 if (cancellationToken.IsCancellationRequested)

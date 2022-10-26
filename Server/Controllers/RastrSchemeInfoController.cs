@@ -16,9 +16,9 @@ namespace Server.Controllers
 
         [Route("RastrSchemeInfo/GetRastrSchemeInfo")]
         [HttpGet]
-        public async Task<IActionResult> GetDistricts()
+        public async Task<IActionResult> GetRastrSchemeInfo()
         {
-            return StatusCode(200, _rastrSchemeInfoService.GetRastrSchemeInfo());
+            return StatusCode(200, _rastrSchemeInfoService.GetRastrSchemeInfo().Result);
         }
     }
 }

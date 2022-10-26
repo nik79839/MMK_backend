@@ -17,7 +17,7 @@ namespace Infrastructure.Persistance
         public CalculationResultContext(DbContextOptions<CalculationResultContext> options)
             : base(options)
         {
-            //Database.EnsureDeleted();
+            Database.EnsureDeleted();
             Database.EnsureCreated();   // создаем базу данных при первом обращении
         }
 

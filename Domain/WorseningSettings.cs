@@ -5,7 +5,7 @@ namespace Domain
     /// <summary>
     /// Параметры расчета, приходящие от клиента
     /// </summary>
-    public class CalculationSettings
+    public class WorseningSettings
     {
         /// <summary>
         /// Название расчета

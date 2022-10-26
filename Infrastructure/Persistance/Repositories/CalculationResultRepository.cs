@@ -13,10 +13,19 @@ namespace Infrastructure.Persistance.Repositories
         private readonly CalculationResultContext _context;
         private readonly IMapper _mapper;
 
-        public CalculationResultRepository(CalculationResultContext context, IMapper mapper)
+        public CalculationResultRepository(CalculationResultContext context)
         {
             _context = context;
-            _mapper = mapper;
+            ;
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<CalculationEntity, Calculations>().ReverseMap();
+                cfg.CreateMap<PowerFlowResultEntity, PowerFlowResult>().ReverseMap();
+                cfg.CreateMap<VoltageResultEntity, VoltageResult>().ReverseMap();
+                cfg.CreateMap<CurrentResultEntity, CurrentResult>().ReverseMap();
+            });
+            _mapper = new Mapper(config);
+
         }
 
         public async Task AddCalculation(Calculations calculations)
@@ -27,7 +36,7 @@ namespace Infrastructure.Persistance.Repositories
 
         public async Task AddPowerFlowResults(List<PowerFlowResult> powerFlowResults)
         {
-            await _context.PowerFlowResults.AddRangeAsync(_mapper.Map<List<PowerFlowResultEntity>>(powerFlowResults));
+            await _context.PowerFlowResults.AddRangeAsync(_mapper.Map<List<PowerFlowResult>, List<PowerFlowResultEntity>>(powerFlowResults));
             await _context.SaveChangesAsync();
         }
 
