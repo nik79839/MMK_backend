@@ -39,7 +39,6 @@ namespace Tests.API
                 NodesForWorsening = new List<int>() { 2658,2653,1654, 60408134},
                 SechNumber = 2
             };
-
             var httpContent = new StringContent(JsonConvert.SerializeObject(calculationSettings), Encoding.UTF8, "application/json");
             HttpRequestMessage request = new ();
             request.RequestUri = new Uri("https://localhost:7231/CalculationPowerFlows/PostCalculations");

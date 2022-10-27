@@ -1,9 +1,9 @@
 ﻿using Application.Interfaces;
 using Domain;
 using Domain.Events;
+using Domain.InitialResult;
+using Domain.ProcessedResult;
 using Domain.Rastrwin3.RastrModel;
-using Domain.Result;
-using Domain.Statistic;
 using System.Diagnostics;
 
 namespace Infrastructure.Services
@@ -27,27 +27,42 @@ namespace Infrastructure.Services
             return _calculationResultRepository.GetCalculations().Result;
         }
 
-        public CalculationStatistic GetCalculationsById(string id)
+        public CalculationResultInfo GetCalculationsById(string id)
         {
-            List<PowerFlowResult> powerFlowResults = _calculationResultRepository.GetPowerFlowResultById(id).Result;
-            List<VoltageResult> voltageResults = _calculationResultRepository.GetVoltageResultById(id).Result;
-            CalculationStatistic calculationStatistic = new();
-            if (powerFlowResults.Count == 0)
+            CalculationResultInitial calculationResultInitial = new()
             {
-                throw new Exception($"Ошибка.Расчета с ID {id} не существует.");
+                PowerFlowResults = _calculationResultRepository.GetPowerFlowResultById(id).Result,
+                VoltageResults = _calculationResultRepository.GetVoltageResultById(id).Result
+            };
+            CalculationResultProcessed calculationResultProcessed = new();
+            if (calculationResultInitial.PowerFlowResults.Count == 0)
+            {
+                throw new Exception($"Ошибка. Расчета с ID {id} не существует.");
             }
-            calculationStatistic.Processing(powerFlowResults);
-            calculationStatistic.Processing(voltageResults);
-            return calculationStatistic;
+            calculationResultProcessed.Processing(calculationResultInitial.PowerFlowResults);
+            calculationResultProcessed.Processing(calculationResultInitial.VoltageResults);
+            List<WorseningSettings> worseningSettings = _calculationResultRepository.GetWorseningSettingsById(id).Result;
+            List<int> worseningSettingsNumber = worseningSettings.Select(x => x.NodeNumber).ToList();
+            CalculationResultInfo calculationResultInfo = new(calculationResultInitial, calculationResultProcessed, worseningSettingsNumber);
+            return calculationResultInfo;
         }
 
         //TODO: События
         public async Task StartCalculation(Calculations calculations, CalculationSettings calculationSettings, CancellationToken cancellationToken)
         {
             RastrProvider rastrProvider = new(calculationSettings.PathToRegim, calculationSettings.PathToSech);
-            calculations.SechName = rastrProvider.SechList().FirstOrDefault(sech => sech.Num == calculationSettings.SechNumber).SechName;
             Console.WriteLine("Режим и сечения загружены.");
+            calculations.SechName = rastrProvider.SechList().FirstOrDefault(sech => sech.Num == calculationSettings.SechNumber).SechName;
+            List<WorseningSettings> worseningSettings = new();
+            foreach (var setting in calculationSettings.NodesForWorsening)
+            {
+                worseningSettings.Add(new WorseningSettings() { CalculationId = calculations.Id, NodeNumber = setting });
+            }
             await _calculationResultRepository.AddCalculation(calculations);
+            await _calculationResultRepository.AddWorseningSettings(worseningSettings);
+            List<VoltageResult> voltageResults = new();
+            List<PowerFlowResult> powerFlowResults = new();
+            List<CurrentResult> currentResults = new();
             List<int> nodesWithKP = new() { 2658, 2643, 60408105 };
             List<int> nodesWithSkrm = rastrProvider.SkrmNodesToList(); //Заполнение листа с узлами  СКРМ
             List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0),
@@ -55,7 +70,7 @@ namespace Infrastructure.Services
             calculationSettings.LoadNodes = rastrProvider.AllLoadNodesToList(); //Список узлов нагрузки со случайными начальными параметрами (все узлы)                                                                   //}
             List<int> numberLoadNodes = calculationSettings.LoadNodes.Select(x => x.Number).ToList(); //Массив номеров узлов
             int exp = calculationSettings.CountOfImplementations; // Число реализаций
-                                                                  // 
+                                                                  
             for (int i = 0; i < exp; i++)
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -65,7 +80,6 @@ namespace Infrastructure.Services
                 }
                 var watch = Stopwatch.StartNew();
                 rastrProvider = new(calculationSettings.PathToRegim, calculationSettings.PathToSech);
-                //RastrManager.ChangeNodeStateRandom(rastr, nodesWithSkrm); //вкл или выкл для СКРМ 50/50
                 List<double> tgNodes = rastrProvider.ChangeTg(numberLoadNodes); //Список коэф мощности для каждой реализации
                 rastrProvider.ChangePn(numberLoadNodes, tgNodes, calculationSettings.PercentLoad); //Случайная нагрузка
                 rastrProvider.RastrTestBalance();

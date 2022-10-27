@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Domain;
-using Domain.Result;
+using Domain.InitialResult;
 using Infrastructure.Persistance.Entities;
 using Infrastructure.Persistance.Entities.Result;
 

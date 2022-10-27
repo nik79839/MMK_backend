@@ -1,5 +1,4 @@
-﻿using Domain.Events;
-using Domain.Result;
+﻿using Domain.InitialResult;
 
 namespace Domain
 {

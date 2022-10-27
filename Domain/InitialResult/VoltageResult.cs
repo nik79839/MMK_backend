@@ -1,4 +1,4 @@
-﻿namespace Domain.Result
+﻿namespace Domain.InitialResult
 {
 
     public class VoltageResult : CalculationResultBase

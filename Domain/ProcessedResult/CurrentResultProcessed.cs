@@ -1,6 +1,6 @@
 ﻿using Domain.Rastrwin3.RastrModel;
 
-namespace Domain.Statistic
+namespace Domain.ProcessedResult
 {
     /// <summary>
     /// Результаты расчета обработанные напряжение

@@ -1,7 +1,7 @@
-﻿namespace Domain.Result
+﻿namespace Domain.InitialResult
 {
     /// <summary>
-    /// Результаты расчета для хранения в БД
+    /// Результаты расчета
     /// </summary>
     public abstract class CalculationResultBase
     {

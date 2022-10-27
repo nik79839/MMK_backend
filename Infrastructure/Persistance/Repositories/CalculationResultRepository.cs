@@ -1,7 +1,7 @@
 ﻿using Application.Interfaces;
 using AutoMapper;
 using Domain;
-using Domain.Result;
+using Domain.InitialResult;
 using Infrastructure.Persistance.Entities;
 using Infrastructure.Persistance.Entities.Result;
 using Microsoft.EntityFrameworkCore;
@@ -16,13 +16,13 @@ namespace Infrastructure.Persistance.Repositories
         public CalculationResultRepository(CalculationResultContext context)
         {
             _context = context;
-            ;
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<CalculationEntity, Calculations>().ReverseMap();
                 cfg.CreateMap<PowerFlowResultEntity, PowerFlowResult>().ReverseMap();
                 cfg.CreateMap<VoltageResultEntity, VoltageResult>().ReverseMap();
                 cfg.CreateMap<CurrentResultEntity, CurrentResult>().ReverseMap();
+                cfg.CreateMap<WorseningSettingsEntity, WorseningSettings>().ReverseMap();
             });
             _mapper = new Mapper(config);
 
@@ -43,6 +43,12 @@ namespace Infrastructure.Persistance.Repositories
         public async Task AddVoltageResults(List<VoltageResult> voltageResults)
         {
             await _context.VoltageResults.AddRangeAsync(_mapper.Map<List<VoltageResultEntity>>(voltageResults));
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddWorseningSettings(List<WorseningSettings> worseningSettings)
+        {
+            await _context.WorseningSettings.AddRangeAsync(_mapper.Map<List<WorseningSettingsEntity>>(worseningSettings));
             await _context.SaveChangesAsync();
         }
 
@@ -81,6 +87,14 @@ namespace Infrastructure.Persistance.Repositories
             var voltageResults = (from calculations in _context.VoltageResults 
                                   where calculations.CalculationId == id select calculations).ToList();
             return _mapper.Map<List<VoltageResult>>(voltageResults);
+        }
+
+        public async Task<List<WorseningSettings>> GetWorseningSettingsById(string? id)
+        {
+            var worseningSettings = (from worseningSettings1 in _context.WorseningSettings
+                                     where worseningSettings1.CalculationId == id
+                                     select worseningSettings1).ToList();
+            return _mapper.Map<List<WorseningSettings>>(worseningSettings);
         }
 
         public async Task UpdateCalculation(Calculations calculations)

@@ -1,4 +1,4 @@
-﻿namespace Domain.Statistic
+﻿namespace Domain.ProcessedResult
 {
     public class StatisticBase
     {

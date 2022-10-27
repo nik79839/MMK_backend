@@ -1,11 +1,11 @@
-﻿using Domain.Result;
+﻿using Domain.InitialResult;
 
-namespace Domain.Statistic
+namespace Domain.ProcessedResult
 {
     /// <summary>
     /// Результаты расчета обработанные
     /// </summary>
-    public class CalculationStatistic
+    public class CalculationResultProcessed
     {
         public StatisticBase PowerFlowResultProcessed { get; set; } = new();
 
@@ -58,7 +58,7 @@ namespace Domain.Statistic
                 for (int i = 0; i < intervalCount; i++)
                 {
                     int count = 0;
-                    sec = sec + step;
+                    sec += step;
                     first = sec - step;
                     for (int j = 0; j < values.Count; j++)
                     {

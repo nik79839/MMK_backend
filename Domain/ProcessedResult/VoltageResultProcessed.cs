@@ -1,4 +1,4 @@
-﻿namespace Domain.Statistic
+﻿namespace Domain.ProcessedResult
 {
     /// <summary>
     /// Результаты расчета обработанные напряжение
