@@ -9,7 +9,7 @@ namespace Server.Controllers
     {
         [Route("RastrFiles/GetRastrFiles")]
         [HttpGet]
-        public List<RastrFile> GetRastrFiles()
+        public async Task<IActionResult> GetRastrFiles()
         {
             List<RastrFile> rastrFiles = new();
             string[] rastrFilesPath = Directory.GetFiles(@"C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\RastrFiles");
@@ -18,12 +18,12 @@ namespace Server.Controllers
                 FileInfo fileInfo = new(file);
                 rastrFiles.Add(new RastrFile() { Name= Path.GetFileName(file), LastModified = fileInfo.LastWriteTime.ToUniversalTime()});
             }
-            return rastrFiles;
+            return Ok(rastrFiles);
         }
 
         [Route("RastrFiles/PostRastrFiles")]
         [HttpPost]
-        public void PostRastrFiles()
+        public async Task<IActionResult> PostRastrFiles()
         {
             IFormFileCollection files = Request.Form.Files;
             string uploadPath = @"C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\RastrFiles";
@@ -35,6 +35,7 @@ namespace Server.Controllers
                     file.CopyToAsync(fileStream);
                 }
             }
+            return Ok();
         }
     }
 }

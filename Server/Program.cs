@@ -14,7 +14,7 @@ builder.Services.AddControllers();
 // Add services to the container.
 
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<CalculationResultContext>(options => { options.UseNpgsql(connection);}, ServiceLifetime.Singleton);
+builder.Services.AddDbContext<CalculationResultContext>(options => { options.UseNpgsql(connection);}, ServiceLifetime.Transient);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

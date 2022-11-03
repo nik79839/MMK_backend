@@ -3,6 +3,9 @@ using Domain.ProcessedResult;
 
 namespace Domain
 {
+    /// <summary>
+    /// Результат расчета, отправляемый клиенту
+    /// </summary>
     public class CalculationResultInfo
     {
         public CalculationResultInitial InitialResult {get; set;}

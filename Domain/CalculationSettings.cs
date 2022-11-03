@@ -1,4 +1,5 @@
 ﻿using Domain.Rastrwin3.RastrModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain
 {
@@ -22,11 +23,13 @@ namespace Domain
         /// </summary>
         public List<Node>? LoadNodes { get; set; }
 
+        [MinLength(1)]
         /// <summary>
         /// Узлы утяжеления нагрузок
         /// </summary>
         public List<int> NodesForWorsening { get; set; }
 
+        [Range(1,10000)]
         /// <summary>
         /// Число реализаций
         /// </summary>

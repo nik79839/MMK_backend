@@ -31,7 +31,6 @@ namespace Server.Controllers
             DateTime startTime = DateTime.UtcNow;
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch"; ;
-            //List<int> nodesForWorsening = RastrManager.RayonNodesToList(rastr, 1); //Узлы района 1 (бодайб)
             Calculations calculations = new() { Id = guid, Name = calculationSettings.Name, Description = calculationSettings.Description,
                 CalculationStart = startTime, CalculationEnd = null, PathToRegim = calculationSettings.PathToRegim, PercentLoad = calculationSettings.PercentLoad,
                 PercentForWorsening = calculationSettings.PercentForWorsening
@@ -39,21 +38,21 @@ namespace Server.Controllers
             _calculationService.CalculationProgress += EventHandler;
             await _calculationService.StartCalculation(calculations, calculationSettings, cancellationToken);
             Console.WriteLine("Расчет завершен");
-            return StatusCode(200, $"Расчет завершен.");
+            return Ok($"Расчет завершен.");
         }
 
         [HttpGet]
         [Route("GetCalculations")]
         public async Task<IActionResult> GetCalculations()
         {
-            return StatusCode(200, _calculationService.GetCalculations());
+            return Ok(_calculationService.GetCalculations());
         }
 
         [HttpGet]
         [Route("GetCalculations/{id}")]
         public async Task<IActionResult> GetCalculationsById(string? id)
         {
-            return StatusCode(200, _calculationService.GetCalculationsById(id));
+            return Ok(_calculationService.GetCalculationsById(id));
         }
 
         [HttpDelete]
@@ -61,7 +60,7 @@ namespace Server.Controllers
         public async Task<IActionResult> DeleteCalculationsById(string? id)
         {
             await _calculationService.DeleteCalculationById(id);
-            return StatusCode(200);
+            return Ok;
         }
 
         [NonAction]

@@ -1,5 +1,8 @@
 ﻿namespace Domain.InitialResult
 {
+    /// <summary>
+    /// Результаты расчета в исходном виде
+    /// </summary>
     public class CalculationResultInitial
     {
         /// <summary>

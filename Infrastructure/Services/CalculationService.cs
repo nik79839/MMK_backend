@@ -60,11 +60,8 @@ namespace Infrastructure.Services
             }
             await _calculationResultRepository.AddCalculation(calculations);
             await _calculationResultRepository.AddWorseningSettings(worseningSettings);
-            List<VoltageResult> voltageResults = new();
-            List<PowerFlowResult> powerFlowResults = new();
-            List<CurrentResult> currentResults = new();
+            CalculationResultInitial calculationResultInitial = new();
             List<int> nodesWithKP = new() { 2658, 2643, 60408105 };
-            List<int> nodesWithSkrm = rastrProvider.SkrmNodesToList(); //Заполнение листа с узлами  СКРМ
             List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0),
             new(2639,60408105,0), new (60408105,2630,1)}; // Ветви для замеров тока
             calculationSettings.LoadNodes = rastrProvider.AllLoadNodesToList(); //Список узлов нагрузки со случайными начальными параметрами (все узлы)                                                                   //}
@@ -88,23 +85,23 @@ namespace Infrastructure.Services
                 for (int j = 0; j < nodesWithKP.Count; j++) // Запись напряжений
                 {
                     int index = rastrProvider.FindNodeIndex(nodesWithKP[j]);
-                    calculations.VoltageResults.Add(new VoltageResult(calculations.Id, i + 1, nodesWithKP[j], rastrProvider.NameNode.Z[index].ToString(), Convert.ToDouble(rastrProvider.Ur.Z[index])));
+                    calculationResultInitial.VoltageResults.Add(new VoltageResult(calculations.Id, i + 1, nodesWithKP[j], rastrProvider.NameNode.Z[index].ToString(), Convert.ToDouble(rastrProvider.Ur.Z[index])));
                 }
                 for (int j = 0; j < brunchesWithAOPO.Count; j++) // Запись токов
                 {
                     int index = rastrProvider.FindBranchIndex(brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, brunchesWithAOPO[j].ParallelNumber);
-                    calculations.CurrentResults.Add(new CurrentResult(calculations.Id, i + 1, brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, Convert.ToDouble(rastrProvider.IMax.Z[index])));
+                    calculationResultInitial.CurrentResults.Add(new CurrentResult(calculations.Id, i + 1, brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, Convert.ToDouble(rastrProvider.IMax.Z[index])));
                 }
 
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;
                 CalculationProgress.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
                 Console.WriteLine(powerFlowValue + " " + i + " Оставшееся время - " + Math.Round(watch.Elapsed.TotalMinutes * (exp - i + 1), 2) + " минут");
-                calculations.PowerFlowResults.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
+                calculationResultInitial.PowerFlowResults.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
             }
             DateTime endTime = DateTime.UtcNow;
-            await _calculationResultRepository.AddPowerFlowResults(calculations.PowerFlowResults);
-            await _calculationResultRepository.AddVoltageResults(calculations.VoltageResults);
+            await _calculationResultRepository.AddPowerFlowResults(calculationResultInitial.PowerFlowResults);
+            await _calculationResultRepository.AddVoltageResults(calculationResultInitial.VoltageResults);
             await _calculationResultRepository.UpdateCalculation(calculations);
         }
     }

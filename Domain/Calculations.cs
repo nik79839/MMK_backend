@@ -1,15 +1,17 @@
 ﻿using Domain.InitialResult;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain
 {
     public class Calculations
     {
-
+        
         /// <summary>
         /// Уникальный идентификатор расчета
         /// </summary>
         public string Id { get; set; }
 
+        [StringLength(50, MinimumLength = 3, ErrorMessage = "Недопустимая длина имени расчета")]
         /// <summary>
         /// Название расчета
         /// </summary>
@@ -23,7 +25,7 @@ namespace Domain
         /// <summary>
         /// Время начала расчета
         /// </summary>
-        public DateTime CalculationStart { get; set; }
+        public DateTime CalculationStart { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// Время Конца расчета
@@ -37,21 +39,6 @@ namespace Domain
         public string? PathToRegim { get; set; }
         public int? PercentLoad { get; set; }
         public int? PercentForWorsening { get; set; }
-
-        /// <summary>
-        /// Ссылка на результаты расчетов
-        /// </summary>
-        public List<PowerFlowResult> PowerFlowResults { get; set; } = new();
-
-        /// <summary>
-        /// Ссылка на результаты расчетов напряжений
-        /// </summary>
-        public List<VoltageResult> VoltageResults { get; set; } = new();
-
-        /// <summary>
-        /// Ссылка на результаты расчетов токов
-        /// </summary>
-        public List<CurrentResult> CurrentResults { get; set; } = new();
 
         /// <summary>
         /// Процент прогресса расчета

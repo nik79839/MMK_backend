@@ -240,18 +240,6 @@ namespace Infrastructure
                         Qn.set_ZN(index, (double)Convert.ToDouble(Pn.ZN[index]) * tgvalues[i]);
                     }
                     kd = _Rastr.rgm("p");
-                    /*for (int i = 0; i < nodesWithKP.Count; i++) // Изменение СКРМ
-                    {
-                        index = RastrManager.FindNodeIndex(rastr, nodesWithKP[i]);
-                        if (Convert.ToDouble(Ur.Z[index]) < 225)
-                        {
-                            Console.WriteLine("Включение БСК");
-                            index = RastrManager.FindNodeIndex(rastr, 60408136);
-                            sta.set_ZN(index, 0);
-                            RastrManager.ConnectedBranchState(rastr, 60408136, 2, 0);
-                        }
-                    }
-                    kd = rastr.rgm("p");*/
                 }
                 while (kd == 0);
                 while (kd != 0) // Откат на последний сходяийся режим

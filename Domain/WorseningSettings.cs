@@ -1,7 +1,7 @@
 ﻿namespace Domain
 {
     /// <summary>
-    /// Параметры расчета, приходящие от клиента
+    /// Параметры утяжеления
     /// </summary>
     public class WorseningSettings
     {

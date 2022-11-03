@@ -1,4 +1,6 @@
-﻿namespace Domain.InitialResult
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Domain.InitialResult
 {
     /// <summary>
     /// Результаты расчета
@@ -10,6 +12,7 @@
         /// </summary>
         public string CalculationId { get; set; }
 
+        [Range(1, 10000, ErrorMessage = "Недопустимое число реализации")]
         /// <summary>
         /// Номер реализации
         /// </summary>

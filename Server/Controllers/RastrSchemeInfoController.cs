@@ -18,7 +18,7 @@ namespace Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRastrSchemeInfo()
         {
-            return StatusCode(200, _rastrSchemeInfoService.GetRastrSchemeInfo().Result);
+            return Ok(_rastrSchemeInfoService.GetRastrSchemeInfo().Result);
         }
     }
 }
