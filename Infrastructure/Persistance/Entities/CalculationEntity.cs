@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Persistance.Entities.Result;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Infrastructure.Persistance.Entities
@@ -9,7 +10,8 @@ namespace Infrastructure.Persistance.Entities
         /// <summary>
         /// Уникальный идентификатор расчета
         /// </summary>
-        public string Id { get; set; }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
 
         /// <summary>
         /// Название расчета

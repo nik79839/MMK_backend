@@ -18,7 +18,7 @@
         /// </summary>
         public double VoltageValue { get; set; }
 
-        public VoltageResult(string calculationId, int implementationId, int nodeNumber, string nodeName, double voltageValue)
+        public VoltageResult(Guid calculationId, int implementationId, int nodeNumber, string nodeName, double voltageValue)
             : base(calculationId, implementationId)
         {
             NodeNumber = nodeNumber;

@@ -1,3 +1,4 @@
+using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
 using Domain;
@@ -8,6 +9,9 @@ using Server.Hub;
 
 namespace Server.Controllers
 {
+    /// <summary>
+    /// Контроллер работы с расчетами
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class CalculationPowerFlowsController : ControllerBase
@@ -22,17 +26,20 @@ namespace Server.Controllers
             _calculationService = calculationService;
         }
 
+        /// <summary>
+        /// Начать расчет
+        /// </summary>
+        /// <param name="calculationSettings"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("PostCalculations")]
         public async Task<IActionResult> PostCalculations([FromBody]CalculationSettings calculationSettings)
         {
             CancellationToken cancellationToken = HttpContext.RequestAborted;
-            string guid = Guid.NewGuid().ToString();
-            DateTime startTime = DateTime.UtcNow;
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch"; ;
-            Calculations calculations = new() { Id = guid, Name = calculationSettings.Name, Description = calculationSettings.Description,
-                CalculationStart = startTime, CalculationEnd = null, PathToRegim = calculationSettings.PathToRegim, PercentLoad = calculationSettings.PercentLoad,
+            Calculations calculations = new() { Name = calculationSettings.Name, Description = calculationSettings.Description,
+                CalculationEnd = null, PathToRegim = calculationSettings.PathToRegim, PercentLoad = calculationSettings.PercentLoad,
                 PercentForWorsening = calculationSettings.PercentForWorsening
             };
             _calculationService.CalculationProgress += EventHandler;
@@ -41,26 +48,47 @@ namespace Server.Controllers
             return Ok($"Расчет завершен.");
         }
 
+        /// <summary>
+        /// Получить описания всех расчетов
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetCalculations")]
         public async Task<IActionResult> GetCalculations()
         {
-            return Ok(_calculationService.GetCalculations());
+            var calculations = _calculationService.GetCalculations();
+            var response = new GetCalculationsResponse
+            {
+                CalculationAmount = calculations.Count,
+                Calculations = _mapper.Map<List<Calculations>, List<CalculationDto>>(calculations)
+            };
+            return Ok(response);
         }
 
+        /// <summary>
+        /// Получить результаты определенного расчета
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetCalculations/{id}")]
         public async Task<IActionResult> GetCalculationsById(string? id)
         {
-            return Ok(_calculationService.GetCalculationsById(id));
+            var calculationResultInfo = _calculationService.GetCalculationsById(id);      
+            return Ok(calculationResultInfo);
         }
 
+        /// <summary>
+        /// Удалить определенный расчет
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("DeleteCalculations/{id}")]
         public async Task<IActionResult> DeleteCalculationsById(string? id)
         {
             await _calculationService.DeleteCalculationById(id);
-            return Ok;
+            return Ok();
         }
 
         [NonAction]

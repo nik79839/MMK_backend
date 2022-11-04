@@ -34,11 +34,13 @@ namespace Infrastructure.Services
                 PowerFlowResults = _calculationResultRepository.GetPowerFlowResultById(id).Result,
                 VoltageResults = _calculationResultRepository.GetVoltageResultById(id).Result
             };
-            CalculationResultProcessed calculationResultProcessed = new();
+            
             if (calculationResultInitial.PowerFlowResults.Count == 0)
             {
                 throw new Exception($"Ошибка. Расчета с ID {id} не существует.");
             }
+
+            CalculationResultProcessed calculationResultProcessed = new();
             calculationResultProcessed.Processing(calculationResultInitial.PowerFlowResults);
             calculationResultProcessed.Processing(calculationResultInitial.VoltageResults);
             List<WorseningSettings> worseningSettings = _calculationResultRepository.GetWorseningSettingsById(id).Result;

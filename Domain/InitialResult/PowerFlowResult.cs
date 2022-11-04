@@ -7,7 +7,7 @@
         /// </summary>
         public double PowerFlowLimit { get; set; }
 
-        public PowerFlowResult(string calculationId, int implementationId, double powerFlowLimit)
+        public PowerFlowResult(Guid calculationId, int implementationId, double powerFlowLimit)
             : base(calculationId, implementationId)
         {
             PowerFlowLimit = powerFlowLimit;

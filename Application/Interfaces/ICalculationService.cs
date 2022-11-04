@@ -1,6 +1,5 @@
 ﻿using Domain;
 using Domain.Events;
-using Domain.ProcessedResult;
 
 namespace Application.Interfaces
 {

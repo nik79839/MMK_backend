@@ -16,7 +16,7 @@
         /// </summary>
         public double CurrentValue { get; set; }
 
-        public CurrentResult(string calculationId, int implementationId, int startNode, int endNode, double currentValue)
+        public CurrentResult(Guid calculationId, int implementationId, int startNode, int endNode, double currentValue)
             : base(calculationId, implementationId)
         {
             StartNode = startNode;

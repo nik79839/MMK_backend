@@ -4,6 +4,7 @@ using Infrastructure.Persistance.Repositories;
 using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.OpenApi.Models;
 using Server;
 using Server.Hub;
 using System.Reflection;
@@ -17,7 +18,12 @@ string connection = builder.Configuration.GetConnectionString("DefaultConnection
 builder.Services.AddDbContext<CalculationResultContext>(options => { options.UseNpgsql(connection);}, ServiceLifetime.Transient);
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
+    var filePath = Path.Combine(System.AppContext.BaseDirectory, @"C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\bin\Debug\net6.0\Domain.xml");
+    c.IncludeXmlComments(@"C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\bin\Debug\net6.0\Domain.xml");
+});
 builder.Services.AddSignalR();
 builder.Services.AddScoped<ICalculationResultRepository, CalculationResultRepository>();
 var assembly = Assembly.GetAssembly(typeof(MappingProfile));

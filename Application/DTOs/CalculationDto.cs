@@ -1,30 +1,16 @@
-﻿using Domain.InitialResult;
-using System.ComponentModel.DataAnnotations;
-
-namespace Domain
+﻿namespace Application.DTOs
 {
-    public class Calculations
+    public class CalculationDto
     {
-
         /// <summary>
         /// Уникальный идентификатор расчета
         /// </summary>
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Id { get; set; }
 
         /// <summary>
         /// Название расчета
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// Описание расчета
-        /// </summary>
-        public string? Description { get; set; }
-
-        /// <summary>
-        /// Время начала расчета
-        /// </summary>
-        public DateTime CalculationStart { get; set; } = DateTime.UtcNow;
 
         /// <summary>
         /// Время Конца расчета
@@ -35,13 +21,15 @@ namespace Domain
         /// Название сечения
         /// </summary>
         public string? SechName { get; set; }
-        public string? PathToRegim { get; set; }
-        public int? PercentLoad { get; set; }
-        public int? PercentForWorsening { get; set; }
 
         /// <summary>
         /// Процент прогресса расчета
         /// </summary>
         public int? Progress { get; set; } = null;
+        public string? PathToRegim { get; set; }
+        public int? PercentLoad { get; set; }
+        public int? PercentForWorsening { get; set; }
+        public string? Description { get; set; }
+        public List<int> NodesForWorsening { get; set; }
     }
 }

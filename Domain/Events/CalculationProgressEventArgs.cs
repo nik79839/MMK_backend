@@ -15,9 +15,9 @@
         /// <summary>
         /// Уникальный идентификатор расчета
         /// </summary>
-        public string CalculationId { get; set; }
+        public Guid CalculationId { get; set; }
 
-        public CalculationProgressEventArgs(string calculationId, int percent, int time)
+        public CalculationProgressEventArgs(Guid calculationId, int percent, int time)
         {
             CalculationId = calculationId;
             Percent = percent;

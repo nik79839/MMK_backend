@@ -10,15 +10,14 @@ namespace Domain.InitialResult
         /// <summary>
         /// Уникальный идентификатор расчета
         /// </summary>
-        public string CalculationId { get; set; }
+        public Guid CalculationId { get; set; }
 
-        [Range(1, 10000, ErrorMessage = "Недопустимое число реализации")]
         /// <summary>
         /// Номер реализации
         /// </summary>
         public int ImplementationId { get; set; }
 
-        public CalculationResultBase(string calculationId, int implementationId)
+        public CalculationResultBase(Guid calculationId, int implementationId)
         {
             CalculationId = calculationId;
             ImplementationId = implementationId;

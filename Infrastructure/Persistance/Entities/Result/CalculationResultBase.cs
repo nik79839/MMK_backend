@@ -12,7 +12,7 @@ namespace Infrastructure.Persistance.Entities.Result
         /// Уникальный идентификатор расчета
         /// </summary>
         [Key, Column(Order = 0)]
-        public string CalculationId { get; set; }
+        public Guid CalculationId { get; set; }
 
         /// <summary>
         /// Номер реализации

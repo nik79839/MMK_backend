@@ -5,7 +5,7 @@
     /// </summary>
     public class WorseningSettings
     {
-        public string CalculationId { get; set; }
+        public Guid CalculationId { get; set; }
         public int NodeNumber { get; set; }
     }
 }

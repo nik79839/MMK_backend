@@ -5,7 +5,7 @@ namespace Infrastructure.Persistance.Entities
     [Table("WorseningSettings")]
     public class WorseningSettingsEntity
     {
-        public string CalculationId { get; set; }
+        public Guid CalculationId { get; set; }
         public int NodeNumber { get; set; }
         /// <summary>
         /// Ссылка на расчет

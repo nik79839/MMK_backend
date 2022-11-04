@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Application.DTOs;
+using AutoMapper;
 using Domain;
 using Infrastructure.Persistance.Entities;
 
@@ -8,7 +9,7 @@ namespace Server
     {
         public MappingProfile()
         {
-            CreateMap<CalculationEntity, Calculations>().ReverseMap();
+            CreateMap<Calculations, CalculationDto>().ReverseMap();
         }
     }
 }
