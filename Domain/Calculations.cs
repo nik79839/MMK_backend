@@ -43,5 +43,6 @@ namespace Domain
         /// Процент прогресса расчета
         /// </summary>
         public int? Progress { get; set; } = null;
+        public List<int> NodesForWorsening { get; set; } = new();
     }
 }

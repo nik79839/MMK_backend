@@ -6,8 +6,7 @@ namespace Application.Interfaces
     public interface ICalculationResultRepository
     {
         Task<List<Calculations>> GetCalculations();
-        Task<List<PowerFlowResult>> GetPowerFlowResultById(string? id);
-        Task<List<VoltageResult>> GetVoltageResultById(string? id);
+        Task<CalculationResultInitial> GetResultInitialById(string? id);
         Task AddCalculation(Calculations calculations);
         Task UpdateCalculation(Calculations calculations);
         Task AddPowerFlowResults(List<PowerFlowResult> powerFlowResults);

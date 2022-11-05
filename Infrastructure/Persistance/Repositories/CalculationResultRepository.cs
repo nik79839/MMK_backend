@@ -5,6 +5,7 @@ using Domain.InitialResult;
 using Infrastructure.Persistance.Entities;
 using Infrastructure.Persistance.Entities.Result;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace Infrastructure.Persistance.Repositories
 {
@@ -71,22 +72,32 @@ namespace Infrastructure.Persistance.Repositories
 
         public async Task<List<Calculations>> GetCalculations()
         {
-            var calculations = _context.Calculations.OrderByDescending(c => c.CalculationEnd).ToList();
-            return _mapper.Map<List<Calculations>>(calculations);
+            var calculationsEntity = _context.Calculations.OrderByDescending(c => c.CalculationEnd).ToList();
+            var worseningSettingsEntity = _context.WorseningSettings.ToList();
+            List<Calculations> calculations = _mapper.Map<List<Calculations>>(calculationsEntity);
+            List<WorseningSettings> worseningSettings = _mapper.Map<List<WorseningSettings>>(worseningSettingsEntity);
+            foreach (var calculation in calculations)
+            {
+                calculation.NodesForWorsening.AddRange(from worseningSetting in worseningSettings
+                                                       where calculation.Id == worseningSetting.CalculationId
+                                                       select worseningSetting.NodeNumber);
+            }
+            return calculations;
         }
 
-        public async Task<List<PowerFlowResult>> GetPowerFlowResultById(string? id)
+        public async Task<CalculationResultInitial> GetResultInitialById(string? id)
         {
-            var powerFlowResults = (from calculations in _context.PowerFlowResults 
-                                    where calculations.CalculationId.ToString() == id select calculations).ToList();
-            return _mapper.Map<List<PowerFlowResult>>(powerFlowResults);
-        }
-
-        public async Task<List<VoltageResult>> GetVoltageResultById(string? id)
-        {
-            var voltageResults = (from calculations in _context.VoltageResults 
-                                  where calculations.CalculationId.ToString() == id select calculations).ToList();
-            return _mapper.Map<List<VoltageResult>>(voltageResults);
+            var powerFlowResults = (from calculations in _context.PowerFlowResults
+                                    where calculations.CalculationId.ToString() == id
+                                    select calculations).ToList();
+            var voltageResults = (from calculations in _context.VoltageResults
+                                  where calculations.CalculationId.ToString() == id
+                                  select calculations).ToList();
+            return new CalculationResultInitial()
+            {
+                PowerFlowResults = _mapper.Map<List<PowerFlowResult>>(powerFlowResults),
+                VoltageResults = _mapper.Map<List<VoltageResult>>(voltageResults)
+            };
         }
 
         public async Task<List<WorseningSettings>> GetWorseningSettingsById(string? id)

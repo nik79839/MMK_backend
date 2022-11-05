@@ -22,6 +22,10 @@ namespace Infrastructure.Services
             await _calculationResultRepository.DeleteCalculationsById(id);
         }
 
+        /// <summary>
+        /// Получить все расчеты
+        /// </summary>
+        /// <returns>Расчеты</returns>
         public List<Calculations> GetCalculations()
         {
             return _calculationResultRepository.GetCalculations().Result;
@@ -29,12 +33,7 @@ namespace Infrastructure.Services
 
         public CalculationResultInfo GetCalculationsById(string id)
         {
-            CalculationResultInitial calculationResultInitial = new()
-            {
-                PowerFlowResults = _calculationResultRepository.GetPowerFlowResultById(id).Result,
-                VoltageResults = _calculationResultRepository.GetVoltageResultById(id).Result
-            };
-            
+            CalculationResultInitial calculationResultInitial = _calculationResultRepository.GetResultInitialById(id).Result;
             if (calculationResultInitial.PowerFlowResults.Count == 0)
             {
                 throw new Exception($"Ошибка. Расчета с ID {id} не существует.");
