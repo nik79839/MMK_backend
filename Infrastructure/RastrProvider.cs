@@ -3,7 +3,7 @@ using Domain.Rastrwin3.RastrModel;
 
 namespace Infrastructure
 {
-    public class RastrProvider
+    public class RastrProvider : ICalcModel
     {
         private readonly ITable _node;
         private readonly ITable _vetv;
@@ -82,7 +82,7 @@ namespace Infrastructure
                     return index;
                 }
             }
-            return -1;
+            throw new Exception($"Не найден узел с номером {ny}");
         }
 
         /// <summary>
@@ -104,23 +104,6 @@ namespace Infrastructure
                 }
             }
             return -1;
-        }
-
-        /// <summary>
-        /// Случайный tg для каждой реалиации
-        /// </summary>
-        /// <param name="rastr"></param>
-        /// <param name="nodes">Узлы</param>
-        /// <param name="tgValue">Список значений cos f</param>
-        public List<double> ChangeTg(List<int> nodes)
-        {
-            List<double> tgValues = new();
-            Random randtg = new Random();
-            for (int i = 0; i < nodes.Count; i++)
-            {
-                tgValues.Add((float)randtg.Next(48, 62) / 100);
-            }
-            return tgValues;
         }
 
         /// <summary>
@@ -156,7 +139,7 @@ namespace Infrastructure
                     {
                         Number = (int)NumberNode.ZN[i],
                         Name = NameNode.ZN[i].ToString(),
-                        District = new District() { Number = (int)Na.ZN[i], Name = NameArea.ZN[i].ToString() }
+                        District = new District(NameArea.ZN[i].ToString(), (int)Na.ZN[i])
                     });
                 }
             }
@@ -170,17 +153,19 @@ namespace Infrastructure
         /// <param name="nodes">Список узлов с нагрузкой</param>
         /// <param name="tgValues">Списко cos а для узлов нагрузки</param>
         /// <param name="percent">Количество процентов по обе стороны от номинального значения</param>
-        public void ChangePn(List<int> nodes, List<double> tgValues, int percent)
+        public void ChangePn(List<int> nodes, int percent)
         {
             Random randPn = new();
+            Random randTg = new();
             _Rastr.rgm("p");
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = FindNodeIndex(nodes[i]);
                 Pn.set_ZN(index, (double)randPn.Next(Convert.ToInt32(Pn.ZN[index]) * 100 - percent, Convert.ToInt32(Pn.ZN[index]) * 100 + percent) / 100f);
-                Qn.set_ZN(index, (double)Pn.ZN[index] * tgValues[i]);
+                Qn.set_ZN(index, (double)Pn.ZN[index] * (float)(randTg.Next(48, 62) / 100));
             }
         }
+
 
         /// <summary>
         /// Возвращает список районов
@@ -192,7 +177,7 @@ namespace Infrastructure
             List<District> districts = new();
             for (int i = 0; i < _area.Count; i++)
             {
-                districts.Add(new District() { Name = NameAreaArea.ZN[i].ToString(), Number = (int)NaArea.ZN[i] });
+                districts.Add(new District(NameAreaArea.ZN[i].ToString(), (int)NaArea.ZN[i]));
             }
             return districts;
         }
@@ -220,37 +205,35 @@ namespace Infrastructure
         /// <param name="tgvalues">Список cos f, генерируется в другом методе случайным образом</param>
         /// <param name="unode">Список напряжений </param>
         /// <param name="percent">Процент приращения</param>
-        public void WorseningRandom(List<int> nodes, List<double> tgvalues, List<int> nodesWithKP, int percent)
+        public void WorseningRandom(List<int> nodes, int percent)
         {
             Random randPercent = new();
+            Random randTg = new();
             RastrRetCode kod = _Rastr.rgm("p");
-            float randomPercent;
-            int index;
-
+            float randomPercent; int index;
             if (kod == 0)
             {
-                RastrRetCode kd;
                 do // Основное утяжеление
                 {
                     for (int i = 0; i < nodes.Count; i++)
                     {
                         index = FindNodeIndex(nodes[i]);
                         randomPercent = 1 + (float)randPercent.Next(0, percent) / 100;
-                        Pn.set_ZN(index, (double)Convert.ToDouble(Pn.Z[index]) * randomPercent);
-                        Qn.set_ZN(index, (double)Convert.ToDouble(Pn.ZN[index]) * tgvalues[i]);
+                        Pn.set_ZN(index, Convert.ToDouble(Pn.Z[index]) * randomPercent);
+                        Qn.set_ZN(index, Convert.ToDouble(Pn.ZN[index]) * (float)(randTg.Next(48, 62) / 100));
                     }
-                    kd = _Rastr.rgm("p");
+                    kod = _Rastr.rgm("p");
                 }
-                while (kd == 0);
-                while (kd != 0) // Откат на последний сходяийся режим
+                while (kod == 0);
+                while (kod != 0) // Откат на последний сходяийся режим
                 {
                     for (int i = 0; i < nodes.Count; i++)
                     {
                         index = FindNodeIndex(nodes[i]);
                         Pn.set_ZN(index, (double)Pn.Z[index] / 1.02);
-                        Qn.set_ZN(index, (double)Pn.ZN[index] * tgvalues[i]);
+                        Qn.set_ZN(index, (double)Pn.ZN[index] * (float)(randTg.Next(48, 62) / 100));
                     }
-                    kd = _Rastr.rgm("p");
+                    kod = _Rastr.rgm("p");
                 }
             }
         }
@@ -265,3 +248,4 @@ namespace Infrastructure
         }
     }
 }
+

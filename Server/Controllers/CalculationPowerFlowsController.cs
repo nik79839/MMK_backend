@@ -1,8 +1,13 @@
 using Application.DTOs;
+using Application.DTOs.InitialResult;
+using Application.DTOs.ProcessedResult;
+using Application.DTOs.Response;
 using Application.Interfaces;
 using AutoMapper;
 using Domain;
 using Domain.Events;
+using Domain.InitialResult;
+using Domain.ProcessedResult;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Server.Hub;
@@ -24,6 +29,7 @@ namespace Server.Controllers
             _hubContext = hubContext;
             _mapper = mapper;
             _calculationService = calculationService;
+            _calculationService.CalculationProgress += EventHandler;
         }
 
         /// <summary>
@@ -33,17 +39,13 @@ namespace Server.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("PostCalculations")]
-        public async Task<IActionResult> PostCalculations([FromBody]CalculationSettings calculationSettings)
+        public async Task<IActionResult> PostCalculations([FromBody]CalculationSettingsRequest calculationSettingsRequest)
         {
             CancellationToken cancellationToken = HttpContext.RequestAborted;
+            var calculationSettings = _mapper.Map<CalculationSettingsRequest, CalculationSettings>(calculationSettingsRequest);
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch"; ;
-            Calculations calculations = new() { Name = calculationSettings.Name, Description = calculationSettings.Description,
-                CalculationEnd = null, PathToRegim = calculationSettings.PathToRegim, PercentLoad = calculationSettings.PercentLoad,
-                PercentForWorsening = calculationSettings.PercentForWorsening
-            };
-            _calculationService.CalculationProgress += EventHandler;
-            await _calculationService.StartCalculation(calculations, calculationSettings, cancellationToken);
+            await _calculationService.StartCalculation(calculationSettings, cancellationToken);
             Console.WriteLine("Расчет завершен");
             return Ok($"Расчет завершен.");
         }
@@ -65,6 +67,7 @@ namespace Server.Controllers
             return Ok(response);
         }
 
+        //TODO: Изменить маппер
         /// <summary>
         /// Получить результаты определенного расчета
         /// </summary>
@@ -74,8 +77,19 @@ namespace Server.Controllers
         [Route("GetCalculations/{id}")]
         public async Task<IActionResult> GetCalculationsById(string? id)
         {
-            var calculationResultInfo = _calculationService.GetCalculationsById(id);      
-            return Ok(calculationResultInfo);
+            var calculationResultInfo = _calculationService.GetCalculationsById(id);
+            CalculationResultInitialDto calculationResultInitial = new()
+            {
+                PowerFlowResults = calculationResultInfo.InitialResult.PowerFlowResults.Select(x => x.PowerFlowLimit).ToList(),
+                VoltageResults = _mapper.Map<List<VoltageResult>, List<VoltageResultDto>>(calculationResultInfo.InitialResult.VoltageResults)
+            };
+            CalculationResultProcessedDto calculationResultProcessed = new()
+            {
+                PowerFlowResultProcessed = _mapper.Map<StatisticBase, StatisticBaseDto>(calculationResultInfo.ProcessedResult.PowerFlowResultProcessed),
+                VoltageResultProcessed = _mapper.Map<List<VoltageResultProcessed>, List<VoltageResultProcessedDto>>(calculationResultInfo.ProcessedResult.VoltageResultProcessed)
+            };
+            var response = new CalculationResultInfoResponse(calculationResultInitial, calculationResultProcessed);
+            return Ok(response);
         }
 
         /// <summary>

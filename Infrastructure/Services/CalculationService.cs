@@ -5,16 +5,19 @@ using Domain.InitialResult;
 using Domain.ProcessedResult;
 using Domain.Rastrwin3.RastrModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Infrastructure.Services
 {
     public class CalculationService : ICalculationService
     {
         private readonly ICalculationResultRepository _calculationResultRepository;
+        private readonly ICalcModel _calcModel;
         public event EventHandler<CalculationProgressEventArgs> CalculationProgress;
-        public CalculationService(ICalculationResultRepository calculationResultRepository)
+        public CalculationService(ICalculationResultRepository calculationResultRepository, ICalcModel calcModel)
         {
             _calculationResultRepository = calculationResultRepository;
+            _calcModel = calcModel;
         }
 
         public async Task DeleteCalculationById(string id)
@@ -42,32 +45,36 @@ namespace Infrastructure.Services
             CalculationResultProcessed calculationResultProcessed = new();
             calculationResultProcessed.Processing(calculationResultInitial.PowerFlowResults);
             calculationResultProcessed.Processing(calculationResultInitial.VoltageResults);
-            List<WorseningSettings> worseningSettings = _calculationResultRepository.GetWorseningSettingsById(id).Result;
-            List<int> worseningSettingsNumber = worseningSettings.Select(x => x.NodeNumber).ToList();
-            CalculationResultInfo calculationResultInfo = new(calculationResultInitial, calculationResultProcessed, worseningSettingsNumber);
+            CalculationResultInfo calculationResultInfo = new(calculationResultInitial, calculationResultProcessed);
             return calculationResultInfo;
         }
 
         //TODO: События
-        public async Task StartCalculation(Calculations calculations, CalculationSettings calculationSettings, CancellationToken cancellationToken)
+        public async Task StartCalculation(CalculationSettings calculationSettings, CancellationToken cancellationToken)
         {
             RastrProvider rastrProvider = new(calculationSettings.PathToRegim, calculationSettings.PathToSech);
-            Console.WriteLine("Режим и сечения загружены.");
-            calculations.SechName = rastrProvider.SechList().FirstOrDefault(sech => sech.Num == calculationSettings.SechNumber).SechName;
-            List<WorseningSettings> worseningSettings = new();
-            foreach (var setting in calculationSettings.NodesForWorsening)
+            Calculations calculations = new()
             {
-                worseningSettings.Add(new WorseningSettings() { CalculationId = calculations.Id, NodeNumber = setting });
-            }
+                Name = calculationSettings.Name,
+                Description = calculationSettings.Description,
+                CalculationEnd = null,
+                PathToRegim = calculationSettings.PathToRegim,
+                PercentLoad = calculationSettings.PercentLoad,
+                PercentForWorsening = calculationSettings.PercentForWorsening,
+                SechName = rastrProvider.SechList().FirstOrDefault(sech => sech.Num == calculationSettings.SechNumber).SechName
+            };
+            Console.WriteLine("Режим и сечения загружены.");
+            List<WorseningSettings> worseningSettings = new();
+            worseningSettings.AddRange(from setting in calculationSettings.NodesForWorsening
+                                       select new WorseningSettings(calculations.Id, setting));
             await _calculationResultRepository.AddCalculation(calculations);
             await _calculationResultRepository.AddWorseningSettings(worseningSettings);
             CalculationResultInitial calculationResultInitial = new();
             List<int> nodesWithKP = new() { 2658, 2643, 60408105 };
-            List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0),
-            new(2639,60408105,0), new (60408105,2630,1)}; // Ветви для замеров тока
-            calculationSettings.LoadNodes = rastrProvider.AllLoadNodesToList(); //Список узлов нагрузки со случайными начальными параметрами (все узлы)                                                                   //}
+            List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0)}; // Ветви для замеров тока
+            calculationSettings.LoadNodes = rastrProvider.AllLoadNodesToList(); //Список узлов нагрузки со случайными начальными параметрами(все узлы)                                                                   //}
             List<int> numberLoadNodes = calculationSettings.LoadNodes.Select(x => x.Number).ToList(); //Массив номеров узлов
-            int exp = calculationSettings.CountOfImplementations; // Число реализаций
+            int exp = calculationSettings.CountOfImplementations;
                                                                   
             for (int i = 0; i < exp; i++)
             {
@@ -78,20 +85,19 @@ namespace Infrastructure.Services
                 }
                 var watch = Stopwatch.StartNew();
                 rastrProvider = new(calculationSettings.PathToRegim, calculationSettings.PathToSech);
-                List<double> tgNodes = rastrProvider.ChangeTg(numberLoadNodes); //Список коэф мощности для каждой реализации
-                rastrProvider.ChangePn(numberLoadNodes, tgNodes, calculationSettings.PercentLoad); //Случайная нагрузка
+                rastrProvider.ChangePn(numberLoadNodes, calculationSettings.PercentLoad); //Случайная нагрузка
                 rastrProvider.RastrTestBalance();
-                rastrProvider.WorseningRandom(calculationSettings.NodesForWorsening, tgNodes, nodesWithKP, calculationSettings.PercentLoad);
+                rastrProvider.WorseningRandom(calculationSettings.NodesForWorsening, calculationSettings.PercentLoad);
                 double powerFlowValue = Math.Round((double)rastrProvider.PowerSech.Z[calculationSettings.SechNumber], 2);
-                for (int j = 0; j < nodesWithKP.Count; j++) // Запись напряжений
+                foreach (int nodeWithKP in nodesWithKP) // Запись напряжений
                 {
-                    int index = rastrProvider.FindNodeIndex(nodesWithKP[j]);
-                    calculationResultInitial.VoltageResults.Add(new VoltageResult(calculations.Id, i + 1, nodesWithKP[j], rastrProvider.NameNode.Z[index].ToString(), Convert.ToDouble(rastrProvider.Ur.Z[index])));
+                    int index = rastrProvider.FindNodeIndex(nodeWithKP);
+                    calculationResultInitial.VoltageResults.Add(new VoltageResult(calculations.Id, i + 1, nodeWithKP, rastrProvider.NameNode.Z[index].ToString(), Math.Round(Convert.ToDouble(rastrProvider.Ur.Z[index]),2)));
                 }
                 for (int j = 0; j < brunchesWithAOPO.Count; j++) // Запись токов
                 {
                     int index = rastrProvider.FindBranchIndex(brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, brunchesWithAOPO[j].ParallelNumber);
-                    calculationResultInitial.CurrentResults.Add(new CurrentResult(calculations.Id, i + 1, brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, Convert.ToDouble(rastrProvider.IMax.Z[index])));
+                    calculationResultInitial.CurrentResults.Add(new CurrentResult(calculations.Id, i + 1, brunchesWithAOPO[j].StartNode, brunchesWithAOPO[j].EndNode, Math.Round(Convert.ToDouble(rastrProvider.IMax.Z[index]),2)));
                 }
 
                 watch.Stop();

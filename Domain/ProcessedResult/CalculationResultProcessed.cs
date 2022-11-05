@@ -1,4 +1,5 @@
 ﻿using Domain.InitialResult;
+using System.Linq;
 
 namespace Domain.ProcessedResult
 {
@@ -39,38 +40,11 @@ namespace Domain.ProcessedResult
             foreach (var nodeNumber in nodeNumbers)
             {
                 List<double> values = new();
-                foreach (var voltageResult in voltageResults)
-                {
-                    if (voltageResult.NodeNumber == nodeNumber)
-                    {
-                        values.Add(voltageResult.VoltageValue);
-                    }
-                }
-                int intervalCount = Convert.ToInt32(Math.Log10(values.Count) + Math.Sqrt(values.Count));
-                double maximum = values.Max();
-                double minimum = values.Min();
-                double mean = Math.Round(values.Average(), 2);
-                double range = maximum - minimum;
-                double step = range / intervalCount;
-                double sec = minimum;
-                double first = 0, height = 0;
-                List<HistogramData> histogramData = new();
-                for (int i = 0; i < intervalCount; i++)
-                {
-                    int count = 0;
-                    sec += step;
-                    first = sec - step;
-                    for (int j = 0; j < values.Count; j++)
-                    {
-                        if (values[j] >= first && values[j] <= sec)
-                        {
-                            count++;
-                        }
-                    }
-                    height = Convert.ToDouble(count) / Convert.ToDouble(values.Count) / step;
-                    histogramData.Add(new HistogramData() { Interval = Math.Round(first, 2).ToString() + " - " + Math.Round(sec, 2).ToString(), Height = height });
-                }
-                VoltageResultProcessed.Add(new VoltageResultProcessed() { Maximum = maximum, Minimum = minimum, Mean = mean, HistogramData = histogramData, NodeNumber = nodeNumber });
+                values.AddRange(from voltageResult in voltageResults
+                                where voltageResult.NodeNumber == nodeNumber
+                                select voltageResult.VoltageValue);
+                StatisticBase statistic = GetStatistic(values);
+                VoltageResultProcessed.Add(new VoltageResultProcessed() { Maximum = statistic.Maximum, Minimum = statistic.Minimum, Mean = statistic.Mean, HistogramData = statistic.HistogramData, NodeNumber = nodeNumber });
             }
         }
 
@@ -81,22 +55,17 @@ namespace Domain.ProcessedResult
             statisticBase.Maximum = values.Max();
             statisticBase.Minimum = values.Min();
             statisticBase.Mean = Math.Round(values.Average(), 2);
-            double range = statisticBase.Maximum - statisticBase.Minimum;
-            double step = range / intervalCount;
+            double step = (statisticBase.Maximum - statisticBase.Minimum) / intervalCount;
             double sec = statisticBase.Minimum;
             double first = 0, height = 0;
             for (int i = 0; i < intervalCount; i++)
             {
                 int count = 0;
-                sec = sec + step;
+                sec += step;
                 first = sec - step;
-                for (int j = 0; j < values.Count; j++)
-                {
-                    if (values[j] >= first && values[j] <= sec)
-                    {
-                        count++;
-                    }
-                }
+                count += (from double v in values
+                          where v >= first && v <= sec
+                          select v).Count();
                 height = Convert.ToDouble(count) / Convert.ToDouble(values.Count) / step;
                 statisticBase.HistogramData.Add(new HistogramData() { Interval = Math.Round(first, 2).ToString() + " - " + Math.Round(sec, 2).ToString(), Height = height });
             }
