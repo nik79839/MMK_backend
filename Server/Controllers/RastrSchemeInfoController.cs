@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Server.Controllers
 {
-    //[ApiController]
-    //[Route("[controller]")]
+    /// <summary>
+    /// Контроллер для получения информации о режиме из RastrWin3
+    /// </summary>
+    [ApiController]
+    [Route("api/[controller]")]
     public class RastrSchemeInfoController : ControllerBase
     {
         private readonly IRastrSchemeInfoService _rastrSchemeInfoService;
@@ -14,6 +17,10 @@ namespace Server.Controllers
             _rastrSchemeInfoService = rastrSchemeInfoService;
         }
 
+        /// <summary>
+        /// Получение информации о списке нагрузочных узлов, сечений и районов
+        /// </summary>
+        /// <returns></returns>
         [Route("RastrSchemeInfo/GetRastrSchemeInfo")]
         [HttpGet]
         public async Task<IActionResult> GetRastrSchemeInfo()

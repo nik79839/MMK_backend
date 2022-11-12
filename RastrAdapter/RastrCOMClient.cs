@@ -1,19 +1,17 @@
 ﻿using ASTRALib;
 using Domain.Rastrwin3.RastrModel;
 
-namespace Infrastructure
+namespace RastrAdapter
 {
-    public class RastrProvider : ICalcModel
+    public class RastrCOMClient 
     {
         private readonly ITable _node;
         private readonly ITable _vetv;
         private readonly ITable _sechen;
         private readonly ITable _area;
-        public Rastr _Rastr { get; set; }
+        public Rastr RastrCOM { get; set; } = new();
         public ICol NumberNode { get; set; }
         public ICol NameNode { get; set; }
-        public ICol StaNode { get; set; }
-        public ICol BshNode { get; set; }
         public ICol Pn { get; set; }
         public ICol Qn { get; set; }
         public ICol Na { get; set; }
@@ -32,17 +30,14 @@ namespace Infrastructure
         public ICol NaArea { get; set; }
         public ICol NameAreaArea { get; set; }
 
-        public RastrProvider(string pathToRegim, string? pathToSech = null)
+        public RastrCOMClient(string pathToRegim, string? pathToSech = null)
         {
-            _Rastr = new();
-            _Rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
-            _node = (ITable)_Rastr.Tables.Item("node");
-            _vetv = (ITable)_Rastr.Tables.Item("vetv");
-            _area = (ITable)_Rastr.Tables.Item("area");
+            RastrCOM.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
+            _node = (ITable)RastrCOM.Tables.Item("node");
+            _vetv = (ITable)RastrCOM.Tables.Item("vetv");
+            _area = (ITable)RastrCOM.Tables.Item("area");
             NumberNode = (ICol)_node.Cols.Item("ny");
             NameNode = (ICol)_node.Cols.Item("name");
-            StaNode = (ICol)_node.Cols.Item("sta");
-            BshNode = (ICol)_node.Cols.Item("bsh");
             Pn = (ICol)_node.Cols.Item("pn");
             Qn = (ICol)_node.Cols.Item("qn");
             Na = (ICol)_node.Cols.Item("na");
@@ -59,12 +54,13 @@ namespace Infrastructure
             NameAreaArea = (ICol)_area.Cols.Item("name");
             if (!string.IsNullOrEmpty(pathToSech))
             {
-                _Rastr.Load(RG_KOD.RG_REPL, pathToSech, pathToSech);
-                _sechen = (ITable)_Rastr.Tables.Item("sechen");
+                RastrCOM.Load(RG_KOD.RG_REPL, pathToSech, pathToSech);
+                _sechen = (ITable)RastrCOM.Tables.Item("sechen");
                 Nsech = (ICol)_sechen.Cols.Item("ns");
                 NameSech = (ICol)_sechen.Cols.Item("name");
                 PowerSech = (ICol)_sechen.Cols.Item("psech");
             }
+            RastrTestBalance();
         }
 
         /// <summary>
@@ -103,25 +99,7 @@ namespace Infrastructure
                     return index;
                 }
             }
-            return -1;
-        }
-
-        /// <summary>
-        /// Добавление номеров узлов с СКРМ в лист
-        /// </summary>
-        /// <param name="rastr"></param>
-        /// <param name="nodesWithSkrm">Заполняемый лист</param>
-        public List<int> SkrmNodesToList()
-        {
-            List<int> nodesWithSkrm = new();
-            for (int i = 0; i < _node.Count; i++)
-            {
-                if (Convert.ToDouble(BshNode.ZN[i]) != 0)
-                {
-                    nodesWithSkrm.Add((int)NumberNode.ZN[i]);
-                }
-            }
-            return nodesWithSkrm;
+            throw new Exception($"Не найдена ветвь с номером {ip} - {iq}");
         }
 
         /// <summary>
@@ -157,15 +135,13 @@ namespace Infrastructure
         {
             Random randPn = new();
             Random randTg = new();
-            _Rastr.rgm("p");
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = FindNodeIndex(nodes[i]);
-                Pn.set_ZN(index, (double)randPn.Next(Convert.ToInt32(Pn.ZN[index]) * 100 - percent, Convert.ToInt32(Pn.ZN[index]) * 100 + percent) / 100f);
+                Pn.set_ZN(index, (double)randPn.Next((Convert.ToInt32(Pn.ZN[index]) * 100) - percent, Convert.ToInt32(Pn.ZN[index]) * 100 + percent) / 100f);
                 Qn.set_ZN(index, (double)Pn.ZN[index] * (float)(randTg.Next(48, 62) / 100));
             }
         }
-
 
         /// <summary>
         /// Возвращает список районов
@@ -192,7 +168,7 @@ namespace Infrastructure
             List<Sech> seches = new();
             for (int i = 0; i < _sechen.Count; i++)
             {
-                seches.Add(new Sech() { SechName = NameSech.ZN[i].ToString(), Num = (int)Nsech.ZN[i] });
+                seches.Add(new Sech((int)Nsech.ZN[i], NameSech.ZN[i].ToString()));
             }
             return seches;
         }
@@ -209,7 +185,7 @@ namespace Infrastructure
         {
             Random randPercent = new();
             Random randTg = new();
-            RastrRetCode kod = _Rastr.rgm("p");
+            RastrRetCode kod = RastrCOM.rgm("p");
             float randomPercent; int index;
             if (kod == 0)
             {
@@ -218,11 +194,11 @@ namespace Infrastructure
                     for (int i = 0; i < nodes.Count; i++)
                     {
                         index = FindNodeIndex(nodes[i]);
-                        randomPercent = 1 + (float)randPercent.Next(0, percent) / 100;
+                        randomPercent = 1 + ((float)randPercent.Next(0, percent) / 100);
                         Pn.set_ZN(index, Convert.ToDouble(Pn.Z[index]) * randomPercent);
                         Qn.set_ZN(index, Convert.ToDouble(Pn.ZN[index]) * (float)(randTg.Next(48, 62) / 100));
                     }
-                    kod = _Rastr.rgm("p");
+                    kod = RastrCOM.rgm("p");
                 }
                 while (kod == 0);
                 while (kod != 0) // Откат на последний сходяийся режим
@@ -233,14 +209,14 @@ namespace Infrastructure
                         Pn.set_ZN(index, (double)Pn.Z[index] / 1.02);
                         Qn.set_ZN(index, (double)Pn.ZN[index] * (float)(randTg.Next(48, 62) / 100));
                     }
-                    kod = _Rastr.rgm("p");
+                    kod = RastrCOM.rgm("p");
                 }
             }
         }
 
         public void RastrTestBalance()
         {
-            RastrRetCode test = _Rastr.rgm("p");
+            RastrRetCode test = RastrCOM.rgm("p");
             if (test == RastrRetCode.AST_NB)
             {
                 throw new Exception($"Итерация не завершена из-за несходимости режима.");
@@ -248,4 +224,3 @@ namespace Infrastructure
         }
     }
 }
-

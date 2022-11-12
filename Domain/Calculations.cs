@@ -1,7 +1,4 @@
-﻿using Domain.InitialResult;
-using System.ComponentModel.DataAnnotations;
-
-namespace Domain
+﻿namespace Domain
 {
     public class Calculations
     {
@@ -29,7 +26,7 @@ namespace Domain
         /// <summary>
         /// Время Конца расчета
         /// </summary>
-        public DateTime? CalculationEnd { get; set; }
+        public DateTime? CalculationEnd { get; set; } = null;
 
         /// <summary>
         /// Название сечения

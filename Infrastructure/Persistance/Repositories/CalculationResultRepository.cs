@@ -5,7 +5,6 @@ using Domain.InitialResult;
 using Infrastructure.Persistance.Entities;
 using Infrastructure.Persistance.Entities.Result;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
 namespace Infrastructure.Persistance.Repositories
 {
@@ -64,7 +63,11 @@ namespace Infrastructure.Persistance.Repositories
             List<VoltageResultEntity> voltageResults = (from calculations in _context.VoltageResults 
                                                         where calculations.CalculationId.ToString() == id 
                                                         select calculations).ToList();
+            List<WorseningSettingsEntity> worseningSettings = (from calculations in _context.WorseningSettings
+                                                        where calculations.CalculationId.ToString() == id
+                                                        select calculations).ToList();
             _context.Calculations.Remove(calculations1);
+            _context.WorseningSettings.RemoveRange(worseningSettings);
             _context.PowerFlowResults.RemoveRange(calculationResults);
             _context.VoltageResults.RemoveRange(voltageResults);
             _context.SaveChanges();

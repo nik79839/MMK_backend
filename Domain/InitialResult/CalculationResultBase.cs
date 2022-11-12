@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Domain.InitialResult
+﻿namespace Domain.InitialResult
 {
     /// <summary>
     /// Результаты расчета

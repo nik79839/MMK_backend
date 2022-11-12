@@ -1,7 +1,5 @@
 ﻿using Application.DTOs.InitialResult;
 using Application.DTOs.ProcessedResult;
-using Domain.InitialResult;
-using Domain.ProcessedResult;
 
 namespace Application.DTOs.Response
 {

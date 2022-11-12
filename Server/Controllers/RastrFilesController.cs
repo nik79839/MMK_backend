@@ -3,11 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Server.Controllers
 {
-    //[ApiController]
-    //[Route("[controller]")]
+    /// <summary>
+    /// Контроллер для работы с файлами RastrWin3
+    /// </summary>
+    [ApiController]
+    [Route("api/[controller]")]
     public class RastrFilesController : ControllerBase
     {
-        [Route("RastrFiles/GetRastrFiles")]
+        /// <summary>
+        /// Получить информацию о файлах режима на сервере
+        /// </summary>
+        /// <returns></returns>
+        [Route("GetRastrFiles")]
         [HttpGet]
         public async Task<IActionResult> GetRastrFiles()
         {
@@ -16,12 +23,16 @@ namespace Server.Controllers
             foreach (string file in rastrFilesPath)
             {
                 FileInfo fileInfo = new(file);
-                rastrFiles.Add(new RastrFile() { Name= Path.GetFileName(file), LastModified = fileInfo.LastWriteTime.ToUniversalTime()});
+                rastrFiles.Add(new RastrFile(Path.GetFileName(file), fileInfo.LastWriteTime.ToUniversalTime()));
             }
             return Ok(rastrFiles);
         }
 
-        [Route("RastrFiles/PostRastrFiles")]
+        /// <summary>
+        /// Отправить файл режима на сервер
+        /// </summary>
+        /// <returns></returns>
+        [Route("PostRastrFiles")]
         [HttpPost]
         public async Task<IActionResult> PostRastrFiles()
         {
@@ -30,10 +41,8 @@ namespace Server.Controllers
             foreach (var file in files)
             {
                 string fullPath = $@"{uploadPath}/{file.FileName}";
-                using (var fileStream = new FileStream(fullPath, FileMode.Create))
-                {
-                    file.CopyToAsync(fileStream);
-                }
+                using var fileStream = new FileStream(fullPath, FileMode.Create);
+                await file.CopyToAsync(fileStream);
             }
             return Ok();
         }

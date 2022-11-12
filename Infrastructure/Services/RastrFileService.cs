@@ -12,7 +12,7 @@ namespace Infrastructure.Services
             foreach (string file in rastrFilesPath)
             {
                 FileInfo fileInfo = new(file);
-                rastrFiles.Add(new RastrFile() { Name = Path.GetFileName(file), LastModified = fileInfo.LastWriteTime.ToUniversalTime() });
+                rastrFiles.Add(new RastrFile(Path.GetFileName(file), fileInfo.LastWriteTime.ToUniversalTime()));
             }
             return rastrFiles;
         }

@@ -18,7 +18,7 @@ namespace Server.Controllers
     /// Контроллер работы с расчетами
     /// </summary>
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class CalculationPowerFlowsController : ControllerBase
     {
         private readonly IHubContext<ProgressHub> _hubContext;

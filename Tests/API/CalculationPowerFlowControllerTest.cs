@@ -1,7 +1,6 @@
 ﻿using Domain;
 using Newtonsoft.Json;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Text;
 
 namespace Tests.API

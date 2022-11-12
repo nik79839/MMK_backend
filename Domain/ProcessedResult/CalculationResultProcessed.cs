@@ -1,5 +1,4 @@
 ﻿using Domain.InitialResult;
-using System.Linq;
 
 namespace Domain.ProcessedResult
 {
@@ -8,17 +7,17 @@ namespace Domain.ProcessedResult
     /// </summary>
     public class CalculationResultProcessed
     {
-        public StatisticBase PowerFlowResultProcessed { get; set; } = new();
+        public StatisticBase PowerFlowResultProcessed { get; set; }
 
         /// <summary>
         ///  Обработанные значения напряжения
         /// </summary>
-        public List<VoltageResultProcessed>? VoltageResultProcessed { get; set; } = new();
+        public List<VoltageResultProcessed>? VoltageResultProcessed { get; set; }
 
         /// <summary>
         ///  Обработанные значения тока
         /// </summary>
-        public List<CurrentResultProcessed>? CurrentResultProcessed { get; set; } = new();
+        public List<CurrentResultProcessed>? CurrentResultProcessed { get; set; }
 
         /// <summary>
         /// Обработка результатов расчета

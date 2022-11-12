@@ -1,7 +1,7 @@
 ﻿namespace Domain.ProcessedResult
 {
     /// <summary>
-    /// Результаты расчета для хранения в БД
+    /// Данные для построения гистограммы плотности вероятности
     /// </summary>
     public class HistogramData
     {

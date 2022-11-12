@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{15B54265-9E95-45D8-AFFB-EEA4215F1A80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "Application\Application.csproj", "{FABAF4D4-4854-4722-8024-B2DBF7B187DD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{FABAF4D4-4854-4722-8024-B2DBF7B187DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RastrAdapter", "RastrAdapter\RastrAdapter.csproj", "{F624DFCE-6174-4122-9565-9283D34270BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -105,6 +107,22 @@ Global
 		{FABAF4D4-4854-4722-8024-B2DBF7B187DD}.Release|ARM64.Build.0 = Release|Any CPU
 		{FABAF4D4-4854-4722-8024-B2DBF7B187DD}.Release|x86.ActiveCfg = Release|Any CPU
 		{FABAF4D4-4854-4722-8024-B2DBF7B187DD}.Release|x86.Build.0 = Release|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Debug|x86.Build.0 = Debug|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Release|ARM32.Build.0 = Release|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Release|ARM64.Build.0 = Release|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Release|x86.ActiveCfg = Release|Any CPU
+		{F624DFCE-6174-4122-9565-9283D34270BB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

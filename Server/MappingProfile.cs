@@ -5,7 +5,6 @@ using AutoMapper;
 using Domain;
 using Domain.InitialResult;
 using Domain.ProcessedResult;
-using Infrastructure.Persistance.Entities;
 
 namespace Server
 {
