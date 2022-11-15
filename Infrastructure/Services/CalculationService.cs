@@ -64,10 +64,10 @@ namespace Infrastructure.Services
             {
                 Name = calcSettings.Name,
                 Description = calcSettings.Description,
-                PathToRegim = calcSettings.PathToRegim,
+                PathToRegim = Path.GetFileName(calcSettings.PathToRegim),
                 PercentLoad = calcSettings.PercentLoad,
                 PercentForWorsening = calcSettings.PercentForWorsening,
-                SechName = rastrComClient.SechList().FirstOrDefault(sech => sech.Num == calcSettings.SechNumber).SechName
+                SechName = rastrComClient.SechList().Find(sech => sech.Num == calcSettings.SechNumber).SechName
             };
             Console.WriteLine("Режим и сечения загружены.");
             List<WorseningSettings> worseningSettings = new();
@@ -93,7 +93,7 @@ namespace Infrastructure.Services
                 rastrComClient.ChangePn(numberLoadNodes, calcSettings.PercentLoad); //Случайная нагрузка
                 rastrComClient.RastrTestBalance();
                 rastrComClient.WorseningRandom(calcSettings.NodesForWorsening, calcSettings.PercentLoad);
-                double powerFlowValue = Math.Round((double)rastrComClient.PowerSech.Z[calcSettings.SechNumber], 2);
+                double powerFlowValue = Math.Round((double)rastrComClient.PowerSech.Z[calcSettings.SechNumber-1], 2);
                 calcResultInit.VoltageResults.AddRange(from int nodeWithKP in nodesWithKP // Запись напряжений
                                                        let index = rastrComClient.FindNodeIndex(nodeWithKP)
                                                        select new VoltageResult(calculations.Id, i + 1, nodeWithKP, rastrComClient.NameNode.Z[index].ToString(), Math.Round(Convert.ToDouble(rastrComClient.Ur.Z[index]), 2)));
@@ -104,6 +104,7 @@ namespace Infrastructure.Services
                 calculations.Progress = (i + 1) * 100 / exp;
                 CalculationProgress.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
                 calcResultInit.PowerFlowResults.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
+                Console.WriteLine(powerFlowValue);
             }
             await _calculationResultRepository.AddPowerFlowResults(calcResultInit.PowerFlowResults);
             await _calculationResultRepository.AddVoltageResults(calcResultInit.VoltageResults);

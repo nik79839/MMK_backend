@@ -139,7 +139,8 @@ namespace RastrAdapter
             {
                 int index = FindNodeIndex(nodes[i]);
                 Pn.set_ZN(index, (double)randPn.Next((Convert.ToInt32(Pn.ZN[index]) * 100) - percent, Convert.ToInt32(Pn.ZN[index]) * 100 + percent) / 100f);
-                Qn.set_ZN(index, (double)Pn.ZN[index] * (float)(randTg.Next(48, 62) / 100));
+                double tg = (randTg.NextDouble() * 0.14) + 0.48;
+                Qn.set_ZN(index, (double)Pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
             }
         }
 
@@ -196,7 +197,7 @@ namespace RastrAdapter
                         index = FindNodeIndex(nodes[i]);
                         randomPercent = 1 + ((float)randPercent.Next(0, percent) / 100);
                         Pn.set_ZN(index, Convert.ToDouble(Pn.Z[index]) * randomPercent);
-                        Qn.set_ZN(index, Convert.ToDouble(Pn.ZN[index]) * (float)(randTg.Next(48, 62) / 100));
+                        Qn.set_ZN(index, Convert.ToDouble(Pn.ZN[index]) * ((randTg.NextDouble() * 0.14) + 0.48));
                     }
                     kod = RastrCOM.rgm("p");
                 }
@@ -219,7 +220,7 @@ namespace RastrAdapter
             RastrRetCode test = RastrCOM.rgm("p");
             if (test == RastrRetCode.AST_NB)
             {
-                throw new Exception($"Итерация не завершена из-за несходимости режима.");
+                throw new Exception("Итерация не завершена из-за несходимости режима.");
             }
         }
     }

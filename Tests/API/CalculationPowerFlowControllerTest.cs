@@ -39,10 +39,12 @@ namespace Tests.API
                 SechNumber = 2
             };
             var httpContent = new StringContent(JsonConvert.SerializeObject(calculationSettings), Encoding.UTF8, "application/json");
-            HttpRequestMessage request = new ();
-            request.RequestUri = new Uri("https://localhost:7231/CalculationPowerFlows/PostCalculations");
-            request.Method = HttpMethod.Post;
-            request.Content = httpContent;
+            HttpRequestMessage request = new()
+            {
+                RequestUri = new Uri("https://localhost:7231/api/CalculationPowerFlows/PostCalculations"),
+                Method = HttpMethod.Post,
+                Content = httpContent
+            };
             _client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
             HttpResponseMessage response = await _client.SendAsync(request);
             Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);

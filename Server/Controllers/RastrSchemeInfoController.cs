@@ -21,7 +21,7 @@ namespace Server.Controllers
         /// Получение информации о списке нагрузочных узлов, сечений и районов
         /// </summary>
         /// <returns></returns>
-        [Route("RastrSchemeInfo/GetRastrSchemeInfo")]
+        [Route("GetRastrSchemeInfo")]
         [HttpGet]
         public async Task<IActionResult> GetRastrSchemeInfo()
         {

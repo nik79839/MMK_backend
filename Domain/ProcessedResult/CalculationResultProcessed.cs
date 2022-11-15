@@ -7,17 +7,17 @@ namespace Domain.ProcessedResult
     /// </summary>
     public class CalculationResultProcessed
     {
-        public StatisticBase PowerFlowResultProcessed { get; set; }
+        public StatisticBase PowerFlowResultProcessed { get; set; } = new();
 
         /// <summary>
         ///  Обработанные значения напряжения
         /// </summary>
-        public List<VoltageResultProcessed>? VoltageResultProcessed { get; set; }
+        public List<VoltageResultProcessed>? VoltageResultProcessed { get; set; } = new();
 
         /// <summary>
         ///  Обработанные значения тока
         /// </summary>
-        public List<CurrentResultProcessed>? CurrentResultProcessed { get; set; }
+        public List<CurrentResultProcessed>? CurrentResultProcessed { get; set; } = new();
 
         /// <summary>
         /// Обработка результатов расчета
@@ -25,7 +25,7 @@ namespace Domain.ProcessedResult
         /// <param name="powerFlowResults"></param>
         public void Processing(List<PowerFlowResult> powerFlowResults)
         {
-            List<double> values = powerFlowResults.Select(x => x.PowerFlowLimit).ToList();
+            List<double> values = powerFlowResults.ConvertAll(x => x.PowerFlowLimit);
             PowerFlowResultProcessed = GetStatistic(values);
         }
 
@@ -65,7 +65,7 @@ namespace Domain.ProcessedResult
                 count += (from double v in values
                           where v >= first && v <= sec
                           select v).Count();
-                height = Convert.ToDouble(count) / Convert.ToDouble(values.Count) / step;
+                height = (Convert.ToDouble(count) / Convert.ToDouble(values.Count))*100;
                 statisticBase.HistogramData.Add(new HistogramData() { Interval = Math.Round(first, 2).ToString() + " - " + Math.Round(sec, 2).ToString(), Height = height });
             }
             return statisticBase;
