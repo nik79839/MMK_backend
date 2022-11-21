@@ -40,6 +40,6 @@
         /// Процент прогресса расчета
         /// </summary>
         public int? Progress { get; set; } = null;
-        public List<int> NodesForWorsening { get; set; } = new();
+        public List<WorseningSettings> WorseningSettings { get; set; } = new();
     }
 }

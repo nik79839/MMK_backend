@@ -1,4 +1,5 @@
 ﻿using ASTRALib;
+using Domain;
 using Domain.Rastrwin3.RastrModel;
 
 namespace RastrAdapter
@@ -182,7 +183,7 @@ namespace RastrAdapter
         /// <param name="tgvalues">Список cos f, генерируется в другом методе случайным образом</param>
         /// <param name="unode">Список напряжений </param>
         /// <param name="percent">Процент приращения</param>
-        public void WorseningRandom(List<NodeForWorsening> nodes, int percent)
+        public void WorseningRandom(List<WorseningSettings> nodes, int percent)
         {
             Random randPercent = new();
             Random randTg = new();
@@ -194,7 +195,7 @@ namespace RastrAdapter
                 {
                     for (int i = 0; i < nodes.Count; i++)
                     {
-                        index = FindNodeIndex(nodes[i].Number);
+                        index = FindNodeIndex(nodes[i].NodeNumber);
                         nodes[i].MaxValue ??= 10000;
                         if (Convert.ToDouble(Pn.Z[index]) < nodes[i].MaxValue)
                         {
@@ -210,7 +211,7 @@ namespace RastrAdapter
                 {
                     for (int i = 0; i < nodes.Count; i++)
                     {
-                        index = FindNodeIndex(nodes[i].Number);
+                        index = FindNodeIndex(nodes[i].NodeNumber);
                         Pn.set_ZN(index, (double)Pn.Z[index] / 1.02);
                         Qn.set_ZN(index, (double)Pn.ZN[index] * (float)(randTg.Next(48, 62) / 100));
                     }

@@ -71,8 +71,8 @@ namespace Infrastructure.Services
             };
             Console.WriteLine("Режим и сечения загружены.");
             List<WorseningSettings> worseningSettings = new();
-            worseningSettings.AddRange(from setting in calcSettings.NodesForWorsening
-                                       select new WorseningSettings(calculations.Id, setting.Number,setting.MaxValue));
+            worseningSettings.AddRange(from setting in calcSettings.WorseningSettings
+                                       select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue));
             await _calculationResultRepository.AddCalculation(calculations);
             CalculationResultInitial calcResultInit = new();
             List<int> nodesWithKP = new() { 2658, 2643, 60408105 };
@@ -92,7 +92,7 @@ namespace Infrastructure.Services
                 rastrComClient = new(calcSettings.PathToRegim, calcSettings.PathToSech);
                 rastrComClient.ChangePn(numberLoadNodes, calcSettings.PercentLoad); //Случайная нагрузка
                 rastrComClient.RastrTestBalance();
-                rastrComClient.WorseningRandom(calcSettings.NodesForWorsening, calcSettings.PercentLoad);
+                rastrComClient.WorseningRandom(calcSettings.WorseningSettings, calcSettings.PercentLoad);
                 double powerFlowValue = Math.Round((double)rastrComClient.PowerSech.Z[calcSettings.SechNumber-1], 2);
                 calcResultInit.VoltageResults.AddRange(from int nodeWithKP in nodesWithKP // Запись напряжений
                                                        let index = rastrComClient.FindNodeIndex(nodeWithKP)

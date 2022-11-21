@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Application.DTOs
 {
-    public class NodeForWorseningDto
+    public class WorseningSettingsDto
     {
-        public int Number { get; set; }
+        public int NodeNumber { get; set; }
         public int? MaxValue { get; set; }
     }
 }

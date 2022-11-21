@@ -81,9 +81,9 @@ namespace Infrastructure.Persistance.Repositories
             List<WorseningSettings> worseningSettings = _mapper.Map<List<WorseningSettings>>(worseningSettingsEntity);
             foreach (var calculation in calculations)
             {
-                calculation.NodesForWorsening.AddRange(from worseningSetting in worseningSettings
+                calculation.WorseningSettings.AddRange(from worseningSetting in worseningSettings
                                                        where calculation.Id == worseningSetting.CalculationId
-                                                       select worseningSetting.NodeNumber);
+                                                       select worseningSetting);
             }
             return calculations;
         }

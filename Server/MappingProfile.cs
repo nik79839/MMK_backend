@@ -13,6 +13,7 @@ namespace Server
         public MappingProfile()
         {
             CreateMap<Calculations, CalculationDto>().ReverseMap();
+            CreateMap<WorseningSettings, WorseningSettingsDto>().ReverseMap();
             CreateMap<VoltageResult, VoltageResultDto>().ForMember(m => m.Value,
                     opt => opt.MapFrom(src => src.VoltageValue));
             CreateMap<HistogramData, HistogramDataDto>().ReverseMap();
@@ -22,4 +23,3 @@ namespace Server
         }
     }
 }
-

@@ -26,7 +26,7 @@ namespace Domain
         /// <summary>
         /// Узлы утяжеления нагрузок
         /// </summary>
-        public List<NodeForWorsening> NodesForWorsening { get; set; }
+        public List<WorseningSettings> WorseningSettings { get; set; }
 
         /// <summary>
         /// Число реализаций

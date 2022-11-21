@@ -30,6 +30,6 @@
         public int? PercentLoad { get; set; }
         public int? PercentForWorsening { get; set; }
         public string? Description { get; set; }
-        public List<int> NodesForWorsening { get; set; }
+        public List<WorseningSettingsDto> WorseningSettings { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace Application.DTOs
         /// Узлы утяжеления нагрузок
         /// </summary>
         [MinLength(1)]
-        public List<NodeForWorseningDto> NodesForWorsening { get; set; }
+        public List<WorseningSettingsDto> WorseningSettings { get; set; }
 
         /// <summary>
         /// Число реализаций
