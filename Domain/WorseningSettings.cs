@@ -7,10 +7,12 @@
     {
         public Guid CalculationId { get; set; }
         public int NodeNumber { get; set; }
-        public WorseningSettings(Guid calculationId, int nodeNumber)
+        public int? MaxValue { get; set; }
+        public WorseningSettings(Guid calculationId, int nodeNumber, int? maxValue)
         {
             CalculationId = calculationId;
             NodeNumber = nodeNumber;
+            MaxValue = maxValue;
         }
     }
 }

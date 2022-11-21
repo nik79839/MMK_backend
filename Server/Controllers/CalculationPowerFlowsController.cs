@@ -47,7 +47,7 @@ namespace Server.Controllers
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch"; ;
             await _calculationService.StartCalculation(calculationSettings, cancellationToken);
             Console.WriteLine("Расчет завершен");
-            return Ok($"Расчет завершен.");
+            return Ok("Расчет завершен.");
         }
 
         /// <summary>

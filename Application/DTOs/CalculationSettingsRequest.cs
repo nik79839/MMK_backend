@@ -14,12 +14,11 @@ namespace Application.DTOs
         /// </summary>
         public string? Description { get; set; }
 
-
         /// <summary>
         /// Узлы утяжеления нагрузок
         /// </summary>
         [MinLength(1)]
-        public List<int> NodesForWorsening { get; set; }
+        public List<NodeForWorseningDto> NodesForWorsening { get; set; }
 
         /// <summary>
         /// Число реализаций

@@ -72,7 +72,7 @@ namespace Infrastructure.Services
             Console.WriteLine("Режим и сечения загружены.");
             List<WorseningSettings> worseningSettings = new();
             worseningSettings.AddRange(from setting in calcSettings.NodesForWorsening
-                                       select new WorseningSettings(calculations.Id, setting));
+                                       select new WorseningSettings(calculations.Id, setting.Number,setting.MaxValue));
             await _calculationResultRepository.AddCalculation(calculations);
             CalculationResultInitial calcResultInit = new();
             List<int> nodesWithKP = new() { 2658, 2643, 60408105 };

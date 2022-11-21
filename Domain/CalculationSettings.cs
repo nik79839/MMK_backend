@@ -23,13 +23,11 @@ namespace Domain
         /// </summary>
         public List<Node>? LoadNodes { get; set; }
 
-        [MinLength(1)]
         /// <summary>
         /// Узлы утяжеления нагрузок
         /// </summary>
-        public List<int> NodesForWorsening { get; set; }
+        public List<NodeForWorsening> NodesForWorsening { get; set; }
 
-        [Range(1,10000)]
         /// <summary>
         /// Число реализаций
         /// </summary>

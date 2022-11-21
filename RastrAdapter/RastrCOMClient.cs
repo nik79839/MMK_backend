@@ -182,7 +182,7 @@ namespace RastrAdapter
         /// <param name="tgvalues">Список cos f, генерируется в другом методе случайным образом</param>
         /// <param name="unode">Список напряжений </param>
         /// <param name="percent">Процент приращения</param>
-        public void WorseningRandom(List<int> nodes, int percent)
+        public void WorseningRandom(List<NodeForWorsening> nodes, int percent)
         {
             Random randPercent = new();
             Random randTg = new();
@@ -194,10 +194,14 @@ namespace RastrAdapter
                 {
                     for (int i = 0; i < nodes.Count; i++)
                     {
-                        index = FindNodeIndex(nodes[i]);
-                        randomPercent = 1 + ((float)randPercent.Next(0, percent) / 100);
-                        Pn.set_ZN(index, Convert.ToDouble(Pn.Z[index]) * randomPercent);
-                        Qn.set_ZN(index, Convert.ToDouble(Pn.ZN[index]) * ((randTg.NextDouble() * 0.14) + 0.48));
+                        index = FindNodeIndex(nodes[i].Number);
+                        nodes[i].MaxValue ??= 10000;
+                        if (Convert.ToDouble(Pn.Z[index]) < nodes[i].MaxValue)
+                        {
+                            randomPercent = 1 + ((float)randPercent.Next(0, percent) / 100);
+                            Pn.set_ZN(index, Convert.ToDouble(Pn.Z[index]) * randomPercent);
+                            Qn.set_ZN(index, Convert.ToDouble(Pn.ZN[index]) * ((randTg.NextDouble() * 0.14) + 0.48));
+                        }
                     }
                     kod = RastrCOM.rgm("p");
                 }
@@ -206,7 +210,7 @@ namespace RastrAdapter
                 {
                     for (int i = 0; i < nodes.Count; i++)
                     {
-                        index = FindNodeIndex(nodes[i]);
+                        index = FindNodeIndex(nodes[i].Number);
                         Pn.set_ZN(index, (double)Pn.Z[index] / 1.02);
                         Qn.set_ZN(index, (double)Pn.ZN[index] * (float)(randTg.Next(48, 62) / 100));
                     }

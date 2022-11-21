@@ -7,6 +7,7 @@ namespace Infrastructure.Persistance.Entities
     {
         public Guid CalculationId { get; set; }
         public int NodeNumber { get; set; }
+        public int? MaxValue { get; set; }
         /// <summary>
         /// Ссылка на расчет
         /// </summary>
