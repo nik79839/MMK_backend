@@ -10,5 +10,11 @@ namespace Application.DTOs
     {
         public int NodeNumber { get; set; }
         public int? MaxValue { get; set; }
+
+        public WorseningSettingsDto(int nodeNumber, int? maxValue)
+        {
+            NodeNumber = nodeNumber;
+            MaxValue = maxValue;
+        }
     }
 }

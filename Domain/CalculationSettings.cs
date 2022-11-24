@@ -29,6 +29,11 @@ namespace Domain
         public List<WorseningSettings> WorseningSettings { get; set; }
 
         /// <summary>
+        /// Узлы для контроля напряжения
+        /// </summary>
+        public List<int>? UNodes { get; set; }
+
+        /// <summary>
         /// Число реализаций
         /// </summary>
         public int CountOfImplementations { get; set; }

@@ -75,7 +75,6 @@ namespace Infrastructure.Services
                                        select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue));
             await _calculationResultRepository.AddCalculation(calculations);
             CalculationResultInitial calcResultInit = new();
-            List<int> nodesWithKP = new() { 2658, 2643, 60408105 };
             List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0)};
             List<int> numberLoadNodes = rastrComClient.AllLoadNodesToList().ConvertAll(x => x.Number); //Массив номеров узлов
             int exp = calcSettings.CountOfImplementations;
@@ -94,7 +93,8 @@ namespace Infrastructure.Services
                 rastrComClient.RastrTestBalance();
                 rastrComClient.WorseningRandom(calcSettings.WorseningSettings, calcSettings.PercentLoad);
                 double powerFlowValue = Math.Round((double)rastrComClient.PowerSech.Z[calcSettings.SechNumber-1], 2);
-                calcResultInit.VoltageResults.AddRange(from int nodeWithKP in nodesWithKP // Запись напряжений
+                calcResultInit.PowerFlowResults.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
+                calcResultInit.VoltageResults.AddRange(from int nodeWithKP in calcSettings.UNodes // Запись напряжений
                                                        let index = rastrComClient.FindNodeIndex(nodeWithKP)
                                                        select new VoltageResult(calculations.Id, i + 1, nodeWithKP, rastrComClient.NameNode.Z[index].ToString(), Math.Round(Convert.ToDouble(rastrComClient.Ur.Z[index]), 2)));
                 calcResultInit.CurrentResults.AddRange(from Brunch brunch in brunchesWithAOPO // Запись токов
@@ -103,7 +103,6 @@ namespace Infrastructure.Services
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;
                 CalculationProgress.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
-                calcResultInit.PowerFlowResults.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
                 Console.WriteLine(powerFlowValue);
             }
             await _calculationResultRepository.AddPowerFlowResults(calcResultInit.PowerFlowResults);

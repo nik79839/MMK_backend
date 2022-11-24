@@ -126,6 +126,25 @@ namespace RastrAdapter
         }
 
         /// <summary>
+        /// Получение листа всех узлов с нагрузкой
+        /// </summary>
+        /// <param name="rastr"></param>
+        public List<Node> AllNodesToList()
+        {
+            List<Node> loadNodes = new();
+            for (int i = 0; i < _node.Count; i++)
+            {
+                loadNodes.Add(new Node()
+                {
+                    Number = (int)NumberNode.ZN[i],
+                    Name = NameNode.ZN[i].ToString(),
+                    District = new District(NameArea.ZN[i].ToString(), (int)Na.ZN[i])
+                });
+            }  
+            return loadNodes;
+        }
+
+        /// <summary>
         /// Случайная нагрузка для каждой реализации
         /// </summary>
         /// <param name="rastr"></param>

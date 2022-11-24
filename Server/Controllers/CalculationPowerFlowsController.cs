@@ -44,7 +44,7 @@ namespace Server.Controllers
             CancellationToken cancellationToken = HttpContext.RequestAborted;
             var calculationSettings = _mapper.Map<CalculationSettingsRequest, CalculationSettings>(calculationSettingsRequest);
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
-            calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch"; ;
+            calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
             await _calculationService.StartCalculation(calculationSettings, cancellationToken);
             Console.WriteLine("Расчет завершен");
             return Ok("Расчет завершен.");
@@ -80,7 +80,7 @@ namespace Server.Controllers
             var calculationResultInfo = _calculationService.GetCalculationsById(id);
             CalculationResultInitialDto calculationResultInitial = new()
             {
-                PowerFlowResults = calculationResultInfo.InitialResult.PowerFlowResults.Select(x => x.PowerFlowLimit).ToList(),
+                PowerFlowResults = calculationResultInfo.InitialResult.PowerFlowResults.ConvertAll(x => x.PowerFlowLimit),
                 VoltageResults = _mapper.Map<List<VoltageResult>, List<VoltageResultDto>>(calculationResultInfo.InitialResult.VoltageResults)
             };
             CalculationResultProcessedDto calculationResultProcessed = new()
@@ -111,6 +111,5 @@ namespace Server.Controllers
             Console.WriteLine(e.Percent + "%, осталось " + e.Time + " мин");
             _hubContext.Clients.All.SendAsync("SendProgress", e.Percent, e.CalculationId);
         }
-
     }
 }

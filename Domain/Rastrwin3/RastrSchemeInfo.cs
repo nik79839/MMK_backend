@@ -7,12 +7,14 @@ namespace Domain.Rastrwin3
         public List<Node> LoadNodes { get; set; }
         public List<Sech> Seches { get; set; }
         public List<District> Districts { get; set; }
+        public List<Node> Nodes { get; set; }
 
-        public RastrSchemeInfo(List<Node> loadNodes, List<Sech> seches, List<District> districts)
+        public RastrSchemeInfo(List<Node> loadNodes, List<Sech> seches, List<District> districts, List<Node> nodes)
         {
             LoadNodes = loadNodes;
             Seches = seches;
             Districts = districts;
+            Nodes = nodes;
         }
     }
 }

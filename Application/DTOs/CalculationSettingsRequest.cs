@@ -19,6 +19,7 @@ namespace Application.DTOs
         /// </summary>
         [MinLength(1)]
         public List<WorseningSettingsDto> WorseningSettings { get; set; }
+        public List<int>? UNodes { get; set; }
 
         /// <summary>
         /// Число реализаций
