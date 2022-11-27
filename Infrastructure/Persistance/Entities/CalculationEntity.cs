@@ -22,12 +22,12 @@ namespace Infrastructure.Persistance.Entities
         /// <summary>
         /// Время начала расчета
         /// </summary>
-        public DateTime CalculationStart { get; set; }
+        public string CalculationStart { get; set; }
 
         /// <summary>
         /// Время Конца расчета
         /// </summary>
-        public DateTime? CalculationEnd { get; set; }
+        public string? CalculationEnd { get; set; }
 
         /// <summary>
         /// Название сечения

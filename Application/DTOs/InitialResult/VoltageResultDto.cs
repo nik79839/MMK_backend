@@ -2,6 +2,8 @@
 {
     public class VoltageResultDto
     {
+        public int ImplementationId { get; set; }
+        public int NodeNumber { get; set; }
         /// <summary>
         /// Номер реализации
         /// </summary>

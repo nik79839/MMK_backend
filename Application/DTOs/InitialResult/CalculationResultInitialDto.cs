@@ -8,7 +8,7 @@
         /// <summary>
         /// Ссылка на результаты расчетов
         /// </summary>
-        public List<double> PowerFlowResults { get; set; } = new();
+        public List<PowerFlowResultDto> PowerFlowResults { get; set; } = new();
 
         /// <summary>
         /// Ссылка на результаты расчетов напряжений

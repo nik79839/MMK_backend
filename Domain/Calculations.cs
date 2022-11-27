@@ -21,12 +21,12 @@
         /// <summary>
         /// Время начала расчета
         /// </summary>
-        public DateTime CalculationStart { get; set; } = DateTime.UtcNow;
+        public string CalculationStart { get; set; } = DateTime.Now.ToString("g");
 
         /// <summary>
         /// Время Конца расчета
         /// </summary>
-        public DateTime? CalculationEnd { get; set; } = null;
+        public string? CalculationEnd { get; set; } = null;
 
         /// <summary>
         /// Название сечения

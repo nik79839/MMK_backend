@@ -15,7 +15,7 @@
         /// <summary>
         /// Время Конца расчета
         /// </summary>
-        public DateTime? CalculationEnd { get; set; }
+        public string? CalculationEnd { get; set; }
 
         /// <summary>
         /// Название сечения

@@ -39,11 +39,13 @@ namespace Domain.ProcessedResult
             foreach (var nodeNumber in nodeNumbers)
             {
                 List<double> values = new();
+                string nodeName = voltageResults.First(x => x.NodeNumber == nodeNumber).NodeName;
                 values.AddRange(from voltageResult in voltageResults
                                 where voltageResult.NodeNumber == nodeNumber
                                 select voltageResult.VoltageValue);
                 StatisticBase statistic = GetStatistic(values);
-                VoltageResultProcessed.Add(new VoltageResultProcessed() { Maximum = statistic.Maximum, Minimum = statistic.Minimum, Mean = statistic.Mean, HistogramData = statistic.HistogramData, NodeNumber = nodeNumber });
+                VoltageResultProcessed.Add(new VoltageResultProcessed() { Maximum = statistic.Maximum, Minimum = statistic.Minimum, 
+                    Mean = statistic.Mean, HistogramData = statistic.HistogramData, NodeNumber = nodeNumber, NodeName = nodeName});
             }
         }
 

@@ -115,7 +115,7 @@ namespace Infrastructure.Persistance.Repositories
         {
             _context.ChangeTracker.Clear();
             CalculationEntity calculation1 = _context.Calculations.AsNoTracking().FirstOrDefault(u => u.Id == calculations.Id);
-            DateTime endTime = DateTime.UtcNow;
+            string endTime = DateTime.Now.ToString("g");
             calculation1.CalculationEnd = endTime;
             _context.Calculations.Update(calculation1);
             await _context.SaveChangesAsync();

@@ -94,9 +94,9 @@ namespace Infrastructure.Services
                 rastrComClient.WorseningRandom(calcSettings.WorseningSettings, calcSettings.PercentLoad);
                 double powerFlowValue = Math.Round((double)rastrComClient.PowerSech.Z[calcSettings.SechNumber-1], 2);
                 calcResultInit.PowerFlowResults.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
-                calcResultInit.VoltageResults.AddRange(from int nodeWithKP in calcSettings.UNodes // Запись напряжений
-                                                       let index = rastrComClient.FindNodeIndex(nodeWithKP)
-                                                       select new VoltageResult(calculations.Id, i + 1, nodeWithKP, rastrComClient.NameNode.Z[index].ToString(), Math.Round(Convert.ToDouble(rastrComClient.Ur.Z[index]), 2)));
+                calcResultInit.VoltageResults.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
+                                                       let index = rastrComClient.FindNodeIndex(uNode)
+                                                       select new VoltageResult(calculations.Id, i + 1, uNode, rastrComClient.NameNode.Z[index].ToString(), Math.Round(Convert.ToDouble(rastrComClient.Ur.Z[index]), 2)));
                 calcResultInit.CurrentResults.AddRange(from Brunch brunch in brunchesWithAOPO // Запись токов
                                                        let index = rastrComClient.FindBranchIndex(brunch.StartNode, brunch.EndNode, brunch.ParallelNumber)
                                                        select new CurrentResult(calculations.Id, i + 1, brunch.StartNode, brunch.EndNode, Math.Round(Convert.ToDouble(rastrComClient.IMax.Z[index]), 2)));

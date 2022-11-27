@@ -80,7 +80,7 @@ namespace Server.Controllers
             var calculationResultInfo = _calculationService.GetCalculationsById(id);
             CalculationResultInitialDto calculationResultInitial = new()
             {
-                PowerFlowResults = calculationResultInfo.InitialResult.PowerFlowResults.ConvertAll(x => x.PowerFlowLimit),
+                PowerFlowResults = _mapper.Map<List<PowerFlowResult>, List<PowerFlowResultDto>>(calculationResultInfo.InitialResult.PowerFlowResults),
                 VoltageResults = _mapper.Map<List<VoltageResult>, List<VoltageResultDto>>(calculationResultInfo.InitialResult.VoltageResults)
             };
             CalculationResultProcessedDto calculationResultProcessed = new()

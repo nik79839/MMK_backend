@@ -2,6 +2,7 @@
 {
     public class CurrentResultDto
     {
+        public int ImplementationId { get; set; }
         /// <summary>
         /// Номер реализации
         /// </summary>

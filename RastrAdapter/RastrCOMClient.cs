@@ -144,6 +144,24 @@ namespace RastrAdapter
             return loadNodes;
         }
 
+        public List<Node> AllLapBranchesToList()
+        {
+            List<Node> loadNodes = new();
+            for (int i = 0; i < _node.Count; i++)
+            {
+                if (Convert.ToDouble(Pn.ZN[i]) != 0)
+                {
+                    loadNodes.Add(new Node()
+                    {
+                        Number = (int)NumberNode.ZN[i],
+                        Name = NameNode.ZN[i].ToString(),
+                        District = new District(NameArea.ZN[i].ToString(), (int)Na.ZN[i])
+                    });
+                }
+            }
+            return loadNodes;
+        }
+
         /// <summary>
         /// Случайная нагрузка для каждой реализации
         /// </summary>
