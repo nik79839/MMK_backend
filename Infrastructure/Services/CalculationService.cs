@@ -75,7 +75,7 @@ namespace Infrastructure.Services
                                        select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue));
             await _calculationResultRepository.AddCalculation(calculations);
             CalculationResultInitial calcResultInit = new();
-            List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0)};
+            //List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0)};
             List<int> numberLoadNodes = rastrComClient.AllLoadNodesToList().ConvertAll(x => x.Number); //Массив номеров узлов
             int exp = calcSettings.CountOfImplementations;
                                                                   
@@ -97,9 +97,9 @@ namespace Infrastructure.Services
                 calcResultInit.VoltageResults.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
                                                        let index = rastrComClient.FindNodeIndex(uNode)
                                                        select new VoltageResult(calculations.Id, i + 1, uNode, rastrComClient.NameNode.Z[index].ToString(), Math.Round(Convert.ToDouble(rastrComClient.Ur.Z[index]), 2)));
-                calcResultInit.CurrentResults.AddRange(from Brunch brunch in brunchesWithAOPO // Запись токов
-                                                       let index = rastrComClient.FindBranchIndex(brunch.StartNode, brunch.EndNode, brunch.ParallelNumber)
-                                                       select new CurrentResult(calculations.Id, i + 1, brunch.StartNode, brunch.EndNode, Math.Round(Convert.ToDouble(rastrComClient.IMax.Z[index]), 2)));
+                calcResultInit.CurrentResults.AddRange(from string brunch in calcSettings.IBrunches // Запись токов
+                                                       let index = rastrComClient.FindBranchIndexByName(brunch)
+                                                       select new CurrentResult(calculations.Id, i + 1, brunch, Math.Round(Convert.ToDouble(rastrComClient.IMax.Z[index]), 2)));
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;
                 CalculationProgress.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
@@ -107,6 +107,7 @@ namespace Infrastructure.Services
             }
             await _calculationResultRepository.AddPowerFlowResults(calcResultInit.PowerFlowResults);
             await _calculationResultRepository.AddVoltageResults(calcResultInit.VoltageResults);
+            await _calculationResultRepository.AddCurrentResults(calcResultInit.CurrentResults);
             await _calculationResultRepository.UpdateCalculation(calculations);
             await _calculationResultRepository.AddWorseningSettings(worseningSettings);
         }

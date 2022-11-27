@@ -9,6 +9,7 @@ namespace Infrastructure.Persistance
         public DbSet<PowerFlowResultEntity> PowerFlowResults { get; set; } = null!;
         public DbSet<CalculationEntity> Calculations { get; set; } = null!;
         public DbSet<VoltageResultEntity> VoltageResults { get; set; } = null!;
+        public DbSet<CurrentResultEntity> CurrentResults { get; set; } = null!;
         public DbSet<UserEntity> Users { get; set; } = null!;
         public DbSet<WorseningSettingsEntity> WorseningSettings { get; set; } = null!;
 
@@ -26,7 +27,7 @@ namespace Infrastructure.Persistance
             modelBuilder.Entity<PowerFlowResultEntity>().HasKey(vf => new { vf.CalculationId, vf.ImplementationId });
             modelBuilder.Entity<CalculationEntity>().HasKey(vf => new { vf.Id });
             modelBuilder.Entity<VoltageResultEntity>().HasKey(vf => new { vf.CalculationId, vf.ImplementationId, vf.NodeNumber });
-            modelBuilder.Entity<CurrentResultEntity>().HasKey(vf => new { vf.CalculationId, vf.ImplementationId, vf.StartNode, vf.EndNode });
+            modelBuilder.Entity<CurrentResultEntity>().HasKey(vf => new { vf.CalculationId, vf.ImplementationId,  vf.BrunchName });
             modelBuilder.Entity<WorseningSettingsEntity>().HasKey(vf => new { vf.CalculationId, vf.NodeNumber });
         }
     }

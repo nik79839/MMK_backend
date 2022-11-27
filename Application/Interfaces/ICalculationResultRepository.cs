@@ -11,6 +11,7 @@ namespace Application.Interfaces
         Task UpdateCalculation(Calculations calculations);
         Task AddPowerFlowResults(List<PowerFlowResult> powerFlowResults);
         Task AddVoltageResults(List<VoltageResult> voltageResults);
+        Task AddCurrentResults(List<CurrentResult> currentResults);
         Task AddWorseningSettings(List<WorseningSettings> worseningSettings);
         Task<List<WorseningSettings>> GetWorseningSettingsById(string? id);
         Task DeleteCalculationsById(string? id);

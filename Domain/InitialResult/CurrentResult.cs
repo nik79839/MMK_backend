@@ -5,22 +5,17 @@
         /// <summary>
         /// Номер реализации
         /// </summary>
-        public int StartNode { get; set; }
-        /// <summary>
-        /// Номер реализации
-        /// </summary>
-        public int EndNode { get; set; }
+        public string BrunchName { get; set; }
 
         /// <summary>
         /// Значение напряжения
         /// </summary>
         public double CurrentValue { get; set; }
 
-        public CurrentResult(Guid calculationId, int implementationId, int startNode, int endNode, double currentValue)
+        public CurrentResult(Guid calculationId, int implementationId, string brunchName, double currentValue)
             : base(calculationId, implementationId)
         {
-            StartNode = startNode;
-            EndNode = endNode;
+            BrunchName = brunchName;
             CurrentValue = currentValue;
         }
     }

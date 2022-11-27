@@ -20,6 +20,7 @@ namespace Application.DTOs
         [MinLength(1)]
         public List<WorseningSettingsDto> WorseningSettings { get; set; }
         public List<int>? UNodes { get; set; }
+        public List<string>? IBrunches { get; set; }
 
         /// <summary>
         /// Число реализаций

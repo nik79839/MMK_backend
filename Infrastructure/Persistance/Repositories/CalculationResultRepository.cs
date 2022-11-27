@@ -46,6 +46,12 @@ namespace Infrastructure.Persistance.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task AddCurrentResults(List<CurrentResult> currentResults)
+        {
+            await _context.CurrentResults.AddRangeAsync(_mapper.Map<List<CurrentResultEntity>>(currentResults));
+            await _context.SaveChangesAsync();
+        }
+
         public async Task AddWorseningSettings(List<WorseningSettings> worseningSettings)
         {
             await _context.WorseningSettings.AddRangeAsync(_mapper.Map<List<WorseningSettingsEntity>>(worseningSettings));
@@ -96,10 +102,14 @@ namespace Infrastructure.Persistance.Repositories
             var voltageResults = (from calculations in _context.VoltageResults
                                   where calculations.CalculationId.ToString() == id
                                   select calculations).ToList();
+            var currentResults = (from calculations in _context.CurrentResults
+                                  where calculations.CalculationId.ToString() == id
+                                  select calculations).ToList();
             return new CalculationResultInitial()
             {
                 PowerFlowResults = _mapper.Map<List<PowerFlowResult>>(powerFlowResults),
-                VoltageResults = _mapper.Map<List<VoltageResult>>(voltageResults)
+                VoltageResults = _mapper.Map<List<VoltageResult>>(voltageResults),
+                CurrentResults = _mapper.Map<List<CurrentResult>>(currentResults)
             };
         }
 

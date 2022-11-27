@@ -50,6 +50,7 @@ namespace RastrAdapter
             NameVetv = (ICol)_vetv.Cols.Item("name");
             IMax = (ICol)_vetv.Cols.Item("i_max");
             TipVetv = (ICol)_vetv.Cols.Item("tip");
+
             StaVetv = (ICol)_vetv.Cols.Item("sta");
             NaArea = (ICol)_area.Cols.Item("na");
             NameAreaArea = (ICol)_area.Cols.Item("name");
@@ -103,6 +104,18 @@ namespace RastrAdapter
             throw new Exception($"Не найдена ветвь с номером {ip} - {iq}");
         }
 
+        public int FindBranchIndexByName(string name)
+        {
+            for (int index = 0; index < _vetv.Count; index++)
+            {
+                if (NameVetv.get_ZN(index).ToString() == name)
+                {
+                    return index;
+                }
+            }
+            throw new Exception($"Не найдена ветвь с именем {name}");
+        }
+
         /// <summary>
         /// Получение листа всех узлов с нагрузкой
         /// </summary>
@@ -144,22 +157,23 @@ namespace RastrAdapter
             return loadNodes;
         }
 
-        public List<Node> AllLapBranchesToList()
+        public List<Brunch> AllLapBrunchesToList()
         {
-            List<Node> loadNodes = new();
-            for (int i = 0; i < _node.Count; i++)
+            List<Brunch> brunches = new();
+            for (int i = 0; i < _vetv.Count; i++)
             {
-                if (Convert.ToDouble(Pn.ZN[i]) != 0)
+                if (Convert.ToDouble(TipVetv.ZN[i]) == 0)
                 {
-                    loadNodes.Add(new Node()
+                    brunches.Add(new Brunch()
                     {
-                        Number = (int)NumberNode.ZN[i],
-                        Name = NameNode.ZN[i].ToString(),
-                        District = new District(NameArea.ZN[i].ToString(), (int)Na.ZN[i])
+                        StartNode = (int)StartNode.ZN[i],
+                        EndNode = (int)EndNode.ZN[i],
+                        ParallelNumber = (int)Parallel.ZN[i],
+                        Name = NameVetv.ZN[i].ToString(),
                     });
                 }
             }
-            return loadNodes;
+            return brunches;
         }
 
         /// <summary>

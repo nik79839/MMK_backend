@@ -10,12 +10,7 @@ namespace Infrastructure.Persistance.Entities.Result
         /// Номер реализации
         /// </summary>
         [Key, Column(Order = 2)]
-        public int StartNode { get; set; }
-        /// <summary>
-        /// Номер реализации
-        /// </summary>
-        [Key, Column(Order = 3)]
-        public int EndNode { get; set; }
+        public string BrunchName { get; set; }
 
         /// <summary>
         /// Значение напряжения

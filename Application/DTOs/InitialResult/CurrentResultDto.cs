@@ -6,11 +6,7 @@
         /// <summary>
         /// Номер реализации
         /// </summary>
-        public int StartNode { get; set; }
-        /// <summary>
-        /// Номер реализации
-        /// </summary>
-        public int EndNode { get; set; }
+        public int BrunchName { get; set; }
 
         /// <summary>
         /// Значение напряжения

@@ -32,6 +32,7 @@ namespace Domain
         /// Узлы для контроля напряжения
         /// </summary>
         public List<int>? UNodes { get; set; }
+        public List<string>? IBrunches { get; set; }
 
         /// <summary>
         /// Число реализаций
