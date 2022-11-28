@@ -10,6 +10,6 @@ namespace Domain.ProcessedResult
         /// <summary>
         /// Номер узла
         /// </summary>
-        public Brunch Brunch { get; set; }
+        public string BrunchName { get; set; }
     }
 }

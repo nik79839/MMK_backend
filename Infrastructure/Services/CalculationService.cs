@@ -53,6 +53,7 @@ namespace Infrastructure.Services
             CalculationResultProcessed calculationResultProcessed = new();
             calculationResultProcessed.Processing(calculationResultInitial.PowerFlowResults);
             calculationResultProcessed.Processing(calculationResultInitial.VoltageResults);
+            calculationResultProcessed.Processing(calculationResultInitial.CurrentResults);
             return new(calculationResultInitial, calculationResultProcessed);
         }
 

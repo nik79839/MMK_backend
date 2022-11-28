@@ -49,6 +49,27 @@ namespace Domain.ProcessedResult
             }
         }
 
+        public void Processing(List<CurrentResult> currentResults)
+        {
+            var brunchNames = currentResults.Select(x => x.BrunchName).ToArray().Distinct();
+            foreach (var brunchName in brunchNames)
+            {
+                List<double> values = new();
+                values.AddRange(from currentResult in currentResults
+                                where currentResult.BrunchName == brunchName
+                                select currentResult.CurrentValue);
+                StatisticBase statistic = GetStatistic(values);
+                CurrentResultProcessed.Add(new CurrentResultProcessed()
+                {
+                    Maximum = statistic.Maximum,
+                    Minimum = statistic.Minimum,
+                    Mean = statistic.Mean,
+                    HistogramData = statistic.HistogramData,
+                    BrunchName = brunchName
+                });
+            }
+        }
+
         public static StatisticBase GetStatistic(List<double> values)
         {
             StatisticBase statisticBase = new();
@@ -56,6 +77,8 @@ namespace Domain.ProcessedResult
             statisticBase.Maximum = values.Max();
             statisticBase.Minimum = values.Min();
             statisticBase.Mean = Math.Round(values.Average(), 2);
+            double dispersion = values.Sum(a => (a - statisticBase.Mean) * (a - statisticBase.Mean)) / (values.Count - 1);
+            statisticBase.StD = Math.Sqrt(dispersion);
             double step = (statisticBase.Maximum - statisticBase.Minimum) / intervalCount;
             double sec = statisticBase.Minimum;
             double first = 0, height = 0;

@@ -6,7 +6,7 @@
         /// <summary>
         /// Номер реализации
         /// </summary>
-        public int BrunchName { get; set; }
+        public string BrunchName { get; set; }
 
         /// <summary>
         /// Значение напряжения

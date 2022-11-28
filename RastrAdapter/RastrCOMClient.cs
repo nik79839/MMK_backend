@@ -190,7 +190,7 @@ namespace RastrAdapter
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = FindNodeIndex(nodes[i]);
-                Pn.set_ZN(index, (double)randPn.Next((Convert.ToInt32(Pn.ZN[index]) * 100) - percent, Convert.ToInt32(Pn.ZN[index]) * 100 + percent) / 100f);
+                Pn.set_ZN(index, (double)randPn.Next(Convert.ToInt32(Pn.ZN[index]) * (100 - percent), Convert.ToInt32(Pn.ZN[index]) * (100 + percent)) / 100f);
                 double tg = (randTg.NextDouble() * 0.14) + 0.48;
                 Qn.set_ZN(index, (double)Pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
             }

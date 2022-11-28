@@ -9,7 +9,6 @@ namespace Infrastructure.Persistance.Entities.Result
         /// <summary>
         /// Номер реализации
         /// </summary>
-        [Key, Column(Order = 2)]
         public string BrunchName { get; set; }
 
         /// <summary>
