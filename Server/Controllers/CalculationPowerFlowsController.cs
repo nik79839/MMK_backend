@@ -8,9 +8,11 @@ using Domain;
 using Domain.Events;
 using Domain.InitialResult;
 using Domain.ProcessedResult;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Server.Hub;
+using System.Security.Principal;
 
 namespace Server.Controllers
 {
@@ -112,6 +114,25 @@ namespace Server.Controllers
         {
             Console.WriteLine(e.Percent + "%, осталось " + e.Time + " мин");
             _hubContext.Clients.All.SendAsync("SendProgress", e.Percent, e.CalculationId);
+        }
+
+        /// <summary>
+        /// Удалить определенный расчет
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("test")]
+        public async Task<IActionResult> TestAuth()
+        {
+            //var user = (WindowsIdentity) HttpContext.User.Identity!;
+            //var user2 = HttpContext.User.Identity.Name;
+            var user3 = this.HttpContext.User.Identity;
+
+            //await context.Response
+            //     .WriteAsync($"User: {user.Name}\tState: {user.ImpersonationLevel}\n");
+
+            return Ok(user3);
         }
     }
 }

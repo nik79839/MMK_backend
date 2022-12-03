@@ -14,8 +14,6 @@
         /// <summary>
         /// Высота прямоугольника
         /// </summary>
-        public double Height { get; set; }
-
-
+        public double Height { get; set; }  
     }
 }

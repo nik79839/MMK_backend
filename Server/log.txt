@@ -1,0 +1,141 @@
+2022-12-02 19:11:14.524 +07:00 [INF] Starting web application
+2022-12-02 19:11:16.020 +07:00 [INF] Now listening on: https://localhost:5001
+2022-12-02 19:11:16.042 +07:00 [INF] Now listening on: http://localhost:5000
+2022-12-02 19:11:16.056 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-12-02 19:11:16.058 +07:00 [INF] Hosting environment: Development
+2022-12-02 19:11:16.063 +07:00 [INF] Content root path: C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\
+2022-12-02 19:11:16.690 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/index.html - -
+2022-12-02 19:11:17.326 +07:00 [INF] HTTP GET /swagger/index.html responded 200 in 558.4092 ms
+2022-12-02 19:11:17.344 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 663.1499ms
+2022-12-02 19:11:17.386 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - -
+2022-12-02 19:11:17.389 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_vs/browserLink - -
+2022-12-02 19:11:17.394 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - - - 200 11981 application/javascript;+charset=utf-8 7.8933ms
+2022-12-02 19:11:17.440 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 51.7127ms
+2022-12-02 19:11:18.632 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - -
+2022-12-02 19:11:18.890 +07:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 255.6748 ms
+2022-12-02 19:11:18.899 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 265.9644ms
+2022-12-02 19:12:03.009 +07:00 [INF] Application is shutting down...
+2022-12-02 19:12:09.168 +07:00 [INF] Starting web application
+2022-12-02 19:12:09.814 +07:00 [INF] Now listening on: https://localhost:5001
+2022-12-02 19:12:09.823 +07:00 [INF] Now listening on: http://localhost:5000
+2022-12-02 19:12:09.830 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-12-02 19:12:09.832 +07:00 [INF] Hosting environment: Development
+2022-12-02 19:12:09.834 +07:00 [INF] Content root path: C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\
+2022-12-02 19:12:10.072 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/index.html - -
+2022-12-02 19:12:10.555 +07:00 [INF] HTTP GET /swagger/index.html responded 200 in 420.0596 ms
+2022-12-02 19:12:10.562 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_vs/browserLink - -
+2022-12-02 19:12:10.598 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 532.1260ms
+2022-12-02 19:12:10.613 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - -
+2022-12-02 19:12:10.623 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - - - 200 11981 application/javascript;+charset=utf-8 9.7591ms
+2022-12-02 19:12:10.651 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 88.9084ms
+2022-12-02 19:12:11.286 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - -
+2022-12-02 19:12:11.542 +07:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 253.4274 ms
+2022-12-02 19:12:11.548 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 262.8891ms
+2022-12-02 19:15:34.272 +07:00 [INF] Application is shutting down...
+2022-12-02 19:15:39.251 +07:00 [INF] Starting web application
+2022-12-02 19:15:39.909 +07:00 [INF] Now listening on: https://localhost:5001
+2022-12-02 19:15:39.917 +07:00 [INF] Now listening on: http://localhost:5000
+2022-12-02 19:15:39.925 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-12-02 19:15:39.928 +07:00 [INF] Hosting environment: Development
+2022-12-02 19:15:39.931 +07:00 [INF] Content root path: C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\
+2022-12-02 19:15:40.092 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/index.html - -
+2022-12-02 19:15:40.568 +07:00 [INF] HTTP GET /swagger/index.html responded 200 in 414.3478 ms
+2022-12-02 19:15:40.586 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_vs/browserLink - -
+2022-12-02 19:15:40.590 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 503.6677ms
+2022-12-02 19:15:40.660 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 74.1212ms
+2022-12-02 19:15:40.678 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - -
+2022-12-02 19:15:40.683 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - - - 200 11981 application/javascript;+charset=utf-8 4.9267ms
+2022-12-02 19:15:41.341 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - -
+2022-12-02 19:15:41.618 +07:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 275.2419 ms
+2022-12-02 19:15:41.624 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 282.7351ms
+2022-12-02 19:16:26.048 +07:00 [INF] Application is shutting down...
+2022-12-02 19:16:31.832 +07:00 [INF] Starting web application
+2022-12-02 19:16:32.494 +07:00 [INF] Now listening on: https://localhost:5001
+2022-12-02 19:16:32.503 +07:00 [INF] Now listening on: http://localhost:5000
+2022-12-02 19:16:32.512 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-12-02 19:16:32.515 +07:00 [INF] Hosting environment: Development
+2022-12-02 19:16:32.519 +07:00 [INF] Content root path: C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\
+2022-12-02 19:16:33.205 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/index.html - -
+2022-12-02 19:16:33.678 +07:00 [INF] HTTP GET /swagger/index.html responded 200 in 384.8226 ms
+2022-12-02 19:16:33.700 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 500.8367ms
+2022-12-02 19:16:33.796 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - -
+2022-12-02 19:16:33.799 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_vs/browserLink - -
+2022-12-02 19:16:33.803 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - - - 200 11981 application/javascript;+charset=utf-8 7.1020ms
+2022-12-02 19:16:33.851 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 52.0954ms
+2022-12-02 19:16:34.477 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - -
+2022-12-02 19:16:34.746 +07:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 266.7709 ms
+2022-12-02 19:16:34.751 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 274.3495ms
+2022-12-02 19:16:48.332 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/api/CalculationPowerFlows/GetCalculations - -
+2022-12-02 19:16:48.378 +07:00 [INF] Executing endpoint 'Server.Controllers.CalculationPowerFlowsController.GetCalculations (Server)'
+2022-12-02 19:16:48.420 +07:00 [INF] Route matched with {action = "GetCalculations", controller = "CalculationPowerFlows"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetCalculations() on controller Server.Controllers.CalculationPowerFlowsController (Server).
+2022-12-02 19:16:50.251 +07:00 [INF] Entity Framework Core 6.0.7 initialized 'CalculationResultContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL:6.0.7+5b98e4b74de93b590b44aef8dd7967c03acc433c' with options: None
+2022-12-02 19:16:51.004 +07:00 [INF] Executed DbCommand (150ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+
+SELECT CASE WHEN COUNT(*) = 0 THEN FALSE ELSE TRUE END
+FROM pg_class AS cls
+JOIN pg_namespace AS ns ON ns.oid = cls.relnamespace
+WHERE
+        cls.relkind IN ('r', 'v', 'm', 'f', 'p') AND
+        ns.nspname NOT IN ('pg_catalog', 'information_schema') AND
+        -- Exclude tables which are members of PG extensions
+        NOT EXISTS (
+            SELECT 1 FROM pg_depend WHERE
+                classid=(
+                    SELECT cls.oid
+                    FROM pg_class AS cls
+                             JOIN pg_namespace AS ns ON ns.oid = cls.relnamespace
+                    WHERE relname='pg_class' AND ns.nspname='pg_catalog'
+                ) AND
+                objid=cls.oid AND
+                deptype IN ('e', 'x')
+        )
+2022-12-02 19:16:51.654 +07:00 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT c."Id", c."CalculationEnd", c."CalculationStart", c."Description", c."Name", c."PathToRegim", c."PercentForWorsening", c."PercentLoad", c."SechName", c."UserId"
+FROM "Calculation" AS c
+ORDER BY c."CalculationEnd" DESC
+2022-12-02 19:16:51.809 +07:00 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT w."CalculationId", w."NodeNumber", w."MaxValue"
+FROM "WorseningSettings" AS w
+2022-12-02 19:16:51.951 +07:00 [INF] Executing OkObjectResult, writing value of type 'Application.DTOs.Response.GetCalculationsResponse'.
+2022-12-02 19:16:51.980 +07:00 [INF] Executed action Server.Controllers.CalculationPowerFlowsController.GetCalculations (Server) in 3544.7752ms
+2022-12-02 19:16:51.986 +07:00 [INF] Executed endpoint 'Server.Controllers.CalculationPowerFlowsController.GetCalculations (Server)'
+2022-12-02 19:16:51.991 +07:00 [INF] HTTP GET /api/CalculationPowerFlows/GetCalculations responded 200 in 3652.9467 ms
+2022-12-02 19:16:52.030 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/api/CalculationPowerFlows/GetCalculations - - - 200 - application/json;+charset=utf-8 3698.8873ms
+2022-12-02 19:22:45.040 +07:00 [INF] Application is shutting down...
+2022-12-02 19:22:50.378 +07:00 [INF] Starting web application
+2022-12-02 19:22:51.017 +07:00 [INF] Now listening on: https://localhost:5001
+2022-12-02 19:22:51.024 +07:00 [INF] Now listening on: http://localhost:5000
+2022-12-02 19:22:51.031 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-12-02 19:22:51.033 +07:00 [INF] Hosting environment: Development
+2022-12-02 19:22:51.035 +07:00 [INF] Content root path: C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\
+2022-12-02 19:22:51.309 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/index.html - -
+2022-12-02 19:22:51.882 +07:00 [INF] HTTP GET /swagger/index.html responded 200 in 507.1489 ms
+2022-12-02 19:22:51.924 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 608.9175ms
+2022-12-02 19:22:51.926 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_vs/browserLink - -
+2022-12-02 19:22:51.941 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - -
+2022-12-02 19:22:51.958 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - - - 200 11981 application/javascript;+charset=utf-8 17.2077ms
+2022-12-02 19:22:52.004 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 77.8818ms
+2022-12-02 19:22:53.070 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - -
+2022-12-02 19:22:53.350 +07:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 277.7295 ms
+2022-12-02 19:22:53.355 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 285.0426ms
+2022-12-02 19:22:54.848 +07:00 [INF] Application is shutting down...
+2022-12-02 19:23:04.067 +07:00 [INF] Starting web application
+2022-12-02 19:23:04.698 +07:00 [INF] Now listening on: https://localhost:5001
+2022-12-02 19:23:04.705 +07:00 [INF] Now listening on: http://localhost:5000
+2022-12-02 19:23:04.711 +07:00 [INF] Application started. Press Ctrl+C to shut down.
+2022-12-02 19:23:04.713 +07:00 [INF] Hosting environment: Development
+2022-12-02 19:23:04.715 +07:00 [INF] Content root path: C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\
+2022-12-02 19:23:04.925 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/index.html - -
+2022-12-02 19:23:05.443 +07:00 [INF] HTTP GET /swagger/index.html responded 200 in 456.7802 ms
+2022-12-02 19:23:05.479 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 556.5112ms
+2022-12-02 19:23:05.501 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - -
+2022-12-02 19:23:05.503 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/_vs/browserLink - -
+2022-12-02 19:23:05.507 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_framework/aspnetcore-browser-refresh.js - - - 200 11981 application/javascript;+charset=utf-8 5.9117ms
+2022-12-02 19:23:05.557 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/_vs/browserLink - - - 200 - text/javascript;+charset=UTF-8 54.1929ms
+2022-12-02 19:23:06.388 +07:00 [INF] Request starting HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - -
+2022-12-02 19:23:06.665 +07:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 274.5533 ms
+2022-12-02 19:23:06.670 +07:00 [INF] Request finished HTTP/1.1 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 282.3289ms
+2022-12-02 19:28:19.961 +07:00 [INF] Application is shutting down...
+2022-12-02 19:28:27.227 +07:00 [INF] Starting web application
+2022-12-02 19:29:06.980 +07:00 [INF] Starting web application
+2022-12-02 19:30:28.220 +07:00 [INF] Starting web application

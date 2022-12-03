@@ -45,7 +45,7 @@ namespace Domain.ProcessedResult
                                 select voltageResult.VoltageValue);
                 StatisticBase statistic = GetStatistic(values);
                 VoltageResultProcessed.Add(new VoltageResultProcessed() { Maximum = statistic.Maximum, Minimum = statistic.Minimum, 
-                    Mean = statistic.Mean, HistogramData = statistic.HistogramData, NodeNumber = nodeNumber, NodeName = nodeName});
+                    Mean = statistic.Mean, HistogramData = statistic.HistogramData, StD = statistic.StD, NodeNumber = nodeNumber, NodeName = nodeName});
             }
         }
 
@@ -64,6 +64,7 @@ namespace Domain.ProcessedResult
                     Maximum = statistic.Maximum,
                     Minimum = statistic.Minimum,
                     Mean = statistic.Mean,
+                    StD = statistic.StD,
                     HistogramData = statistic.HistogramData,
                     BrunchName = brunchName
                 });

@@ -3,12 +3,17 @@ using Infrastructure;
 using Infrastructure.Persistance;
 using Infrastructure.Persistance.Repositories;
 using Infrastructure.Services;
+using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 using Server;
 using Server.Hub;
 using System.Reflection;
+using Serilog;
+
+Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("log.txt").CreateLogger();
+Log.Information("Starting web application");
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,8 +36,14 @@ var assembly = Assembly.GetAssembly(typeof(MappingProfile));
 builder.Services.AddAutoMapper(assembly);
 builder.Services.AddScoped<ICalculationService, CalculationService>();
 builder.Services.AddScoped<IRastrSchemeInfoService, RastrSchemeInfoService>();
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+    .WriteTo.Console());
 
 var app = builder.Build();
+app.UseSerilogRequestLogging();
 app.UseCors(builder => builder.AllowAnyMethod().WithOrigins("http://localhost:3000").AllowAnyHeader().AllowCredentials());
 
 // Configure the HTTP request pipeline.
