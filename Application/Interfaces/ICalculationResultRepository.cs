@@ -9,7 +9,7 @@ namespace Application.Interfaces
         Task<CalculationResultInitial> GetResultInitialById(string? id);
         Task AddCalculation(Calculations calculations);
         Task UpdateCalculation(Calculations calculations);
-        Task AddPowerFlowResults(List<PowerFlowResult> powerFlowResults);
+        Task AddPowerFlowResults(List<CalculationResultBase> powerFlowResults);
         Task AddVoltageResults(List<VoltageResult> voltageResults);
         Task AddCurrentResults(List<CurrentResult> currentResults);
         Task AddWorseningSettings(List<WorseningSettings> worseningSettings);

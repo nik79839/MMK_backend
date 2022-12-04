@@ -19,6 +19,10 @@ namespace Infrastructure.Persistance.Entities.Result
         /// </summary>
         [Key, Column(Order = 1)]
         public int ImplementationId { get; set; }
+        /// <summary>
+        /// Значение напряжения
+        /// </summary>
+        public double Value { get; set; }
 
         /// <summary>
         /// Ссылка на расчет

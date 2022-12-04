@@ -11,12 +11,9 @@ namespace Infrastructure.Mappings
         public MappingProfile()
         {
             CreateMap<CalculationEntity, Calculations>().ReverseMap();
-            CreateMap<PowerFlowResultEntity, PowerFlowResult>().ReverseMap();
-            CreateMap<List<PowerFlowResultEntity>,List<PowerFlowResult>>().ReverseMap();
+            CreateMap<CalculationResultBaseEntity, CalculationResultBase>().ReverseMap();
             CreateMap<VoltageResultEntity, VoltageResult>().ReverseMap();
-            CreateMap<List<VoltageResultEntity>, List<VoltageResult>>().ReverseMap();
             CreateMap<CurrentResultEntity, CurrentResult>().ReverseMap();
-            CreateMap<List<CurrentResultEntity>, List<CurrentResult>>().ReverseMap();
         }
     }
 }

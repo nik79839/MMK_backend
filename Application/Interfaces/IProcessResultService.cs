@@ -6,7 +6,7 @@ namespace Application.Interfaces
     public interface IProcessResultService
     {
         List<CurrentResultProcessed> Processing(List<CurrentResult> currentResults);
-        StatisticBase Processing(List<PowerFlowResult> powerFlowResults);
+        StatisticBase Processing(List<CalculationResultBase> powerFlowResults);
         List<VoltageResultProcessed> Processing(List<VoltageResult> voltageResults);
     }
 }

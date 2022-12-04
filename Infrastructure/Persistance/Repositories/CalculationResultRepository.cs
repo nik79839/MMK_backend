@@ -19,7 +19,7 @@ namespace Infrastructure.Persistance.Repositories
             var config = new MapperConfiguration(cfg =>
             {
                 cfg.CreateMap<CalculationEntity, Calculations>().ReverseMap();
-                cfg.CreateMap<PowerFlowResultEntity, PowerFlowResult>().ReverseMap();
+                cfg.CreateMap<PowerFlowResultEntity, CalculationResultBase>().ReverseMap();
                 cfg.CreateMap<VoltageResultEntity, VoltageResult>().ReverseMap();
                 cfg.CreateMap<CurrentResultEntity, CurrentResult>().ReverseMap();
                 cfg.CreateMap<WorseningSettingsEntity, WorseningSettings>().ReverseMap();
@@ -34,9 +34,9 @@ namespace Infrastructure.Persistance.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddPowerFlowResults(List<PowerFlowResult> powerFlowResults)
+        public async Task AddPowerFlowResults(List<CalculationResultBase> powerFlowResults)
         {
-            await _context.PowerFlowResults.AddRangeAsync(_mapper.Map<List<PowerFlowResult>, List<PowerFlowResultEntity>>(powerFlowResults));
+            await _context.PowerFlowResults.AddRangeAsync(_mapper.Map<List<CalculationResultBase>, List<PowerFlowResultEntity>>(powerFlowResults));
             await _context.SaveChangesAsync();
         }
 
@@ -107,7 +107,7 @@ namespace Infrastructure.Persistance.Repositories
                                   select calculations).ToList();
             return new CalculationResultInitial()
             {
-                PowerFlowResults = _mapper.Map<List<PowerFlowResult>>(powerFlowResults),
+                PowerFlowResults = _mapper.Map<List<CalculationResultBase>>(powerFlowResults),
                 VoltageResults = _mapper.Map<List<VoltageResult>>(voltageResults),
                 CurrentResults = _mapper.Map<List<CurrentResult>>(currentResults)
             };

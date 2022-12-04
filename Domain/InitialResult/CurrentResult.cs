@@ -7,16 +7,10 @@
         /// </summary>
         public string BrunchName { get; set; }
 
-        /// <summary>
-        /// Значение напряжения
-        /// </summary>
-        public double CurrentValue { get; set; }
-
-        public CurrentResult(Guid calculationId, int implementationId, string brunchName, double currentValue)
-            : base(calculationId, implementationId)
+        public CurrentResult(Guid calculationId, int implementationId, string brunchName, double value)
+            : base(calculationId, implementationId, value)
         {
             BrunchName = brunchName;
-            CurrentValue = currentValue;
         }
     }
 }

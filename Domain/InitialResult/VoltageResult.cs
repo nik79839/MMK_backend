@@ -13,17 +13,11 @@
         /// </summary>
         public string? NodeName { get; set; }
 
-        /// <summary>
-        /// Значение напряжения
-        /// </summary>
-        public double VoltageValue { get; set; }
-
-        public VoltageResult(Guid calculationId, int implementationId, int nodeNumber, string nodeName, double voltageValue)
-            : base(calculationId, implementationId)
+        public VoltageResult(Guid calculationId, int implementationId, int nodeNumber, string nodeName, double value)
+            : base(calculationId, implementationId, value)
         {
             NodeNumber = nodeNumber;
             NodeName = nodeName;
-            VoltageValue = voltageValue;
         }
     }
 }

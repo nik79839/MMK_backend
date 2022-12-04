@@ -5,6 +5,7 @@ namespace Infrastructure.Persistance.Entities.Result
     [Table("VoltageResult")]
     public class VoltageResultEntity : CalculationResultBaseEntity
     {
+        
         /// <summary>
         /// Номер узла
         /// </summary>
@@ -14,10 +15,5 @@ namespace Infrastructure.Persistance.Entities.Result
         /// Номер реализации
         /// </summary>
         public string? NodeName { get; set; }
-
-        /// <summary>
-        /// Значение напряжения
-        /// </summary>
-        public double VoltageValue { get; set; }
     }
 }

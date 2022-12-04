@@ -11,9 +11,5 @@ namespace Infrastructure.Persistance.Entities.Result
         /// </summary>
         public string BrunchName { get; set; }
 
-        /// <summary>
-        /// Значение напряжения
-        /// </summary>
-        public double CurrentValue { get; set; }
     }
 }

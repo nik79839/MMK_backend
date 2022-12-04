@@ -15,9 +15,9 @@ namespace Infrastructure.Services
         /// Обработка результатов расчета
         /// </summary>
         /// <param name="powerFlowResults"></param>
-        public StatisticBase Processing(List<PowerFlowResult> powerFlowResults)
+        public StatisticBase Processing(List<CalculationResultBase> powerFlowResults)
         {
-            List<double> values = powerFlowResults.ConvertAll(x => x.PowerFlowLimit);
+            List<double> values = powerFlowResults.ConvertAll(x => x.Value);
             return GetStatistic(values);
         }
 
@@ -35,7 +35,7 @@ namespace Infrastructure.Services
                 string nodeName = voltageResults.First(x => x.NodeNumber == nodeNumber).NodeName;
                 values.AddRange(from voltageResult in voltageResults
                                 where voltageResult.NodeNumber == nodeNumber
-                                select voltageResult.VoltageValue);
+                                select voltageResult.Value);
                 StatisticBase statistic = GetStatistic(values);
                 voltageResultProcessed.Add(new VoltageResultProcessed()
                 {
@@ -60,7 +60,7 @@ namespace Infrastructure.Services
                 List<double> values = new();
                 values.AddRange(from currentResult in currentResults
                                 where currentResult.BrunchName == brunchName
-                                select currentResult.CurrentValue);
+                                select currentResult.Value);
                 StatisticBase statistic = GetStatistic(values);
                 currentResultProcesseds.Add(new CurrentResultProcessed()
                 {
