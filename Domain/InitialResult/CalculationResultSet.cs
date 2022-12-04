@@ -8,6 +8,6 @@ namespace Domain.InitialResult
 {
     public class CalculationResultSet
     {
-        private readonly List<CalculationResultBase> _calculationResults;
+        private readonly IEnumerable<CalculationResultBase> _calculationResults;
     }
 }

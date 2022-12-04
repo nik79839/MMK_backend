@@ -50,10 +50,6 @@ namespace Infrastructure.Services
             {
                 throw new Exception($"Ошибка. Расчета с ID {id} не существует.");
             }
-            /*CalculationResultProcessed calculationResultProcessed = new();
-            calculationResultProcessed.Processing(calculationResultInitial.PowerFlowResults);
-            calculationResultProcessed.Processing(calculationResultInitial.VoltageResults);
-            calculationResultProcessed.Processing(calculationResultInitial.CurrentResults);*/
             return calculationResultInitial;
         }
 
@@ -94,10 +90,10 @@ namespace Infrastructure.Services
                 rastrComClient.WorseningRandom(calcSettings.WorseningSettings, calcSettings.PercentLoad);
                 double powerFlowValue = Math.Round((double)rastrComClient.PowerSech.Z[calcSettings.SechNumber-1], 2);
                 calcResultInit.PowerFlowResults.Add(new CalculationResultBase(calculations.Id, i + 1, powerFlowValue));
-                calcResultInit.VoltageResults.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
+                calcResultInit.VoltageResults?.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
                                                        let index = rastrComClient.FindNodeIndex(uNode)
                                                        select new VoltageResult(calculations.Id, i + 1, uNode, rastrComClient.NameNode.Z[index].ToString(), Math.Round(Convert.ToDouble(rastrComClient.Ur.Z[index]), 2)));
-                calcResultInit.CurrentResults.AddRange(from string brunch in calcSettings.IBrunches // Запись токов
+                calcResultInit.CurrentResults?.AddRange(from string brunch in calcSettings.IBrunches // Запись токов
                                                        let index = rastrComClient.FindBranchIndexByName(brunch)
                                                        select new CurrentResult(calculations.Id, i + 1, brunch, Math.Round(Convert.ToDouble(rastrComClient.IMax.Z[index]), 2)));
                 watch.Stop();

@@ -75,7 +75,7 @@ namespace RastrAdapter
         {
             for (int index = 0; index < _node.Count; index++)
             {
-                if (Convert.ToDouble(NumberNode.ZN[index]) == ny)
+                if ((int)NumberNode.ZN[index] == ny)
                 {
                     return index;
                 }
@@ -95,8 +95,7 @@ namespace RastrAdapter
         {
             for (int index = 0; index < _vetv.Count; index++)
             {
-                if (Convert.ToInt32(StartNode.get_ZN(index)) == ip && Convert.ToInt32(EndNode.get_ZN(index)) == iq
-                    && Convert.ToInt32(Parallel.get_ZN(index)) == np)
+                if ((int)StartNode.ZN[index] == ip && (int)EndNode.ZN[index] == iq && (int)Parallel.ZN[index] == np)
                 {
                     return index;
                 }
@@ -108,7 +107,7 @@ namespace RastrAdapter
         {
             for (int index = 0; index < _vetv.Count; index++)
             {
-                if (NameVetv.get_ZN(index).ToString() == name)
+                if (NameVetv.ZN[index].ToString() == name)
                 {
                     return index;
                 }
@@ -125,7 +124,7 @@ namespace RastrAdapter
             List<Node> loadNodes = new();
             for (int i = 0; i < _node.Count; i++)
             {
-                if (Convert.ToDouble(Pn.ZN[i]) != 0)
+                if ((double)Pn.ZN[i] != 0)
                 {
                     loadNodes.Add(new Node()
                     {
@@ -153,7 +152,7 @@ namespace RastrAdapter
                     Name = NameNode.ZN[i].ToString(),
                     District = new District(NameArea.ZN[i].ToString(), (int)Na.ZN[i])
                 });
-            }  
+            }
             return loadNodes;
         }
 
@@ -190,8 +189,7 @@ namespace RastrAdapter
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = FindNodeIndex(nodes[i]);
-                Pn.set_ZN(index, (double)randPn.Next(Convert.ToInt32(Pn.ZN[index]) * (100 - percent), Convert.ToInt32(Pn.ZN[index]) * (100 + percent)) / 100f);
-                double tg = (randTg.NextDouble() * 0.14) + 0.48;
+                Pn.set_ZN(index, (double)randPn.Next((int)Pn.ZN[index] * (100 - percent), (int)Pn.ZN[index] * (100 + percent)) / 100f);
                 Qn.set_ZN(index, (double)Pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
             }
         }
@@ -248,11 +246,11 @@ namespace RastrAdapter
                     {
                         index = FindNodeIndex(nodes[i].NodeNumber);
                         nodes[i].MaxValue ??= 10000;
-                        if (Convert.ToDouble(Pn.Z[index]) < nodes[i].MaxValue)
+                        if ((double)Pn.ZN[index] < nodes[i].MaxValue)
                         {
                             randomPercent = 1 + ((float)randPercent.Next(0, percent) / 100);
-                            Pn.set_ZN(index, Convert.ToDouble(Pn.Z[index]) * randomPercent);
-                            Qn.set_ZN(index, Convert.ToDouble(Pn.ZN[index]) * ((randTg.NextDouble() * 0.14) + 0.48));
+                            Pn.set_ZN(index, (double)Pn.ZN[index] * randomPercent);
+                            Qn.set_ZN(index, (double)Pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
                         }
                     }
                     kod = RastrCOM.rgm("p");
@@ -263,8 +261,8 @@ namespace RastrAdapter
                     for (int i = 0; i < nodes.Count; i++)
                     {
                         index = FindNodeIndex(nodes[i].NodeNumber);
-                        Pn.set_ZN(index, (double)Pn.Z[index] / 1.02);
-                        Qn.set_ZN(index, (double)Pn.ZN[index] * (float)(randTg.Next(48, 62) / 100));
+                        Pn.set_ZN(index, (double)Pn.ZN[index] / 1.02);
+                        Qn.set_ZN(index, (double)Pn.ZN[index] * (randTg.Next(48, 62) / 100));
                     }
                     kod = RastrCOM.rgm("p");
                 }

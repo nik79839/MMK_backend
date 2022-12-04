@@ -20,6 +20,6 @@
         /// </summary>
         public List<CurrentResult>? CurrentResults { get; set; } = new();
 
-        public List<List<CalculationResultBase>> CalculationResults { get; set; } = new();
+        public List<CalculationResultSet> CalculationResults { get; set; } = new();
     }
 }
