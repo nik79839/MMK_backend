@@ -43,18 +43,18 @@ namespace Infrastructure.Services
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public CalculationResultInfo GetCalculationsById(string id)
+        public CalculationResultInitial GetCalculationsById(string id)
         {
             CalculationResultInitial calculationResultInitial = _calculationResultRepository.GetResultInitialById(id).Result;
             if (calculationResultInitial.PowerFlowResults.Count == 0)
             {
                 throw new Exception($"Ошибка. Расчета с ID {id} не существует.");
             }
-            CalculationResultProcessed calculationResultProcessed = new();
+            /*CalculationResultProcessed calculationResultProcessed = new();
             calculationResultProcessed.Processing(calculationResultInitial.PowerFlowResults);
             calculationResultProcessed.Processing(calculationResultInitial.VoltageResults);
-            calculationResultProcessed.Processing(calculationResultInitial.CurrentResults);
-            return new(calculationResultInitial, calculationResultProcessed);
+            calculationResultProcessed.Processing(calculationResultInitial.CurrentResults);*/
+            return calculationResultInitial;
         }
 
         //TODO: События

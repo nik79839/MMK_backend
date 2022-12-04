@@ -1,5 +1,6 @@
 ﻿using Domain;
 using Domain.Events;
+using Domain.InitialResult;
 
 namespace Application.Interfaces
 {
@@ -7,7 +8,7 @@ namespace Application.Interfaces
     {
         public event EventHandler<CalculationProgressEventArgs> CalculationProgress;
         public List<Calculations> GetCalculations();
-        public CalculationResultInfo GetCalculationsById(string id);
+        public CalculationResultInitial GetCalculationsById(string id);
         public Task StartCalculation(CalculationSettings calculationSettings, CancellationToken cancellationToken);
         public Task DeleteCalculationById(string id);
     }

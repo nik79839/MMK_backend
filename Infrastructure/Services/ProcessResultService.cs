@@ -1,4 +1,5 @@
-﻿using Domain.InitialResult;
+﻿using Application.Interfaces;
+using Domain.InitialResult;
 using Domain.ProcessedResult;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Services
 {
-    public class ProcessResultService
+    public class ProcessResultService : IProcessResultService
     {
         /// <summary>
         /// Обработка результатов расчета
@@ -74,7 +75,7 @@ namespace Infrastructure.Services
             return currentResultProcesseds;
         }
 
-        public static StatisticBase GetStatistic(List<double> values)
+        private static StatisticBase GetStatistic(List<double> values)
         {
             StatisticBase statisticBase = new();
             int intervalCount = Convert.ToInt32(Math.Log10(values.Count) + Math.Sqrt(values.Count));

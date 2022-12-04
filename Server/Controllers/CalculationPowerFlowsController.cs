@@ -25,13 +25,15 @@ namespace Server.Controllers
     {
         private readonly IHubContext<ProgressHub> _hubContext;
         private readonly ICalculationService _calculationService;
+        private readonly IProcessResultService _processResultService;
         private readonly IMapper _mapper;
-        public CalculationPowerFlowsController(IHubContext<ProgressHub> hubContext, ICalculationService calculationService, IMapper mapper)
+        public CalculationPowerFlowsController(IHubContext<ProgressHub> hubContext, ICalculationService calculationService, IMapper mapper, IProcessResultService processResultService)
         {
             _hubContext = hubContext;
             _mapper = mapper;
             _calculationService = calculationService;
             _calculationService.CalculationProgress += EventHandler;
+            _processResultService = processResultService;
         }
 
         /// <summary>
@@ -82,15 +84,15 @@ namespace Server.Controllers
             var calculationResultInfo = _calculationService.GetCalculationsById(id);
             CalculationResultInitialDto calculationResultInitial = new()
             {
-                PowerFlowResults = _mapper.Map<List<PowerFlowResult>, List<PowerFlowResultDto>>(calculationResultInfo.InitialResult.PowerFlowResults),
-                VoltageResults = _mapper.Map<List<VoltageResult>, List<VoltageResultDto>>(calculationResultInfo.InitialResult.VoltageResults),
-                CurrentResults = _mapper.Map<List<CurrentResult>, List<CurrentResultDto>>(calculationResultInfo.InitialResult.CurrentResults)
+                PowerFlowResults = _mapper.Map<List<PowerFlowResult>, List<PowerFlowResultDto>>(calculationResultInfo.PowerFlowResults),
+                VoltageResults = _mapper.Map<List<VoltageResult>, List<VoltageResultDto>>(calculationResultInfo.VoltageResults),
+                CurrentResults = _mapper.Map<List<CurrentResult>, List<CurrentResultDto>>(calculationResultInfo.CurrentResults)
             };
             CalculationResultProcessedDto calculationResultProcessed = new()
             {
-                PowerFlowResultProcessed = _mapper.Map<StatisticBase, StatisticBaseDto>(calculationResultInfo.ProcessedResult.PowerFlowResultProcessed),
-                VoltageResultProcessed = _mapper.Map<List<VoltageResultProcessed>, List<VoltageResultProcessedDto>>(calculationResultInfo.ProcessedResult.VoltageResultProcessed),
-                CurrentResultProcessed = _mapper.Map<List<CurrentResultProcessed>, List<CurrentResultProcessedDto>>(calculationResultInfo.ProcessedResult.CurrentResultProcessed)
+                PowerFlowResultProcessed = _mapper.Map<StatisticBase, StatisticBaseDto>(_processResultService.Processing(calculationResultInfo.PowerFlowResults)),
+                VoltageResultProcessed = _mapper.Map<List<VoltageResultProcessed>, List<VoltageResultProcessedDto>>(_processResultService.Processing(calculationResultInfo.VoltageResults)),
+                CurrentResultProcessed = _mapper.Map<List<CurrentResultProcessed>, List<CurrentResultProcessedDto>>(_processResultService.Processing(calculationResultInfo.CurrentResults))
             };
             var response = new CalculationResultInfoResponse(calculationResultInitial, calculationResultProcessed);
             return Ok(response);
