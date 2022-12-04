@@ -76,7 +76,6 @@ namespace Infrastructure.Services
                                        select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue));
             await _calculationResultRepository.AddCalculation(calculations);
             CalculationResultInitial calcResultInit = new();
-            //List<Brunch> brunchesWithAOPO = new() { new (2640,2641,0), new(2631, 2640, 0), new(2639, 2640, 0)};
             List<int> numberLoadNodes = rastrComClient.AllLoadNodesToList().ConvertAll(x => x.Number); //Массив номеров узлов
             int exp = calcSettings.CountOfImplementations;
                                                                   

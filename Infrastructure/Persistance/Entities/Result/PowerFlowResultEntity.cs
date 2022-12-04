@@ -3,7 +3,7 @@
 namespace Infrastructure.Persistance.Entities.Result
 {
     [Table("PowerFlowResult")]
-    public class PowerFlowResultEntity : CalculationResultBase
+    public class PowerFlowResultEntity : CalculationResultBaseEntity
     {
         /// <summary>
         /// Значение напряжения

@@ -3,7 +3,7 @@
 namespace Infrastructure.Persistance.Entities.Result
 {
     [Table("VoltageResult")]
-    public class VoltageResultEntity : CalculationResultBase
+    public class VoltageResultEntity : CalculationResultBaseEntity
     {
         /// <summary>
         /// Номер узла

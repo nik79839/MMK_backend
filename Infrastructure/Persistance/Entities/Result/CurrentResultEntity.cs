@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Infrastructure.Persistance.Entities.Result
 {
     [Table("CurrentResult")]
-    public class CurrentResultEntity : CalculationResultBase
+    public class CurrentResultEntity : CalculationResultBaseEntity
     {
         /// <summary>
         /// Номер реализации

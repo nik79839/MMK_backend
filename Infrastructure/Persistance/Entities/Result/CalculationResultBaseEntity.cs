@@ -6,7 +6,7 @@ namespace Infrastructure.Persistance.Entities.Result
     /// <summary>
     /// Результаты расчета для хранения в БД
     /// </summary>
-    public abstract class CalculationResultBase
+    public abstract class CalculationResultBaseEntity
     {
         /// <summary>
         /// Уникальный идентификатор расчета

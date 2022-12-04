@@ -19,5 +19,7 @@
         /// Ссылка на результаты расчетов токов
         /// </summary>
         public List<CurrentResult>? CurrentResults { get; set; } = new();
+
+        public List<List<CalculationResultBase>> CalculationResults { get; set; } = new();
     }
 }
