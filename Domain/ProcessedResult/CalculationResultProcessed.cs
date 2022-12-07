@@ -12,7 +12,7 @@ namespace Domain.ProcessedResult
         /// <summary>
         ///  Обработанные значения напряжения для нескольких узлов
         /// </summary>
-        public List<VoltageResultProcessed>? VoltageResultProcessed { get; set; } = new();
+        public IEnumerable<StatisticBase>? VoltageResultProcessed { get; set; }
 
         /// <summary>
         ///  Обработанные значения тока для нескольких ветвей

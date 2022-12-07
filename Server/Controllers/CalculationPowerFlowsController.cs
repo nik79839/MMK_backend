@@ -94,6 +94,7 @@ namespace Server.Controllers
                 VoltageResultProcessed = _mapper.Map<List<VoltageResultProcessed>, List<VoltageResultProcessedDto>>(_processResultService.Processing(calculationResultInfo.VoltageResults)),
                 CurrentResultProcessed = _mapper.Map<List<CurrentResultProcessed>, List<CurrentResultProcessedDto>>(_processResultService.Processing(calculationResultInfo.CurrentResults))
             };
+            IEnumerable<StatisticBase> statisticBases = _processResultService.Processing(calculationResultInfo.VoltageResults);
             var response = new CalculationResultInfoResponse(calculationResultInitial, calculationResultProcessed);
             return Ok(response);
         }

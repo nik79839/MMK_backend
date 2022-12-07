@@ -18,7 +18,9 @@ namespace Infrastructure.Services
         public StatisticBase Processing(List<CalculationResultBase> powerFlowResults)
         {
             List<double> values = powerFlowResults.ConvertAll(x => x.Value);
-            return GetStatistic(values);
+            StatisticBase statisticBase = new();
+            statisticBase.GetStatistic(values);
+            return statisticBase;
         }
 
         /// <summary>
@@ -36,7 +38,9 @@ namespace Infrastructure.Services
                 values.AddRange(from voltageResult in voltageResults
                                 where voltageResult.NodeNumber == nodeNumber
                                 select voltageResult.Value);
-                VoltageResultProcessed statistic = (VoltageResultProcessed)GetStatistic(values);
+                StatisticBase statisticBase = new VoltageResultProcessed();
+                statisticBase.GetStatistic(values);
+                VoltageResultProcessed statistic = (VoltageResultProcessed)statisticBase;
                 statistic.NodeName = nodeName;
                 voltageResultProcessed.Add(statistic);
             }
@@ -53,36 +57,13 @@ namespace Infrastructure.Services
                 values.AddRange(from currentResult in currentResults
                                 where currentResult.BrunchName == brunchName
                                 select currentResult.Value);
-                CurrentResultProcessed statistic = (CurrentResultProcessed)GetStatistic(values);
+                StatisticBase statisticBase = new CurrentResultProcessed();
+                statisticBase.GetStatistic(values);
+                CurrentResultProcessed statistic = (CurrentResultProcessed)statisticBase;
                 statistic.BrunchName = brunchName;
+                currentResultProcesseds.Add(statistic);
             }
             return currentResultProcesseds;
-        }
-
-        private static StatisticBase GetStatistic(List<double> values)
-        {
-            StatisticBase statisticBase = new();
-            int intervalCount = Convert.ToInt32(Math.Log10(values.Count) + Math.Sqrt(values.Count));
-            statisticBase.Maximum = values.Max();
-            statisticBase.Minimum = values.Min();
-            statisticBase.Mean = Math.Round(values.Average(), 2);
-            double dispersion = values.Sum(a => (a - statisticBase.Mean) * (a - statisticBase.Mean)) / (values.Count - 1);
-            statisticBase.StD = Math.Sqrt(dispersion);
-            double step = (statisticBase.Maximum - statisticBase.Minimum) / intervalCount;
-            double sec = statisticBase.Minimum;
-            double first = 0, height = 0;
-            for (int i = 0; i < intervalCount; i++)
-            {
-                int count = 0;
-                sec += step;
-                first = sec - step;
-                count += (from double v in values
-                          where v >= first && v <= sec
-                          select v).Count();
-                height = Math.Round((Convert.ToDouble(count) / Convert.ToDouble(values.Count)) * 100,2);
-                statisticBase.HistogramData.Add(new HistogramData() { Interval = Math.Round(first, 2).ToString() + " - " + Math.Round(sec, 2).ToString(), Height = height });
-            }
-            return statisticBase;
         }
     }
 }
