@@ -88,7 +88,7 @@ namespace Infrastructure.Services
                 rastrComClient.ChangePn(numberLoadNodes, calcSettings.PercentLoad); //Случайная нагрузка
                 rastrComClient.RastrTestBalance();
                 rastrComClient.WorseningRandom(calcSettings.WorseningSettings, calcSettings.PercentLoad);
-                double powerFlowValue = Math.Round((double)rastrComClient.GetParameterByIndex("node","psech", calcSettings.SechNumber - 1), 2);
+                double powerFlowValue = Math.Round((double)rastrComClient.GetParameterByIndex("sechen", "psech", calcSettings.SechNumber - 1), 2);
                 calcResultInit.PowerFlowResults.Add(new CalculationResultBase(calculations.Id, i + 1, powerFlowValue));
                 calcResultInit.VoltageResults?.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
                                                        let index = rastrComClient.FindNodeIndex(uNode)

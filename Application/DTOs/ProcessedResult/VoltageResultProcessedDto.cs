@@ -8,7 +8,6 @@
         /// <summary>
         /// Номер узла
         /// </summary>
-        public int NodeNumber { get; set; } = 0;
         public string NodeName { get; set; }
     }
 }

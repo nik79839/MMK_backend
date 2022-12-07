@@ -36,17 +36,9 @@ namespace Infrastructure.Services
                 values.AddRange(from voltageResult in voltageResults
                                 where voltageResult.NodeNumber == nodeNumber
                                 select voltageResult.Value);
-                StatisticBase statistic = GetStatistic(values);
-                voltageResultProcessed.Add(new VoltageResultProcessed()
-                {
-                    Maximum = statistic.Maximum,
-                    Minimum = statistic.Minimum,
-                    Mean = statistic.Mean,
-                    HistogramData = statistic.HistogramData,
-                    StD = statistic.StD,
-                    NodeNumber = nodeNumber,
-                    NodeName = nodeName
-                });
+                VoltageResultProcessed statistic = (VoltageResultProcessed)GetStatistic(values);
+                statistic.NodeName = nodeName;
+                voltageResultProcessed.Add(statistic);
             }
             return voltageResultProcessed;
         }
@@ -61,16 +53,8 @@ namespace Infrastructure.Services
                 values.AddRange(from currentResult in currentResults
                                 where currentResult.BrunchName == brunchName
                                 select currentResult.Value);
-                StatisticBase statistic = GetStatistic(values);
-                currentResultProcesseds.Add(new CurrentResultProcessed()
-                {
-                    Maximum = statistic.Maximum,
-                    Minimum = statistic.Minimum,
-                    Mean = statistic.Mean,
-                    StD = statistic.StD,
-                    HistogramData = statistic.HistogramData,
-                    BrunchName = brunchName
-                });
+                CurrentResultProcessed statistic = (CurrentResultProcessed)GetStatistic(values);
+                statistic.BrunchName = brunchName;
             }
             return currentResultProcesseds;
         }

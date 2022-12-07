@@ -13,13 +13,13 @@ namespace Infrastructure
         public DbSet<UserEntity> Users { get; set; } = null!;
         public DbSet<WorseningSettingsEntity> WorseningSettings { get; set; } = null!;
 
-        //public CalculationResultContext() => Database.EnsureCreated();
+        public CalculationResultContext() => Database.EnsureCreated();
 
         public CalculationResultContext(DbContextOptions<CalculationResultContext> options)
             : base(options)
         {
             //Database.EnsureDeleted();
-            //Database.EnsureCreated();   // создаем базу данных при первом обращении
+            Database.EnsureCreated();   // создаем базу данных при первом обращении
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

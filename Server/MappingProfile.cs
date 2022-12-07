@@ -21,6 +21,7 @@ namespace Server
             CreateMap<CurrentResult, CurrentResultDto>();
             CreateMap<HistogramData, HistogramDataDto>().ReverseMap();
             CreateMap<StatisticBase, StatisticBaseDto>().ReverseMap();
+            CreateMap<StatisticBase, VoltageResultProcessedDto>().ReverseMap();
             CreateMap<VoltageResultProcessed, VoltageResultProcessedDto>().ReverseMap();
             CreateMap<CurrentResultProcessed, CurrentResultProcessedDto>().ReverseMap();
         }
