@@ -13,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RastrAdapter", "RastrAdapter\RastrAdapter.csproj", "{F624DFCE-6174-4122-9565-9283D34270BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{E1E53A76-3B56-4557-AD20-50F09BCE1FFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{E1E53A76-3B56-4557-AD20-50F09BCE1FFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure.Persistance", "Infrastructure.Persistance\Infrastructure.Persistance.csproj", "{3D2C0239-3786-4216-B114-B81890C524B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -123,6 +125,22 @@ Global
 		{E1E53A76-3B56-4557-AD20-50F09BCE1FFA}.Release|ARM64.Build.0 = Release|Any CPU
 		{E1E53A76-3B56-4557-AD20-50F09BCE1FFA}.Release|x86.ActiveCfg = Release|Any CPU
 		{E1E53A76-3B56-4557-AD20-50F09BCE1FFA}.Release|x86.Build.0 = Release|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Debug|x86.Build.0 = Debug|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Release|ARM32.Build.0 = Release|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Release|ARM64.Build.0 = Release|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Release|x86.ActiveCfg = Release|Any CPU
+		{3D2C0239-3786-4216-B114-B81890C524B2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,9 +1,6 @@
 using Application.Interfaces;
 using Infrastructure;
-using Infrastructure.Persistance;
 using Infrastructure.Persistance.Repositories;
-using Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication.Negotiate;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
@@ -11,6 +8,7 @@ using Server;
 using Server.Hub;
 using System.Reflection;
 using Serilog;
+using Infrastructure.Services;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("log.txt").CreateLogger();
 Log.Information("Starting web application");

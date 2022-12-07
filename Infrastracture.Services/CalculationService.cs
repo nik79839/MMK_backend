@@ -88,14 +88,14 @@ namespace Infrastructure.Services
                 rastrComClient.ChangePn(numberLoadNodes, calcSettings.PercentLoad); //Случайная нагрузка
                 rastrComClient.RastrTestBalance();
                 rastrComClient.WorseningRandom(calcSettings.WorseningSettings, calcSettings.PercentLoad);
-                double powerFlowValue = Math.Round((double)rastrComClient.GetParameterByIndex("node","psech", calcSettings.SechNumber - 1), 2);
+                double powerFlowValue = Math.Round((double)rastrComClient.PowerSech.ZN[calcSettings.SechNumber-1], 2);
                 calcResultInit.PowerFlowResults.Add(new CalculationResultBase(calculations.Id, i + 1, powerFlowValue));
                 calcResultInit.VoltageResults?.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
                                                        let index = rastrComClient.FindNodeIndex(uNode)
-                                                       select new VoltageResult(calculations.Id, i + 1, uNode, rastrComClient.GetParameterByIndex("node","name",index).ToString(), Math.Round((double)rastrComClient.GetParameterByIndex("node","vras",index), 2)));
+                                                       select new VoltageResult(calculations.Id, i + 1, uNode, rastrComClient.NameNode.ZN[index].ToString(), Math.Round((double)rastrComClient.Ur.Z[index], 2)));
                 calcResultInit.CurrentResults?.AddRange(from string brunch in calcSettings.IBrunches // Запись токов
                                                        let index = rastrComClient.FindBranchIndexByName(brunch)
-                                                       select new CurrentResult(calculations.Id, i + 1, brunch, Math.Round((double)rastrComClient.GetParameterByIndex("vetv","i_max",index), 2)));
+                                                       select new CurrentResult(calculations.Id, i + 1, brunch, Math.Round((double)rastrComClient.IMax.Z[index], 2)));
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;
                 CalculationProgress.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события

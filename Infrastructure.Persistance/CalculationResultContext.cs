@@ -2,7 +2,7 @@
 using Infrastructure.Persistance.Entities.Result;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Persistance
+namespace Infrastructure
 {
     public class CalculationResultContext : DbContext
     {
@@ -13,13 +13,13 @@ namespace Infrastructure.Persistance
         public DbSet<UserEntity> Users { get; set; } = null!;
         public DbSet<WorseningSettingsEntity> WorseningSettings { get; set; } = null!;
 
-        public CalculationResultContext() => Database.EnsureCreated();
+        //public CalculationResultContext() => Database.EnsureCreated();
 
         public CalculationResultContext(DbContextOptions<CalculationResultContext> options)
             : base(options)
         {
             //Database.EnsureDeleted();
-            Database.EnsureCreated();   // создаем базу данных при первом обращении
+            //Database.EnsureCreated();   // создаем базу данных при первом обращении
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -27,7 +27,7 @@ namespace Infrastructure.Persistance
             modelBuilder.Entity<PowerFlowResultEntity>().HasKey(vf => new { vf.CalculationId, vf.ImplementationId });
             modelBuilder.Entity<CalculationEntity>().HasKey(vf => new { vf.Id });
             modelBuilder.Entity<VoltageResultEntity>().HasKey(vf => new { vf.CalculationId, vf.ImplementationId, vf.NodeNumber });
-            modelBuilder.Entity<CurrentResultEntity>().HasKey(vf => new { vf.CalculationId, vf.ImplementationId,  vf.BrunchName });
+            modelBuilder.Entity<CurrentResultEntity>().HasKey(vf => new { vf.CalculationId, vf.ImplementationId, vf.BrunchName });
             modelBuilder.Entity<WorseningSettingsEntity>().HasKey(vf => new { vf.CalculationId, vf.NodeNumber });
         }
     }

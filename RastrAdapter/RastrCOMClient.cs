@@ -4,32 +4,32 @@ using Domain.Rastrwin3.RastrModel;
 
 namespace RastrAdapter
 {
-    public class RastrCOMClient 
+    public class RastrCOMClient
     {
         private readonly ITable _node;
         private readonly ITable _vetv;
         private readonly ITable _sechen;
         private readonly ITable _area;
-        public Rastr RastrCOM { get; set; } = new();
-        public ICol NumberNode { get; set; }
-        public ICol NameNode { get; set; }
-        public ICol Pn { get; set; }
-        public ICol Qn { get; set; }
-        public ICol Na { get; set; }
-        public ICol NameArea { get; set; }
-        public ICol Ur { get; set; }
-        public ICol StartNode { get; set; }
-        public ICol EndNode { get; set; }
-        public ICol Parallel { get; set; }
-        public ICol NameVetv { get; set; }
-        public ICol TipVetv { get; set; }
-        public ICol StaVetv { get; set; }
-        public ICol IMax { get; set; }
-        public ICol Nsech { get; set; }
-        public ICol NameSech { get; set; }
-        public ICol PowerSech { get; set; }
-        public ICol NaArea { get; set; }
-        public ICol NameAreaArea { get; set; }
+        private readonly Rastr RastrCOM = new();
+        private readonly ICol NumberNode;
+        private readonly ICol NameNode;
+        private readonly ICol Pn;
+        private readonly ICol Qn;
+        private readonly ICol Na;
+        private readonly ICol NameArea;
+        private readonly ICol Ur;
+        private readonly ICol StartNode;
+        private readonly ICol EndNode;
+        private readonly ICol Parallel;
+        private readonly ICol NameVetv;
+        private readonly ICol TipVetv;
+        private readonly ICol StaVetv;
+        private readonly ICol IMax;
+        private readonly ICol Nsech;
+        private readonly ICol NameSech;
+        private readonly ICol PowerSech;
+        private readonly ICol NaArea;
+        private readonly ICol NameAreaArea;
 
         public RastrCOMClient(string pathToRegim, string? pathToSech = null)
         {
@@ -50,7 +50,6 @@ namespace RastrAdapter
             NameVetv = (ICol)_vetv.Cols.Item("name");
             IMax = (ICol)_vetv.Cols.Item("i_max");
             TipVetv = (ICol)_vetv.Cols.Item("tip");
-
             StaVetv = (ICol)_vetv.Cols.Item("sta");
             NaArea = (ICol)_area.Cols.Item("na");
             NameAreaArea = (ICol)_area.Cols.Item("name");
@@ -262,7 +261,7 @@ namespace RastrAdapter
                     {
                         index = FindNodeIndex(nodes[i].NodeNumber);
                         Pn.set_ZN(index, (double)Pn.ZN[index] / 1.02);
-                        Qn.set_ZN(index, (double)Pn.ZN[index] * (randTg.Next(48, 62) / 100));
+                        Qn.set_ZN(index, (double)Pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
                     }
                     kod = RastrCOM.rgm("p");
                 }
@@ -276,6 +275,13 @@ namespace RastrAdapter
             {
                 throw new Exception("Итерация не завершена из-за несходимости режима.");
             }
+        }
+
+        public object GetParameterByIndex(string table, string column, int index)
+        {
+            ITable t = (ITable)RastrCOM.Tables.Item(table);
+            ICol c = (ICol)t.Cols.Item(column);
+            return c.ZN[index];
         }
     }
 }
