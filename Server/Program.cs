@@ -30,11 +30,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 builder.Services.AddSignalR();
 builder.Services.AddScoped<ICalculationResultRepository, CalculationResultRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 var assembly = Assembly.GetAssembly(typeof(MappingProfile));
 builder.Services.AddAutoMapper(assembly);
 builder.Services.AddScoped<ICalculationService, CalculationService>();
 builder.Services.AddScoped<IRastrSchemeInfoService, RastrSchemeInfoService>();
 builder.Services.AddScoped<IProcessResultService, ProcessResultService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .ReadFrom.Services(services)

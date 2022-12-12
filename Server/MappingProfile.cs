@@ -24,6 +24,7 @@ namespace Server
             CreateMap<StatisticBase, VoltageResultProcessedDto>();
             CreateMap<VoltageResultProcessed, VoltageResultProcessedDto>().ReverseMap();
             CreateMap<CurrentResultProcessed, CurrentResultProcessedDto>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
         }
     }
 }

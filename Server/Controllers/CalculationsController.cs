@@ -21,13 +21,13 @@ namespace Server.Controllers
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
-    public class CalculationPowerFlowsController : ControllerBase
+    public class CalculationsController : ControllerBase
     {
         private readonly IHubContext<ProgressHub> _hubContext;
         private readonly ICalculationService _calculationService;
         private readonly IProcessResultService _processResultService;
         private readonly IMapper _mapper;
-        public CalculationPowerFlowsController(IHubContext<ProgressHub> hubContext, ICalculationService calculationService, IMapper mapper, IProcessResultService processResultService)
+        public CalculationsController(IHubContext<ProgressHub> hubContext, ICalculationService calculationService, IMapper mapper, IProcessResultService processResultService)
         {
             _hubContext = hubContext;
             _mapper = mapper;
