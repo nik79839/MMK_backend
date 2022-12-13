@@ -20,5 +20,17 @@ namespace Infrastructure.Services
         {
             return _userRepository.GetAllUsers().Result;
         }
+
+        public async Task<User> Login(string login,string password)
+        {
+            var user = _userRepository.Login(login, password).Result;
+            if (user == null) throw new Exception($"Неверные имя пользовователя или пароль");
+            return user;
+        }
+
+        public async Task CreateUser(User user)
+        {
+            await _userRepository.CreateUser(user);
+        }
     }
 }

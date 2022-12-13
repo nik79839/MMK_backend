@@ -29,6 +29,7 @@ namespace Infrastructure
             modelBuilder.Entity<VoltageResultEntity>().HasKey(vf => new { vf.CalculationId, vf.ImplementationId, vf.NodeNumber });
             modelBuilder.Entity<CurrentResultEntity>().HasKey(vf => new { vf.CalculationId, vf.ImplementationId, vf.BrunchName });
             modelBuilder.Entity<WorseningSettingsEntity>().HasKey(vf => new { vf.CalculationId, vf.NodeNumber });
+            modelBuilder.Entity<UserEntity>().HasKey(vf => new { vf.Id});
         }
     }
 }

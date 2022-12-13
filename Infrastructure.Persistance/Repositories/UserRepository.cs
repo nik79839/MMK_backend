@@ -27,7 +27,19 @@ namespace Infrastructure.Persistance.Repositories
 
         public async Task<List<User>> GetAllUsers()
         {
-            return _mapper.Map<List<User>>(_mapper.Map<List<User>>(_context.Users.ToList()));
+            return _mapper.Map<List<User>>(_context.Users.ToList());
+        }
+
+        public async Task<User> Login(string login, string password)
+        {
+            var user = _context.Users.FirstOrDefault(x => x.Login == login && x.Password == password);
+            return _mapper.Map<User>(user);
+        }
+
+        public async Task CreateUser(User user)
+        {
+            await _context.Users.AddAsync(_mapper.Map<UserEntity>(user));
+            await _context.SaveChangesAsync();
         }
     }
 }

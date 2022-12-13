@@ -1,6 +1,7 @@
 ﻿using Application.DTOs;
 using Application.DTOs.InitialResult;
 using Application.DTOs.ProcessedResult;
+using Application.DTOs.Requests;
 using AutoMapper;
 using Domain;
 using Domain.InitialResult;
@@ -24,7 +25,9 @@ namespace Server
             CreateMap<StatisticBase, VoltageResultProcessedDto>();
             CreateMap<VoltageResultProcessed, VoltageResultProcessedDto>().ReverseMap();
             CreateMap<CurrentResultProcessed, CurrentResultProcessedDto>().ReverseMap();
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserDto>().ForMember(m => m.Name,
+                    opt => opt.MapFrom(src =>$"{src.SurName} {src.Name} {src.LastName}"));
+            CreateMap<User, CreateUserRequest>().ReverseMap();
         }
     }
 }
