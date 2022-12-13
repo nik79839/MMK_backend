@@ -12,6 +12,7 @@ namespace Infrastructure.Services
     public class CalculationService : ICalculationService
     {
         private readonly ICalculationResultRepository _calculationResultRepository;
+        private readonly IUserRepository _userRepository;
         public event EventHandler<CalculationProgressEventArgs> CalculationProgress;
         public CalculationService(ICalculationResultRepository calculationResultRepository)
         {
@@ -54,7 +55,7 @@ namespace Infrastructure.Services
         }
 
         //TODO: События
-        public async Task StartCalculation(CalculationSettings calcSettings, CancellationToken cancellationToken)
+        public async Task StartCalculation(CalculationSettings calcSettings, CancellationToken cancellationToken, int? userId = null)
         {
             RastrCOMClient rastrComClient = new(calcSettings.PathToRegim, calcSettings.PathToSech);
             Calculations calculations = new()
@@ -64,13 +65,13 @@ namespace Infrastructure.Services
                 PathToRegim = Path.GetFileName(calcSettings.PathToRegim),
                 PercentLoad = calcSettings.PercentLoad,
                 PercentForWorsening = calcSettings.PercentForWorsening,
-                SechName = rastrComClient.SechList().Find(sech => sech.Num == calcSettings.SechNumber).SechName
+                SechName = rastrComClient.SechList().Find(sech => sech.Num == calcSettings.SechNumber).SechName,
             };
             Console.WriteLine("Режим и сечения загружены.");
             List<WorseningSettings> worseningSettings = new();
             worseningSettings.AddRange(from setting in calcSettings.WorseningSettings
                                        select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue));
-            await _calculationResultRepository.AddCalculation(calculations);
+            await _calculationResultRepository.AddCalculation(calculations, userId);
             CalculationResultInitial calcResultInit = new();
             List<int> numberLoadNodes = rastrComClient.AllLoadNodesToList().ConvertAll(x => x.Number); //Массив номеров узлов
             int exp = calcSettings.CountOfImplementations;

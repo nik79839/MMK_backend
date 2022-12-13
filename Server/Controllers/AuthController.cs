@@ -47,7 +47,8 @@ namespace Server.Controllers
                 var user = _authService.Login(login.Login, login.Password).Result;
                 var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Name, $"{user.SurName} {user.Name} {user.LastName}")
+                        new Claim(ClaimTypes.Name, $"{user.SurName} {user.Name} {user.LastName}"),
+                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
 
                     };
                 var jwt = new JwtSecurityToken(issuer: "MyAuthServer", audience: "MyAuthClient", claims: claims, expires: DateTime.UtcNow.Add(TimeSpan.FromDays(3650)),
@@ -58,8 +59,7 @@ namespace Server.Controllers
             catch (Exception ex)
             {
                 return Unauthorized(ex.Message);
-            }
-            
+            }        
         }
 
         [HttpPost]

@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Server.Hub;
+using System.Security.Claims;
 using System.Security.Principal;
 
 namespace Server.Controllers
@@ -46,10 +47,11 @@ namespace Server.Controllers
         public async Task<IActionResult> PostCalculations([FromBody]CalculationSettingsRequest calculationSettingsRequest)
         {
             CancellationToken cancellationToken = HttpContext.RequestAborted;
+            int userId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier));
             var calculationSettings = _mapper.Map<CalculationSettingsRequest, CalculationSettings>(calculationSettingsRequest);
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
-            await _calculationService.StartCalculation(calculationSettings, cancellationToken);
+            await _calculationService.StartCalculation(calculationSettings, cancellationToken, userId);
             Console.WriteLine("Расчет завершен");
             return Ok("Расчет завершен.");
         }

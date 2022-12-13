@@ -191,3 +191,4 @@ FROM "WorseningSettings" AS w
 2022-12-13 18:18:42.948 +07:00 [INF] Starting web application
 2022-12-13 18:19:04.165 +07:00 [INF] Starting web application
 2022-12-13 18:24:15.582 +07:00 [INF] Starting web application
+2022-12-13 19:42:05.307 +07:00 [INF] Starting web application

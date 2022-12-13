@@ -28,8 +28,11 @@ namespace Infrastructure.Persistance.Repositories
 
         }
 
-        public async Task AddCalculation(Calculations calculations)
+        public async Task AddCalculation(Calculations calculations, int? userId = null)
         {
+            var user = _context.Users.FirstOrDefault(x => x.Id == userId);
+            var calculation = _mapper.Map<CalculationEntity>(calculations);
+            calculation.User = user;
             _context.Calculations.Add(_mapper.Map<CalculationEntity>(calculations));
             await _context.SaveChangesAsync();
         }

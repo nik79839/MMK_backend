@@ -7,7 +7,7 @@ namespace Application.Interfaces
     {
         Task<List<Calculations>> GetCalculations();
         Task<CalculationResultInitial> GetResultInitialById(string? id);
-        Task AddCalculation(Calculations calculations);
+        Task AddCalculation(Calculations calculations, int? userId = null);
         Task UpdateCalculation(Calculations calculations);
         Task AddPowerFlowResults(List<CalculationResultBase> powerFlowResults);
         Task AddVoltageResults(List<VoltageResult> voltageResults);
