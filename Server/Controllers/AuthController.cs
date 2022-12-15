@@ -25,6 +25,10 @@ namespace Server.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Получить список пользователей
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("GetUsers")]
         public async Task<IActionResult> GetUsers()
@@ -38,6 +42,11 @@ namespace Server.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Аутентификация
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("auth")]
         public async Task<IActionResult> Login(LoginRequest login)
@@ -62,6 +71,11 @@ namespace Server.Controllers
             }        
         }
 
+        /// <summary>
+        /// Создать нового пользователя
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("CreateUser")]
         public async Task<IActionResult> CreateUser(CreateUserRequest user)
@@ -71,9 +85,13 @@ namespace Server.Controllers
 
         }
 
+        /// <summary>
+        /// Удалить пользователя
+        /// </summary>
+        /// <returns></returns>
         [Route("whoAmI")]
         [HttpGet]
-        public async Task<IActionResult> WhoAmI()
+        public async Task<IActionResult> DeleteUser()
         {
             string name = HttpContext.User.Identity.Name?.ToString();
             return Ok(name);
