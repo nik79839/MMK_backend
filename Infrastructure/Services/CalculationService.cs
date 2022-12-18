@@ -99,7 +99,7 @@ namespace Infrastructure.Services
                                                        select new CurrentResult(calculations.Id, i + 1, brunch, Math.Round((double)rastrComClient.GetParameterByIndex("vetv","i_max",index), 2)));
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;
-                CalculationProgress.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
+                CalculationProgress?.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress, Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
                 Console.WriteLine(powerFlowValue);
             }
             await _calculationResultRepository.AddPowerFlowResults(calcResultInit.PowerFlowResults);
