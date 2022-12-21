@@ -2,6 +2,7 @@
 using Domain;
 using Infrastructure.Services;
 using Moq;
+using RastrAdapter;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,15 +35,16 @@ namespace UnitTests.Services
                 IBrunches = new() { "Улькан - Дабан"}
             };
             var calculationRepositoryMock = new Mock<ICalculationResultRepository>();
-            var service = new CalculationService(calculationRepositoryMock.Object);
+            var rastrMock = new Mock<ICalcModel>();
+            RastrCOMClient rastrCOMClient = new(calculationSettings.PathToRegim, calculationSettings.PathToSech);
+            var service = new CalculationService(calculationRepositoryMock.Object, rastrCOMClient);
 
             //act
-
-            var result = service.StartCalculation(calculationSettings, new CancellationToken(false));
+            await service.StartCalculation(calculationSettings, new CancellationToken(false));
 
             //assert
 
-            Assert.True(result.IsCompletedSuccessfully);
+            //Assert.True(result.IsCompletedSuccessfully);
         }
 
         [Fact]
@@ -53,8 +55,8 @@ namespace UnitTests.Services
                 .Setup(x => x.GetCalculations())
                 .Returns(() => Task.FromResult(new List<Calculations>() { new Calculations() { Id = Guid.NewGuid(),Name="test",SechName="afag"} }))
                 .Verifiable();
-
-            var service = new CalculationService(calculationRepositoryMock.Object);
+            var rastrMock = new Mock<ICalcModel>();
+            var service = new CalculationService(calculationRepositoryMock.Object, rastrMock.Object);
             var result = service.GetCalculations();
 
             calculationRepositoryMock.VerifyAll();

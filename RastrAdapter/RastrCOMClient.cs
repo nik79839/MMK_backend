@@ -1,37 +1,40 @@
-﻿using ASTRALib;
+﻿using Application.Interfaces;
+using ASTRALib;
 using Domain;
 using Domain.Rastrwin3.RastrModel;
 
 namespace RastrAdapter
 {
-    public class RastrCOMClient
+    public class RastrCOMClient : ICalcModel
     {
-        private readonly ITable _node;
-        private readonly ITable _vetv;
-        private readonly ITable _sechen;
-        private readonly ITable _area;
-        private readonly Rastr RastrCOM = new();
-        private readonly ICol NumberNode;
-        private readonly ICol NameNode;
-        private readonly ICol Pn;
-        private readonly ICol Qn;
-        private readonly ICol Na;
-        private readonly ICol NameArea;
-        private readonly ICol Ur;
-        private readonly ICol StartNode;
-        private readonly ICol EndNode;
-        private readonly ICol Parallel;
-        private readonly ICol NameVetv;
-        private readonly ICol TipVetv;
-        private readonly ICol StaVetv;
-        private readonly ICol IMax;
-        private readonly ICol Nsech;
-        private readonly ICol NameSech;
-        private readonly ICol PowerSech;
-        private readonly ICol NaArea;
-        private readonly ICol NameAreaArea;
+        private ITable _node;
+        private ITable _vetv;
+        private ITable _sechen;
+        private ITable _area;
+        private Rastr RastrCOM = new();
+        private ICol NumberNode;
+        private ICol NameNode;
+        private ICol Pn;
+        private ICol Qn;
+        private ICol Na;
+        private ICol NameArea;
+        private ICol StartNode;
+        private ICol EndNode;
+        private ICol Parallel;
+        private ICol NameVetv;
+        private ICol TipVetv;
+        private ICol Nsech;
+        private ICol NameSech;
+        private ICol PowerSech;
+        private ICol NaArea;
+        private ICol NameAreaArea;
 
         public RastrCOMClient(string pathToRegim, string? pathToSech = null)
+        {
+            RastrCOM.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
+        }
+
+        public void CreateInstanceRastr(string pathToRegim, string? pathToSech = null)
         {
             RastrCOM.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
             _node = (ITable)RastrCOM.Tables.Item("node");
@@ -43,14 +46,11 @@ namespace RastrAdapter
             Qn = (ICol)_node.Cols.Item("qn");
             Na = (ICol)_node.Cols.Item("na");
             NameArea = (ICol)_node.Cols.Item("na_name");
-            Ur = (ICol)_node.Cols.Item("vras");
             StartNode = (ICol)_vetv.Cols.Item("ip");
             EndNode = (ICol)_vetv.Cols.Item("iq");
             Parallel = (ICol)_vetv.Cols.Item("np");
             NameVetv = (ICol)_vetv.Cols.Item("name");
-            IMax = (ICol)_vetv.Cols.Item("i_max");
             TipVetv = (ICol)_vetv.Cols.Item("tip");
-            StaVetv = (ICol)_vetv.Cols.Item("sta");
             NaArea = (ICol)_area.Cols.Item("na");
             NameAreaArea = (ICol)_area.Cols.Item("name");
             if (!string.IsNullOrEmpty(pathToSech))
@@ -188,7 +188,7 @@ namespace RastrAdapter
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = FindNodeIndex(nodes[i]);
-                Pn.set_ZN(index, (double)randPn.Next((100 - percent), (100 + percent))* (double)Pn.ZN[index] / 100f);
+                Pn.set_ZN(index, (double)randPn.Next((100 - percent), (100 + percent)) * (double)Pn.ZN[index] / 100f);
                 Qn.set_ZN(index, (double)Pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
             }
         }

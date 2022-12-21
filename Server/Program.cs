@@ -9,6 +9,7 @@ using Server.Hub;
 using System.Reflection;
 using Serilog;
 using Infrastructure.Services;
+using RastrAdapter;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("log.txt").CreateLogger();
 Log.Information("Starting web application");
@@ -37,6 +38,7 @@ builder.Services.AddScoped<ICalculationService, CalculationService>();
 builder.Services.AddScoped<IRastrSchemeInfoService, RastrSchemeInfoService>();
 builder.Services.AddScoped<IProcessResultService, ProcessResultService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ICalcModel, RastrCOMClient>();
 builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .ReadFrom.Services(services)
