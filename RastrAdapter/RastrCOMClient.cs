@@ -33,6 +33,10 @@ namespace RastrAdapter
         {
             RastrCOM.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
         }
+        public RastrCOMClient()
+        {
+
+        }
 
         public void CreateInstanceRastr(string pathToRegim, string? pathToSech = null)
         {
