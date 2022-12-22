@@ -93,8 +93,8 @@ namespace Server.Controllers
             CalculationResultProcessedDto calculationResultProcessed = new()
             {
                 PowerFlowResultProcessed = _mapper.Map<StatisticBase, StatisticBaseDto>(_processResultService.Processing(calculationResultInfo.PowerFlowResults)),
-                VoltageResultProcessed = _mapper.Map<List<VoltageResultProcessed>, List<VoltageResultProcessedDto>>(_processResultService.Processing(calculationResultInfo.VoltageResults)),
-                CurrentResultProcessed = _mapper.Map<List<CurrentResultProcessed>, List<CurrentResultProcessedDto>>(_processResultService.Processing(calculationResultInfo.CurrentResults))
+                VoltageResultProcessed = _mapper.Map<List<VoltageResultProcessed>, List<VoltageResultProcessedDto>>(_processResultService.Processing(calculationResultInfo.VoltageResults) as List<VoltageResultProcessed>),
+                CurrentResultProcessed = _mapper.Map<List<CurrentResultProcessed>, List<CurrentResultProcessedDto>>(_processResultService.Processing(calculationResultInfo.CurrentResults) as List<CurrentResultProcessed>)
             };
             IEnumerable<StatisticBase> statisticBases = _processResultService.Processing(calculationResultInfo.VoltageResults);
             var response = new CalculationResultInfoResponse(calculationResultInitial, calculationResultProcessed);

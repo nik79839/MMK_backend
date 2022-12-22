@@ -22,7 +22,7 @@ namespace Infrastructure.Services
         /// Обработка результатов расчета
         /// </summary>
         /// <param name="calculationResults"></param>
-        public List<VoltageResultProcessed> Processing(List<VoltageResult> voltageResults)
+        public IEnumerable<StatisticBase> Processing(List<VoltageResult> voltageResults)
         {
             List<VoltageResultProcessed> voltageResultProcessed = new();
             var nodeNumbers = voltageResults.Select(x => x.NodeNumber).ToArray().Distinct();
@@ -42,7 +42,7 @@ namespace Infrastructure.Services
             return voltageResultProcessed;
         }
 
-        public List<CurrentResultProcessed> Processing(List<CurrentResult> currentResults)
+        public IEnumerable<StatisticBase> Processing(List<CurrentResult> currentResults)
         {
             List<CurrentResultProcessed> currentResultProcesseds = new();
             var brunchNames = currentResults.Select(x => x.BrunchName).ToArray().Distinct();

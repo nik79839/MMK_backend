@@ -5,8 +5,8 @@ namespace Application.Interfaces
 {
     public interface IProcessResultService
     {
-        List<CurrentResultProcessed> Processing(List<CurrentResult> currentResults);
+        IEnumerable<StatisticBase> Processing(List<CurrentResult> currentResults);
         StatisticBase Processing(List<CalculationResultBase> powerFlowResults);
-        List<VoltageResultProcessed> Processing(List<VoltageResult> voltageResults);
+        IEnumerable<StatisticBase> Processing(List<VoltageResult> voltageResults);
     }
 }
