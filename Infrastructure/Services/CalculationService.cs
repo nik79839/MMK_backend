@@ -50,7 +50,7 @@ namespace Infrastructure.Services
         public CalculationResultInitial GetCalculationsById(string id)
         {
             CalculationResultInitial calculationResultInitial = _calculationResultRepository.GetResultInitialById(id).Result;
-            if (calculationResultInitial.PowerFlowResults.Count == 0)
+            if (calculationResultInitial.PowerFlowResults.ToList().Count == 0)
             {
                 throw new Exception($"Ошибка. Расчета с ID {id} не существует.");
             }
@@ -93,25 +93,32 @@ namespace Infrastructure.Services
                 _rastrClient.RastrTestBalance();
                 _rastrClient.WorseningRandom(calcSettings.WorseningSettings, calcSettings.PercentLoad);
                 double powerFlowValue = Math.Round((double)_rastrClient.GetParameterByIndex("sechen", "psech", calcSettings.SechNumber - 1), 2);
-                calcResultInit.PowerFlowResults.Add(new CalculationResultBase(calculations.Id, i + 1, powerFlowValue));
-                calcResultInit.VoltageResults?.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
+                List<CalculationResultBase> calculationResults = new();
+                List<CalculationResultBase> calculationResults1 = new();
+                List<CalculationResultBase> calculationResults2 = new();
+
+                calculationResults.Add(new CalculationResultBase(calculations.Id, i + 1, powerFlowValue));
+                calcResultInit.PowerFlowResults = calculationResults;
+                calculationResults1.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
                                                        let index = _rastrClient.FindNodeIndex(uNode)
                                                        select new VoltageResult(calculations.Id, i + 1, uNode,
                                                         _rastrClient.GetParameterByIndex("node","name",index).ToString(),
                                                         Math.Round((double)_rastrClient.GetParameterByIndex("node","vras",index), 2)));
-                calcResultInit.CurrentResults?.AddRange(from string brunch in calcSettings.IBrunches // Запись токов
+                calcResultInit.VoltageResults = calculationResults1;
+                calculationResults2.ToList().AddRange(from string brunch in calcSettings.IBrunches // Запись токов
                                                        let index = _rastrClient.FindBranchIndexByName(brunch)
                                                        select new CurrentResult(calculations.Id, i + 1, brunch,
                                                         Math.Round((double)_rastrClient.GetParameterByIndex("vetv","i_max",index), 2)));
+                calcResultInit.CurrentResults = calculationResults2;
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;
                 CalculationProgress?.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress,
                     Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
                 Console.WriteLine(powerFlowValue);
             }
-            await _calculationResultRepository.AddPowerFlowResults(calcResultInit.PowerFlowResults);
-            await _calculationResultRepository.AddVoltageResults(calcResultInit.VoltageResults);
-            await _calculationResultRepository.AddCurrentResults(calcResultInit.CurrentResults);
+            await _calculationResultRepository.AddPowerFlowResults(calcResultInit.PowerFlowResults.ToList());
+            await _calculationResultRepository.AddVoltageResults(calcResultInit.VoltageResults as List<VoltageResult>);
+            await _calculationResultRepository.AddCurrentResults(calcResultInit.CurrentResults as List<CurrentResult>);
             await _calculationResultRepository.UpdateCalculation(calculations);
             await _calculationResultRepository.AddWorseningSettings(worseningSettings);
         }

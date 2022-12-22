@@ -8,17 +8,17 @@
         /// <summary>
         /// Ссылка на результаты расчетов
         /// </summary>
-        public List<CalculationResultBase> PowerFlowResults { get; set; } = new();
+        public IEnumerable<CalculationResultBase> PowerFlowResults { get; set; }
 
         /// <summary>
         /// Ссылка на результаты расчетов напряжений
         /// </summary>
-        public List<VoltageResult>? VoltageResults { get; set; } = new();
+        public IEnumerable<CalculationResultBase>? VoltageResults { get; set; }
 
         /// <summary>
         /// Ссылка на результаты расчетов токов
         /// </summary>
-        public List<CurrentResult>? CurrentResults { get; set; } = new();
+        public IEnumerable<CalculationResultBase>? CurrentResults { get; set; }
 
         public List<CalculationResultSet> CalculationResults { get; set; } = new();
     }
