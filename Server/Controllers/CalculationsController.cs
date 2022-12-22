@@ -102,20 +102,15 @@ namespace Server.Controllers
                         break;
                 }
             }
-            CalculationResultInitialDto calculationResultInitial = new()
+            var response = new CalculationResultInfoResponse()
             {
                 PowerFlowResults = _mapper.Map<List<PowerFlowResult>, List<PowerFlowResultDto>>(powerFlowResults),
                 VoltageResults = _mapper.Map<List<VoltageResult>, List<VoltageResultDto>>(voltageResults),
-                CurrentResults = _mapper.Map<List<CurrentResult>, List<CurrentResultDto>>(currentResults)
-            };
-
-            CalculationResultProcessedDto calculationResultProcessed = new()
-            {
+                CurrentResults = _mapper.Map<List<CurrentResult>, List<CurrentResultDto>>(currentResults),
                 PowerFlowResultProcessed = _mapper.Map<PowerFlowResultProcessed, PowerFlowResultProcessedDto>(_processResultService.Processing(powerFlowResults) as PowerFlowResultProcessed),
                 VoltageResultProcessed = _mapper.Map<List<VoltageResultProcessed>, List<VoltageResultProcessedDto>>(_processResultService.Processing(voltageResults) as List<VoltageResultProcessed>),
                 CurrentResultProcessed = _mapper.Map<List<CurrentResultProcessed>, List<CurrentResultProcessedDto>>(_processResultService.Processing(currentResults) as List<CurrentResultProcessed>)
             };
-            var response = new CalculationResultInfoResponse(calculationResultInitial, calculationResultProcessed);
             return Ok(response);
         }
 

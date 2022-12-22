@@ -37,21 +37,23 @@ namespace Infrastructure.Persistance.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task AddPowerFlowResults(List<PowerFlowResult> powerFlowResults)
+        public async Task AddCalculationResults(IEnumerable<CalculationResultBase> calculationResults)
         {
-            await _context.PowerFlowResults.AddRangeAsync(_mapper.Map<List<PowerFlowResult>, List<PowerFlowResultEntity>>(powerFlowResults));
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task AddVoltageResults(List<VoltageResult> voltageResults)
-        {
-            await _context.VoltageResults.AddRangeAsync(_mapper.Map<List<VoltageResultEntity>>(voltageResults));
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task AddCurrentResults(List<CurrentResult> currentResults)
-        {
-            await _context.CurrentResults.AddRangeAsync(_mapper.Map<List<CurrentResultEntity>>(currentResults));
+            foreach (var calculationResult in calculationResults)
+            {
+                switch (calculationResult)
+                {
+                    case PowerFlowResult powerFlowResult:
+                        await _context.PowerFlowResults.AddAsync(_mapper.Map<PowerFlowResult, PowerFlowResultEntity>(powerFlowResult));
+                        break;
+                    case VoltageResult voltageResult:
+                        await _context.VoltageResults.AddAsync(_mapper.Map<VoltageResult, VoltageResultEntity>(voltageResult));
+                        break;
+                    case CurrentResult currentResult:
+                        await _context.CurrentResults.AddAsync(_mapper.Map<CurrentResult, CurrentResultEntity>(currentResult));
+                        break;
+                }
+            }
             await _context.SaveChangesAsync();
         }
 

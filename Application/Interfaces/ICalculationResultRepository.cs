@@ -8,10 +8,8 @@ namespace Application.Interfaces
         Task<List<Calculations>> GetCalculations();
         Task<IEnumerable<CalculationResultBase>> GetResultInitialById(string? id);
         Task AddCalculation(Calculations calculations, int? userId = null);
+        Task AddCalculationResults(IEnumerable<CalculationResultBase> calculationResults);
         Task UpdateCalculation(Calculations calculations);
-        Task AddPowerFlowResults(List<PowerFlowResult> powerFlowResults);
-        Task AddVoltageResults(List<VoltageResult> voltageResults);
-        Task AddCurrentResults(List<CurrentResult> currentResults);
         Task AddWorseningSettings(List<WorseningSettings> worseningSettings);
         Task<List<WorseningSettings>> GetWorseningSettingsById(string? id);
         Task DeleteCalculationsById(string? id);
