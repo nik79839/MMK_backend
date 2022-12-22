@@ -6,10 +6,10 @@ namespace Application.Interfaces
     public interface ICalculationResultRepository
     {
         Task<List<Calculations>> GetCalculations();
-        Task<CalculationResultInitial> GetResultInitialById(string? id);
+        Task<IEnumerable<CalculationResultBase>> GetResultInitialById(string? id);
         Task AddCalculation(Calculations calculations, int? userId = null);
         Task UpdateCalculation(Calculations calculations);
-        Task AddPowerFlowResults(List<CalculationResultBase> powerFlowResults);
+        Task AddPowerFlowResults(List<PowerFlowResult> powerFlowResults);
         Task AddVoltageResults(List<VoltageResult> voltageResults);
         Task AddCurrentResults(List<CurrentResult> currentResults);
         Task AddWorseningSettings(List<WorseningSettings> worseningSettings);

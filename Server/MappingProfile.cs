@@ -16,7 +16,7 @@ namespace Server
             CreateMap<Calculations, CalculationDto>().ReverseMap();
             CreateMap<CalculationSettingsRequest, CalculationSettings>().ReverseMap();
             CreateMap<WorseningSettingsDto, WorseningSettings>().ReverseMap();
-            CreateMap<CalculationResultBase, PowerFlowResultDto>().ForMember(m => m.Value,
+            CreateMap<PowerFlowResult, PowerFlowResultDto>().ForMember(m => m.Value,
                     opt => opt.MapFrom(src => src.Value));
             CreateMap<VoltageResult, VoltageResultDto>();
             CreateMap<CurrentResult, CurrentResultDto>();
@@ -25,6 +25,7 @@ namespace Server
             CreateMap<StatisticBase, VoltageResultProcessedDto>();
             CreateMap<VoltageResultProcessed, VoltageResultProcessedDto>().ReverseMap();
             CreateMap<CurrentResultProcessed, CurrentResultProcessedDto>().ReverseMap();
+            CreateMap<PowerFlowResultProcessed, PowerFlowResultProcessedDto>().ReverseMap();
             CreateMap<User, UserDto>().ForMember(m => m.Name,
                     opt => opt.MapFrom(src =>$"{src.SurName} {src.Name} {src.LastName}"));
             CreateMap<User, CreateUserRequest>().ReverseMap();

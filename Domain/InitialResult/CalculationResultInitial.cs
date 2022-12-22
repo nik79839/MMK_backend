@@ -20,6 +20,5 @@
         /// </summary>
         public IEnumerable<CalculationResultBase>? CurrentResults { get; set; }
 
-        public List<CalculationResultSet> CalculationResults { get; set; } = new();
     }
 }

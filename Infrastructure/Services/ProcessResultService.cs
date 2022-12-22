@@ -10,10 +10,10 @@ namespace Infrastructure.Services
         /// Обработка результатов расчета
         /// </summary>
         /// <param name="powerFlowResults"></param>
-        public StatisticBase Processing(List<CalculationResultBase> powerFlowResults)
+        public PowerFlowResultProcessed Processing(List<PowerFlowResult> powerFlowResults)
         {
             List<double> values = powerFlowResults.ConvertAll(x => x.Value);
-            StatisticBase statisticBase = new();
+            PowerFlowResultProcessed statisticBase = new();
             statisticBase.GetStatistic(values);
             return statisticBase;
         }

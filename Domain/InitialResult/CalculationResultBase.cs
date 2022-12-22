@@ -3,7 +3,7 @@
     /// <summary>
     /// Результаты расчета
     /// </summary>
-    public class CalculationResultBase
+    public abstract class CalculationResultBase
     {
         /// <summary>
         /// Уникальный идентификатор расчета

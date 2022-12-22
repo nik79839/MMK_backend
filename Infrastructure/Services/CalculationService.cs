@@ -47,14 +47,14 @@ namespace Infrastructure.Services
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public CalculationResultInitial GetCalculationsById(string id)
+        public IEnumerable<CalculationResultBase> GetCalculationsById(string id)
         {
-            CalculationResultInitial calculationResultInitial = _calculationResultRepository.GetResultInitialById(id).Result;
-            if (calculationResultInitial.PowerFlowResults.ToList().Count == 0)
+            IEnumerable<CalculationResultBase> calcResultInitial = _calculationResultRepository.GetResultInitialById(id).Result;
+            if (calcResultInitial.ToList().Count == 0)
             {
                 throw new Exception($"Ошибка. Расчета с ID {id} не существует.");
             }
-            return calculationResultInitial;
+            return calcResultInitial;
         }
 
         //TODO: События
@@ -97,7 +97,7 @@ namespace Infrastructure.Services
                 List<CalculationResultBase> calculationResults1 = new();
                 List<CalculationResultBase> calculationResults2 = new();
 
-                calculationResults.Add(new CalculationResultBase(calculations.Id, i + 1, powerFlowValue));
+                calculationResults.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
                 calcResultInit.PowerFlowResults = calculationResults;
                 calculationResults1.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
                                                        let index = _rastrClient.FindNodeIndex(uNode)
@@ -116,7 +116,7 @@ namespace Infrastructure.Services
                     Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
                 Console.WriteLine(powerFlowValue);
             }
-            await _calculationResultRepository.AddPowerFlowResults(calcResultInit.PowerFlowResults.ToList());
+            await _calculationResultRepository.AddPowerFlowResults(calcResultInit.PowerFlowResults as List<PowerFlowResult>);
             await _calculationResultRepository.AddVoltageResults(calcResultInit.VoltageResults as List<VoltageResult>);
             await _calculationResultRepository.AddCurrentResults(calcResultInit.CurrentResults as List<CurrentResult>);
             await _calculationResultRepository.UpdateCalculation(calculations);
