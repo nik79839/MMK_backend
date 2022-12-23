@@ -7,31 +7,30 @@ namespace RastrAdapter
 {
     public class RastrCOMClient : ICalcModel
     {
+        private Rastr _rastr = new();
         private ITable _node;
         private ITable _vetv;
         private ITable _sechen;
         private ITable _area;
-        private Rastr RastrCOM = new();
-        private ICol NumberNode;
-        private ICol NameNode;
-        private ICol Pn;
-        private ICol Qn;
-        private ICol Na;
-        private ICol NameArea;
-        private ICol StartNode;
-        private ICol EndNode;
-        private ICol Parallel;
-        private ICol NameVetv;
-        private ICol TipVetv;
-        private ICol Nsech;
-        private ICol NameSech;
-        private ICol PowerSech;
-        private ICol NaArea;
-        private ICol NameAreaArea;
+        private ICol _numberNode;
+        private ICol _nameNode;
+        private ICol _pn;
+        private ICol _qn;
+        private ICol _na;
+        private ICol _nameArea;
+        private ICol _startNode;
+        private ICol _endNode;
+        private ICol _parallel;
+        private ICol _nameVetv;
+        private ICol _tipVetv;
+        private ICol _nSech;
+        private ICol _nameSech;
+        private ICol _naArea;
+        private ICol _nameAreaArea;
 
         public RastrCOMClient(string pathToRegim, string? pathToSech = null)
         {
-            RastrCOM.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
+            _rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
         }
         public RastrCOMClient()
         {
@@ -40,30 +39,29 @@ namespace RastrAdapter
 
         public void CreateInstanceRastr(string pathToRegim, string? pathToSech = null)
         {
-            RastrCOM.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
-            _node = (ITable)RastrCOM.Tables.Item("node");
-            _vetv = (ITable)RastrCOM.Tables.Item("vetv");
-            _area = (ITable)RastrCOM.Tables.Item("area");
-            NumberNode = (ICol)_node.Cols.Item("ny");
-            NameNode = (ICol)_node.Cols.Item("name");
-            Pn = (ICol)_node.Cols.Item("pn");
-            Qn = (ICol)_node.Cols.Item("qn");
-            Na = (ICol)_node.Cols.Item("na");
-            NameArea = (ICol)_node.Cols.Item("na_name");
-            StartNode = (ICol)_vetv.Cols.Item("ip");
-            EndNode = (ICol)_vetv.Cols.Item("iq");
-            Parallel = (ICol)_vetv.Cols.Item("np");
-            NameVetv = (ICol)_vetv.Cols.Item("name");
-            TipVetv = (ICol)_vetv.Cols.Item("tip");
-            NaArea = (ICol)_area.Cols.Item("na");
-            NameAreaArea = (ICol)_area.Cols.Item("name");
+            _rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
+            _node = (ITable)_rastr.Tables.Item("node");
+            _vetv = (ITable)_rastr.Tables.Item("vetv");
+            _area = (ITable)_rastr.Tables.Item("area");
+            _numberNode = (ICol)_node.Cols.Item("ny");
+            _nameNode = (ICol)_node.Cols.Item("name");
+            _pn = (ICol)_node.Cols.Item("pn");
+            _qn = (ICol)_node.Cols.Item("qn");
+            _na = (ICol)_node.Cols.Item("na");
+            _nameArea = (ICol)_node.Cols.Item("na_name");
+            _startNode = (ICol)_vetv.Cols.Item("ip");
+            _endNode = (ICol)_vetv.Cols.Item("iq");
+            _parallel = (ICol)_vetv.Cols.Item("np");
+            _nameVetv = (ICol)_vetv.Cols.Item("name");
+            _tipVetv = (ICol)_vetv.Cols.Item("tip");
+            _naArea = (ICol)_area.Cols.Item("na");
+            _nameAreaArea = (ICol)_area.Cols.Item("name");
             if (!string.IsNullOrEmpty(pathToSech))
             {
-                RastrCOM.Load(RG_KOD.RG_REPL, pathToSech, pathToSech);
-                _sechen = (ITable)RastrCOM.Tables.Item("sechen");
-                Nsech = (ICol)_sechen.Cols.Item("ns");
-                NameSech = (ICol)_sechen.Cols.Item("name");
-                PowerSech = (ICol)_sechen.Cols.Item("psech");
+                _rastr.Load(RG_KOD.RG_REPL, pathToSech, pathToSech);
+                _sechen = (ITable)_rastr.Tables.Item("sechen");
+                _nSech = (ICol)_sechen.Cols.Item("ns");
+                _nameSech = (ICol)_sechen.Cols.Item("name");
             }
             RastrTestBalance();
         }
@@ -78,7 +76,7 @@ namespace RastrAdapter
         {
             for (int index = 0; index < _node.Count; index++)
             {
-                if ((int)NumberNode.ZN[index] == ny)
+                if ((int)_numberNode.ZN[index] == ny)
                 {
                     return index;
                 }
@@ -98,7 +96,7 @@ namespace RastrAdapter
         {
             for (int index = 0; index < _vetv.Count; index++)
             {
-                if ((int)StartNode.ZN[index] == ip && (int)EndNode.ZN[index] == iq && (int)Parallel.ZN[index] == np)
+                if ((int)_startNode.ZN[index] == ip && (int)_endNode.ZN[index] == iq && (int)_parallel.ZN[index] == np)
                 {
                     return index;
                 }
@@ -110,7 +108,7 @@ namespace RastrAdapter
         {
             for (int index = 0; index < _vetv.Count; index++)
             {
-                if (NameVetv.ZN[index].ToString() == name)
+                if (_nameVetv.ZN[index].ToString() == name)
                 {
                     return index;
                 }
@@ -127,13 +125,13 @@ namespace RastrAdapter
             List<Node> loadNodes = new();
             for (int i = 0; i < _node.Count; i++)
             {
-                if ((double)Pn.ZN[i] != 0)
+                if ((double)_pn.ZN[i] != 0)
                 {
                     loadNodes.Add(new Node()
                     {
-                        Number = (int)NumberNode.ZN[i],
-                        Name = NameNode.ZN[i].ToString(),
-                        District = new District(NameArea.ZN[i].ToString(), (int)Na.ZN[i])
+                        Number = (int)_numberNode.ZN[i],
+                        Name = _nameNode.ZN[i].ToString(),
+                        District = new District(_nameArea.ZN[i].ToString(), (int)_na.ZN[i])
                     });
                 }
             }
@@ -151,9 +149,9 @@ namespace RastrAdapter
             {
                 loadNodes.Add(new Node()
                 {
-                    Number = (int)NumberNode.ZN[i],
-                    Name = NameNode.ZN[i].ToString(),
-                    District = new District(NameArea.ZN[i].ToString(), (int)Na.ZN[i])
+                    Number = (int)_numberNode.ZN[i],
+                    Name = _nameNode.ZN[i].ToString(),
+                    District = new District(_nameArea.ZN[i].ToString(), (int)_na.ZN[i])
                 });
             }
             return loadNodes;
@@ -164,14 +162,14 @@ namespace RastrAdapter
             List<Brunch> brunches = new();
             for (int i = 0; i < _vetv.Count; i++)
             {
-                if (Convert.ToDouble(TipVetv.ZN[i]) == 0)
+                if (Convert.ToDouble(_tipVetv.ZN[i]) == 0)
                 {
                     brunches.Add(new Brunch()
                     {
-                        StartNode = (int)StartNode.ZN[i],
-                        EndNode = (int)EndNode.ZN[i],
-                        ParallelNumber = (int)Parallel.ZN[i],
-                        Name = NameVetv.ZN[i].ToString(),
+                        StartNode = (int)_startNode.ZN[i],
+                        EndNode = (int)_endNode.ZN[i],
+                        ParallelNumber = (int)_parallel.ZN[i],
+                        Name = _nameVetv.ZN[i].ToString(),
                     });
                 }
             }
@@ -192,8 +190,8 @@ namespace RastrAdapter
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = FindNodeIndex(nodes[i]);
-                Pn.set_ZN(index, (double)randPn.Next((100 - percent), (100 + percent)) * (double)Pn.ZN[index] / 100f);
-                Qn.set_ZN(index, (double)Pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
+                _pn.set_ZN(index, (double)randPn.Next((100 - percent), (100 + percent)) * (double)_pn.ZN[index] / 100f);
+                _qn.set_ZN(index, (double)_pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
             }
         }
 
@@ -207,7 +205,7 @@ namespace RastrAdapter
             List<District> districts = new();
             for (int i = 0; i < _area.Count; i++)
             {
-                districts.Add(new District(NameAreaArea.ZN[i].ToString(), (int)NaArea.ZN[i]));
+                districts.Add(new District(_nameAreaArea.ZN[i].ToString(), (int)_naArea.ZN[i]));
             }
             return districts;
         }
@@ -222,7 +220,7 @@ namespace RastrAdapter
             List<Sech> seches = new();
             for (int i = 0; i < _sechen.Count; i++)
             {
-                seches.Add(new Sech((int)Nsech.ZN[i], NameSech.ZN[i].ToString()));
+                seches.Add(new Sech((int)_nSech.ZN[i], _nameSech.ZN[i].ToString()));
             }
             return seches;
         }
@@ -239,7 +237,7 @@ namespace RastrAdapter
         {
             Random randPercent = new();
             Random randTg = new();
-            RastrRetCode kod = RastrCOM.rgm("p");
+            RastrRetCode kod = _rastr.rgm("p");
             float randomPercent; int index;
             if (kod == 0)
             {
@@ -249,14 +247,14 @@ namespace RastrAdapter
                     {
                         index = FindNodeIndex(nodes[i].NodeNumber);
                         nodes[i].MaxValue ??= 10000;
-                        if ((double)Pn.ZN[index] < nodes[i].MaxValue)
+                        if ((double)_pn.ZN[index] < nodes[i].MaxValue)
                         {
                             randomPercent = 1 + ((float)randPercent.Next(0, percent) / 100);
-                            Pn.set_ZN(index, (double)Pn.ZN[index] * randomPercent);
-                            Qn.set_ZN(index, (double)Pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
+                            _pn.set_ZN(index, (double)_pn.ZN[index] * randomPercent);
+                            _qn.set_ZN(index, (double)_pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
                         }
                     }
-                    kod = RastrCOM.rgm("p");
+                    kod = _rastr.rgm("p");
                 }
                 while (kod == 0);
                 while (kod != 0) // Откат на последний сходяийся режим
@@ -264,17 +262,17 @@ namespace RastrAdapter
                     for (int i = 0; i < nodes.Count; i++)
                     {
                         index = FindNodeIndex(nodes[i].NodeNumber);
-                        Pn.set_ZN(index, (double)Pn.ZN[index] / 1.02);
-                        Qn.set_ZN(index, (double)Pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
+                        _pn.set_ZN(index, (double)_pn.ZN[index] / 1.02);
+                        _qn.set_ZN(index, (double)_pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
                     }
-                    kod = RastrCOM.rgm("p");
+                    kod = _rastr.rgm("p");
                 }
             }
         }
 
         public void RastrTestBalance()
         {
-            RastrRetCode test = RastrCOM.rgm("p");
+            RastrRetCode test = _rastr.rgm("p");
             if (test == RastrRetCode.AST_NB)
             {
                 throw new Exception("Итерация не завершена из-за несходимости режима.");
@@ -283,7 +281,7 @@ namespace RastrAdapter
 
         public object GetParameterByIndex(string table, string column, int index)
         {
-            ITable t = (ITable)RastrCOM.Tables.Item(table);
+            ITable t = (ITable)_rastr.Tables.Item(table);
             ICol c = (ICol)t.Cols.Item(column);
             return c.ZN[index];
         }

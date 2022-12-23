@@ -2,9 +2,6 @@
 using Domain;
 using Domain.Events;
 using Domain.InitialResult;
-using Domain.ProcessedResult;
-using Domain.Rastrwin3.RastrModel;
-using RastrAdapter;
 using System.Diagnostics;
 
 namespace Infrastructure.Services

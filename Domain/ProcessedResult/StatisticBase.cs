@@ -25,7 +25,7 @@
         /// <summary>
         /// Столбцы гистограммы
         /// </summary>
-        public List<HistogramData> HistogramData { get; set; } = new();
+        public List<HistogramData> HistogramData { get; set; }
 
         public void GetStatistic(List<double> values)
         {
