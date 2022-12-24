@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces;
 using Domain;
+using Domain.InitialResult;
 using Infrastructure.Services;
 using Moq;
 using RastrAdapter;
@@ -63,20 +64,22 @@ namespace UnitTests.Services
             //Assert.True(result.IsCompletedSuccessfully);
         }
 
-        /*[Fact]
+        [Fact]
         public async Task GetCalculationsByid_ShouldReturnTrue()
         {
             var calculationRepositoryMock = new Mock<ICalculationResultRepository>();
+            var rastrMock = new Mock<ICalcModel>();
             calculationRepositoryMock
                 .Setup(x => x.GetResultInitialById("testId"))
-                .Returns(() => Task.FromResult(new List<Calculations>() { new Calculations() { Id = Guid.NewGuid(), Name = "test", SechName = "afag" } }))
+                .Returns(() => Task.FromResult(new List<CalculationResultBase>() { new PowerFlowResult(Guid.NewGuid(),1,123),
+                    new PowerFlowResult(Guid.NewGuid(),2,155), new VoltageResult(Guid.NewGuid(),1,123,"name",125)} as IEnumerable<CalculationResultBase>))
                 .Verifiable();
 
-            var service = new CalculationService(calculationRepositoryMock.Object);
-            var result = service.GetCalculations();
+            var service = new CalculationService(calculationRepositoryMock.Object, rastrMock.Object);
+            var result = service.GetCalculationsById("testId");
 
             calculationRepositoryMock.VerifyAll();
             //Assert.True(result.IsCompletedSuccessfully);
-        }*/
+        }
     }
 }
