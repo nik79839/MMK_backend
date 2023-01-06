@@ -1,0 +1,12 @@
+version: "2"
+services:
+    postgres:
+        image: postgres:latest
+        environment:
+            POSTGRES_DB: "VKR"
+            POSTGRES_USER: "nik79"
+            POSTGRES_PASSWORD: "N7983915031"
+        volumes:
+            - .:/var/lib/postgresql/data
+        ports:
+            - "5430:5430"

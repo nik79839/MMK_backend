@@ -7,7 +7,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <UserSecretsId>739e26fc-405c-4fa3-89c1-32ebb208d57f</UserSecretsId>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
-    <DockerDefaultTargetOS>Windows</DockerDefaultTargetOS>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,12 +32,6 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Infrastructure.Persistance\Infrastructure.Persistance.csproj" />
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Infrastructure.Persistance">
-      <HintPath>..\Infrastructure.Persistance\bin\Debug\net6.0\Infrastructure.Persistance.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

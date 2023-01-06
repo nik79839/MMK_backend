@@ -216,3 +216,15 @@ FROM "WorseningSettings" AS w
 2022-12-22 17:55:26.087 +07:00 [INF] Starting web application
 2022-12-22 18:43:07.713 +07:00 [INF] Starting web application
 2022-12-23 13:08:20.477 +07:00 [INF] Starting web application
+2022-12-25 13:45:43.182 +07:00 [INF] Starting web application
+2022-12-25 14:46:09.551 +07:00 [INF] Starting web application
+2022-12-26 13:09:25.129 +07:00 [INF] Starting web application
+2022-12-26 13:14:01.687 +07:00 [INF] Starting web application
+2022-12-26 13:19:25.309 +07:00 [INF] Starting web application
+2022-12-26 13:23:40.997 +07:00 [INF] Starting web application
+2022-12-26 13:28:12.302 +07:00 [INF] Starting web application
+2022-12-27 20:17:50.795 +07:00 [INF] Starting web application
+2022-12-27 20:20:49.137 +07:00 [INF] Starting web application
+2022-12-27 20:24:23.095 +07:00 [INF] Starting web application
+2022-12-27 20:24:25.570 +07:00 [INF] Starting web application
+2022-12-27 20:25:10.794 +07:00 [INF] Starting web application
