@@ -162,7 +162,7 @@ namespace RastrAdapter
             List<Brunch> brunches = new();
             for (int i = 0; i < _vetv.Count; i++)
             {
-                if (Convert.ToDouble(_tipVetv.ZN[i]) == 0)
+                if ((int)_tipVetv.ZN[i] == 0)
                 {
                     brunches.Add(new Brunch()
                     {
@@ -190,7 +190,7 @@ namespace RastrAdapter
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = FindNodeIndex(nodes[i]);
-                _pn.set_ZN(index, (double)randPn.Next((100 - percent), (100 + percent)) * (double)_pn.ZN[index] / 100f);
+                _pn.set_ZN(index, randPn.Next(100 - percent, 100 + percent) * (double)_pn.ZN[index] / 100f);
                 _qn.set_ZN(index, (double)_pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
             }
         }
@@ -279,11 +279,11 @@ namespace RastrAdapter
             }
         }
 
-        public object GetParameterByIndex(string table, string column, int index)
+        public T GetParameterByIndex<T>(string table, string column, int index)
         {
             ITable t = (ITable)_rastr.Tables.Item(table);
             ICol c = (ICol)t.Cols.Item(column);
-            return c.ZN[index];
+            return (T)c.get_ZN(index);
         }
     }
 }

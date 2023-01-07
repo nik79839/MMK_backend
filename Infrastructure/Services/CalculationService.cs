@@ -89,18 +89,18 @@ namespace Infrastructure.Services
                 _rastrClient.ChangePn(numberLoadNodes, calcSettings.PercentLoad); //Случайная нагрузка
                 _rastrClient.RastrTestBalance();
                 _rastrClient.WorseningRandom(calcSettings.WorseningSettings, calcSettings.PercentLoad);
-                double powerFlowValue = Math.Round((double)_rastrClient.GetParameterByIndex("sechen", "psech", calcSettings.SechNumber - 1), 2);
+                double powerFlowValue = Math.Round(_rastrClient.GetParameterByIndex<double>("sechen", "psech", calcSettings.SechNumber - 1), 2);
 
                 calcResultInitial.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
                 calcResultInitial.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
                                                        let index = _rastrClient.FindNodeIndex(uNode)
                                                        select new VoltageResult(calculations.Id, i + 1, uNode,
-                                                        _rastrClient.GetParameterByIndex("node","name",index).ToString(),
-                                                        Math.Round((double)_rastrClient.GetParameterByIndex("node","vras",index), 2)));
+                                                        _rastrClient.GetParameterByIndex<string>("node","name",index),
+                                                        Math.Round(_rastrClient.GetParameterByIndex<double>("node","vras",index), 2)));
                 calcResultInitial.AddRange(from string brunch in calcSettings.IBrunches // Запись токов
                                                        let index = _rastrClient.FindBranchIndexByName(brunch)
                                                        select new CurrentResult(calculations.Id, i + 1, brunch,
-                                                        Math.Round((double)_rastrClient.GetParameterByIndex("vetv","i_max",index), 2)));
+                                                        Math.Round(_rastrClient.GetParameterByIndex<double>("vetv","i_max",index), 2)));
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;
                 CalculationProgress?.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress,

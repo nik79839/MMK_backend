@@ -14,7 +14,7 @@ namespace Application.Interfaces
         int FindBranchIndex(int ip, int iq, int np);
         int FindBranchIndexByName(string name);
         int FindNodeIndex(int ny);
-        object GetParameterByIndex(string table, string column, int index);
+        T GetParameterByIndex<T>(string table, string column, int index);
         void RastrTestBalance();
         List<Sech> SechList();
         void WorseningRandom(List<WorseningSettings> nodes, int percent);

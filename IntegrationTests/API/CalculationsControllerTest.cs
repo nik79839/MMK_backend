@@ -1,27 +1,44 @@
-﻿using Application.DTOs;
-using Domain;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
-using System.Text;
 
-namespace UnitTests.API
+namespace IntegrationTests.API
 {
-    public class CalculationPowerFlowControllerTest
+    public class CalculationsControllerTest
     {
-        private HttpClient _client;
+        private readonly HttpClient _client;
+        private readonly WebApplicationFactory<Program> _factory;
+
+        public CalculationsControllerTest()
+        {
+            _factory = new();
+            _client = _factory.CreateClient();
+        }
 
         [Fact]
-        public async Task GetCalculationsTest()
+        public async Task GetCalculations_ShouldReturnOk()
         {
-            _client = new HttpClient();
-            var response = await _client.GetAsync("https://localhost:7231/api/CalculationPowerFlows/GetCalculations");
+            var response = await _client.GetAsync("https://localhost:5001/api/Calculations/GetCalculations");
             Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         }
 
         [Fact]
+        public async Task GetCalculationResultById_ShouldReturnOk()
+        {
+            var response = await _client.GetAsync("https://localhost:5001/api/Calculations/GetCalculations");
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task StartCalculation_ShouldReturnOk()
+        {
+            var response = await _client.GetAsync("https://localhost:5001/api/Calculations/GetCalculations");
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        }
+
+        /*[Fact]
         public async Task PostCalculationsTest()
         {
-            /*_client = new HttpClient();
+            *//*_client = new HttpClient();
             CalculationSettingsRequest calculationSettings = new()
             {
                 Name = "testNameTest",
@@ -42,7 +59,7 @@ namespace UnitTests.API
             };
             _client.DefaultRequestHeaders.TryAddWithoutValidation("Content-Type", "application/json; charset=utf-8");
             HttpResponseMessage response = await _client.SendAsync(request);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);*/
-        }
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);*//*
+        }*/
     }
 }

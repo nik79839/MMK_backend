@@ -71,3 +71,5 @@ app.UseDirectoryBrowser(new DirectoryBrowserOptions()
 });
 
 app.Run();
+
+public partial class Program { } // Для интеграционных тестов
