@@ -35,8 +35,8 @@ namespace Infrastructure.Persistance.Entities
         public string? SechName { get; set; }
 
         public string? PathToRegim { get; set; }
-        public int? PercentLoad { get; set; }
-        public int? PercentForWorsening { get; set; }
+        public int PercentLoad { get; set; }
+        public int PercentForWorsening { get; set; }
 
         /// <summary>
         /// Внешний ключ на Id пользователя

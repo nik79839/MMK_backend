@@ -1,6 +1,7 @@
 using Application.DTOs;
 using Application.DTOs.InitialResult;
 using Application.DTOs.ProcessedResult;
+using Application.DTOs.Requests;
 using Application.DTOs.Response;
 using Application.Interfaces;
 using AutoMapper;

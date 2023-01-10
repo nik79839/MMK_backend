@@ -68,9 +68,8 @@ namespace Infrastructure.Services
                 SechName = _rastrClient.SechList().Find(sech => sech.Num == calcSettings.SechNumber).SechName,
             };
             Console.WriteLine("Режим и сечения загружены.");
-            List<WorseningSettings> worseningSettings = new();
-            worseningSettings.AddRange(from setting in calcSettings.WorseningSettings
-                                       select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue));
+            calculations.WorseningSettings = (from setting in calcSettings.WorseningSettings
+                                       select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue)).ToList();
             await _calculationResultRepository.AddCalculation(calculations, userId);
             List<CalculationResultBase> calcResultInitial = new();
             List<int> numberLoadNodes = _rastrClient.AllLoadNodesToList().ConvertAll(x => x.Number); //Массив номеров узлов
@@ -86,9 +85,9 @@ namespace Infrastructure.Services
                 }
                 var watch = Stopwatch.StartNew();
                 _rastrClient.CreateInstanceRastr(calcSettings.PathToRegim, calcSettings.PathToSech);
-                _rastrClient.ChangePn(numberLoadNodes, calcSettings.PercentLoad); //Случайная нагрузка
+                _rastrClient.ChangePn(numberLoadNodes, calculations.PercentLoad); //Случайная нагрузка
                 _rastrClient.RastrTestBalance();
-                _rastrClient.WorseningRandom(calcSettings.WorseningSettings, calcSettings.PercentLoad);
+                _rastrClient.WorseningRandom(calcSettings.WorseningSettings, calculations.PercentForWorsening);
                 double powerFlowValue = Math.Round(_rastrClient.GetParameterByIndex<double>("sechen", "psech", calcSettings.SechNumber - 1), 2);
 
                 calcResultInitial.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
@@ -110,7 +109,7 @@ namespace Infrastructure.Services
 
             await _calculationResultRepository.AddCalculationResults(calcResultInitial);
             await _calculationResultRepository.UpdateCalculation(calculations);
-            await _calculationResultRepository.AddWorseningSettings(worseningSettings);
+            await _calculationResultRepository.AddWorseningSettings(calculations.WorseningSettings);
         }
     }
 }

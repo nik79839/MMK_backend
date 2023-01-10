@@ -10,6 +10,10 @@ using System.Reflection;
 using Serilog;
 using Infrastructure.Services;
 using RastrAdapter;
+using FluentValidation;
+using System;
+using FluentValidation.AspNetCore;
+using Application.Validation;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("log.txt").CreateLogger();
 Log.Information("Starting web application");
@@ -39,6 +43,7 @@ builder.Services.AddScoped<IRastrSchemeInfoService, RastrSchemeInfoService>();
 builder.Services.AddScoped<IProcessResultService, ProcessResultService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICalcModel, RastrCOMClient>();
+builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CalculationSettingsRequestValidator>());
 builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .ReadFrom.Services(services)

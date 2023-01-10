@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Application.DTOs
+namespace Application.DTOs.Requests
 {
     public class CalculationSettingsRequest
     {
@@ -17,7 +17,6 @@ namespace Application.DTOs
         /// <summary>
         /// Узлы утяжеления нагрузок
         /// </summary>
-        [MinLength(1)]
         public List<WorseningSettingsDto> WorseningSettings { get; set; }
         public List<int>? UNodes { get; set; }
         public List<string>? IBrunches { get; set; }
@@ -25,7 +24,6 @@ namespace Application.DTOs
         /// <summary>
         /// Число реализаций
         /// </summary>
-        [Range(1, 10000)]
         public int CountOfImplementations { get; set; }
 
         /// <summary>
@@ -52,10 +50,5 @@ namespace Application.DTOs
         /// Процент приращения при утяжелениии
         /// </summary>
         public int PercentForWorsening { get; set; }
-
-        /// <summary>
-        /// Все ли узлы имеют случайный начальный характер
-        /// </summary>
-        public bool? IsAllNodesInitial { get; set; } = true;
     }
 }
