@@ -1,4 +1,4 @@
-using Application.Interfaces;
+п»їusing Application.Interfaces;
 using Infrastructure;
 using Infrastructure.Persistance.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -14,7 +14,7 @@ using FluentValidation;
 using System;
 using FluentValidation.AspNetCore;
 using Application.Validation;
-using Infrastructure.RabbitMQ;
+using MassTransit;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("log.txt").CreateLogger();
 Log.Information("Starting web application");
@@ -31,8 +31,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-    var filePath = Path.Combine(System.AppContext.BaseDirectory, @"C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\bin\Debug\net6.0\Domain.xml");
-    c.IncludeXmlComments(@"C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\bin\Debug\net6.0\Server.xml");
+    var filePath = Path.Combine(System.AppContext.BaseDirectory, @"C:\Users\otrok\source\repos\Р”РёРїР»РѕРј_РЈР _РђРІС‚РѕРјР°С‚РёР·Р°С†РёСЏ\Server\bin\Debug\net6.0\Domain.xml");
+    c.IncludeXmlComments(@"C:\Users\otrok\source\repos\Р”РёРїР»РѕРј_РЈР _РђРІС‚РѕРјР°С‚РёР·Р°С†РёСЏ\Server\bin\Debug\net6.0\Server.xml");
 });
 builder.Services.AddSignalR();
 builder.Services.AddScoped<ICalculationResultRepository, CalculationResultRepository>();
@@ -44,15 +44,34 @@ builder.Services.AddScoped<IRastrSchemeInfoService, RastrSchemeInfoService>();
 builder.Services.AddScoped<IProcessResultService, ProcessResultService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICalcModel, RastrCOMClient>();
-builder.Services.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
-builder.Services.AddSingleton<RabbitMQConsumer>();
-builder.Services.AddHostedService<CalculationBackgroundService>();
+//builder.Services.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
+//builder.Services.AddSingleton<RabbitMQConsumer>();
+//builder.Services.AddHostedService<CalculationBackgroundService>();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CalculationSettingsRequestValidator>());
 builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .ReadFrom.Services(services)
     .Enrich.FromLogContext()
     .WriteTo.Console());
+
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<CalculationConsumer>();
+    x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+    {
+        cfg.Host(new Uri("rabbitmq://localhost"), h =>
+        {
+            h.Username("guest");
+            h.Password("guest");
+        });
+        cfg.ReceiveEndpoint("calculation", ep =>
+        {
+            ep.PrefetchCount = 16;
+            ep.UseMessageRetry(r => r.Interval(2, 100));
+            ep.ConfigureConsumer<CalculationConsumer>(provider);
+        });
+    }));
+});
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
@@ -75,10 +94,10 @@ app.UseEndpoints(endpoints =>
 app.UseDirectoryBrowser(new DirectoryBrowserOptions()
 {
     FileProvider = new PhysicalFileProvider(
-            @"C:\Users\otrok\source\repos\Диплом_УР_Автоматизация\Server\RastrFiles"),
+            @"C:\Users\otrok\source\repos\Р”РёРїР»РѕРј_РЈР _РђРІС‚РѕРјР°С‚РёР·Р°С†РёСЏ\Server\RastrFiles"),
     RequestPath = new PathString("/files")
 });
 
 app.Run();
 
-public partial class Program { } // Для интеграционных тестов
+public partial class Program { } // Р”Р»СЏ РёРЅС‚РµРіСЂР°С†РёРѕРЅРЅС‹С… С‚РµСЃС‚РѕРІ

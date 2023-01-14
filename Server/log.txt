@@ -239,3 +239,16 @@ FROM "WorseningSettings" AS w
 2023-01-14 17:19:38.022 +07:00 [INF] Starting web application
 2023-01-14 17:20:38.380 +07:00 [INF] Starting web application
 2023-01-14 17:41:08.674 +07:00 [INF] Starting web application
+2023-01-14 19:34:50.208 +07:00 [INF] Starting web application
+2023-01-14 19:36:53.614 +07:00 [INF] Starting web application
+2023-01-14 19:41:41.833 +07:00 [INF] Starting web application
+2023-01-14 19:43:27.682 +07:00 [INF] Starting web application
+2023-01-14 19:51:56.031 +07:00 [INF] Starting web application
+2023-01-14 19:55:40.598 +07:00 [INF] Starting web application
+2023-01-14 19:59:54.680 +07:00 [INF] Starting web application
+2023-01-14 20:01:44.001 +07:00 [INF] Starting web application
+2023-01-14 21:17:32.984 +07:00 [INF] Starting web application
+2023-01-14 21:20:43.472 +07:00 [INF] Starting web application
+2023-01-14 21:22:13.010 +07:00 [INF] Starting web application
+2023-01-14 21:23:36.293 +07:00 [INF] Starting web application
+2023-01-14 21:25:05.156 +07:00 [INF] Starting web application
