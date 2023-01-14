@@ -14,6 +14,7 @@ using FluentValidation;
 using System;
 using FluentValidation.AspNetCore;
 using Application.Validation;
+using Infrastructure.RabbitMQ;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("log.txt").CreateLogger();
 Log.Information("Starting web application");
@@ -43,6 +44,9 @@ builder.Services.AddScoped<IRastrSchemeInfoService, RastrSchemeInfoService>();
 builder.Services.AddScoped<IProcessResultService, ProcessResultService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICalcModel, RastrCOMClient>();
+builder.Services.AddScoped<IRabbitMQProducer, RabbitMQProducer>();
+builder.Services.AddSingleton<RabbitMQConsumer>();
+builder.Services.AddHostedService<CalculationBackgroundService>();
 builder.Services.AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<CalculationSettingsRequestValidator>());
 builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)

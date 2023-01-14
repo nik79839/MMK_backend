@@ -91,8 +91,8 @@ namespace Infrastructure.Services
                 double powerFlowValue = Math.Round(_rastrClient.GetParameterByIndex<double>("sechen", "psech", calcSettings.SechNumber - 1), 2);
 
                 calcResultInitial.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
-                calcResultInitial.AddRange(_rastrClient.GetVoltageResults(calculations.Id, i + 1, calcSettings.UNodes));
-                calcResultInitial.AddRange(_rastrClient.GetCurrentResults(calculations.Id, i + 1, calcSettings.IBrunches));
+                calcResultInitial.AddRange(_rastrClient.GetVoltageResults(calcSettings.UNodes, calculations.Id, i + 1 ));
+                calcResultInitial.AddRange(_rastrClient.GetCurrentResults(calcSettings.IBrunches, calculations.Id, i + 1));
 
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;

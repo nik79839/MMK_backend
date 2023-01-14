@@ -9,6 +9,7 @@ using Domain;
 using Domain.Events;
 using Domain.InitialResult;
 using Domain.ProcessedResult;
+using Infrastructure.RabbitMQ;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -28,14 +29,17 @@ namespace Server.Controllers
         private readonly IHubContext<ProgressHub> _hubContext;
         private readonly ICalculationService _calculationService;
         private readonly IProcessResultService _processResultService;
+        private readonly IRabbitMQProducer _rabitMQProducer;
         private readonly IMapper _mapper;
-        public CalculationsController(IHubContext<ProgressHub> hubContext, ICalculationService calculationService, IMapper mapper, IProcessResultService processResultService)
+        public CalculationsController(IHubContext<ProgressHub> hubContext, ICalculationService calculationService, 
+            IMapper mapper, IProcessResultService processResultService, IRabbitMQProducer rabbitMQProducer)
         {
             _hubContext = hubContext;
             _mapper = mapper;
             _calculationService = calculationService;
             _calculationService.CalculationProgress += EventHandler;
             _processResultService = processResultService;
+            _rabitMQProducer = rabbitMQProducer;
         }
 
         /// <summary>
@@ -47,7 +51,9 @@ namespace Server.Controllers
         [Route("PostCalculations")]
         public async Task<IActionResult> PostCalculations([FromBody]CalculationSettingsRequest calculationSettingsRequest)
         {
-            CancellationToken cancellationToken = HttpContext.RequestAborted;
+            _rabitMQProducer.SendProductMessage(calculationSettingsRequest);
+            return Ok();
+            /*CancellationToken cancellationToken = HttpContext.RequestAborted;
             int userId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier));
             var calculationSettings = _mapper.Map<CalculationSettingsRequest, CalculationSettings>(calculationSettingsRequest);
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
@@ -61,7 +67,7 @@ namespace Server.Controllers
             catch (Exception ex)
             {
                 return Problem($"Ошибка при выполнении расчета: {ex.Message}");
-            }
+            }*/
         }
 
         /// <summary>

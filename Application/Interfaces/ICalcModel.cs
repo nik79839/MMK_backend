@@ -19,7 +19,7 @@ namespace Application.Interfaces
         void RastrTestBalance();
         List<Sech> SechList();
         void WorseningRandom(List<WorseningSettings> nodes, int percent);
-        List<VoltageResult> GetVoltageResults(Guid id, int implementation, List<int> uNodes);
-        List<CurrentResult> GetCurrentResults(Guid id, int implementation, List<string> iBrunches)
+        List<VoltageResult> GetVoltageResults(List<int> uNodes, Guid id, int implementation);
+        List<CurrentResult> GetCurrentResults(List<string> iBrunches,Guid id, int implementation);
     }
 }
