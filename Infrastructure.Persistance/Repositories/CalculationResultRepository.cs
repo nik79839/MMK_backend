@@ -114,7 +114,7 @@ namespace Infrastructure.Persistance.Repositories
             calculationResults.AddRange(_mapper.Map<List<PowerFlowResult>>(powerFlowResults));
             calculationResults.AddRange(_mapper.Map<List<VoltageResult>>(voltageResults));
             calculationResults.AddRange(_mapper.Map<List<CurrentResult>>(currentResults));
-            return (IEnumerable<CalculationResultBase>)calculationResults;
+            return calculationResults;
         }
 
         public async Task<List<WorseningSettings>> GetWorseningSettingsById(string? id)

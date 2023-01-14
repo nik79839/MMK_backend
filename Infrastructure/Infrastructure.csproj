@@ -27,4 +27,8 @@
     <ProjectReference Include="..\RastrAdapter\RastrAdapter.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="RabbitMQ\" />
+  </ItemGroup>
+
 </Project>

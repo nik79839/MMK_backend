@@ -2,6 +2,9 @@
 using ASTRALib;
 using Domain;
 using Domain.Rastrwin3.RastrModel;
+using System.Xml.Linq;
+using System;
+using Domain.InitialResult;
 
 namespace RastrAdapter
 {
@@ -285,5 +288,21 @@ namespace RastrAdapter
             ICol c = (ICol)t.Cols.Item(column);
             return (T)c.get_ZN(index);
         }
+
+        public List<VoltageResult> GetVoltageResults(List<int> uNodes, Guid id, int implementation)
+        {
+            return (from int uNode in uNodes
+                    let index = FindNodeIndex(uNode)
+                    select new VoltageResult(id, implementation + 1, uNode, GetParameterByIndex<string>("node", "name", index),
+                        Math.Round(GetParameterByIndex<double>("node", "vras", index), 2))).ToList();
+        }
+        public List<CurrentResult> GetCurrentResults(List<string> iBrunches, Guid id, int implementation)
+        {
+            return (from string brunch in iBrunches // Запись токов
+                    let index = FindBranchIndexByName(brunch)
+                    select new CurrentResult(id, implementation + 1, brunch,
+                         Math.Round(GetParameterByIndex<double>("vetv", "i_max", index), 2))).ToList();
+        }
+
     }
 }

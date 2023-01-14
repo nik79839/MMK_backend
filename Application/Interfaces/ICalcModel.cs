@@ -1,4 +1,5 @@
 ﻿using Domain;
+using Domain.InitialResult;
 using Domain.Rastrwin3.RastrModel;
 
 namespace Application.Interfaces
@@ -18,5 +19,7 @@ namespace Application.Interfaces
         void RastrTestBalance();
         List<Sech> SechList();
         void WorseningRandom(List<WorseningSettings> nodes, int percent);
+        List<VoltageResult> GetVoltageResults(Guid id, int implementation, List<int> uNodes);
+        List<CurrentResult> GetCurrentResults(Guid id, int implementation, List<string> iBrunches)
     }
 }

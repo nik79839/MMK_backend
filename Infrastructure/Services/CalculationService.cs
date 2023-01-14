@@ -91,15 +91,9 @@ namespace Infrastructure.Services
                 double powerFlowValue = Math.Round(_rastrClient.GetParameterByIndex<double>("sechen", "psech", calcSettings.SechNumber - 1), 2);
 
                 calcResultInitial.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
-                calcResultInitial.AddRange(from int uNode in calcSettings.UNodes // Запись напряжений
-                                                       let index = _rastrClient.FindNodeIndex(uNode)
-                                                       select new VoltageResult(calculations.Id, i + 1, uNode,
-                                                        _rastrClient.GetParameterByIndex<string>("node","name",index),
-                                                        Math.Round(_rastrClient.GetParameterByIndex<double>("node","vras",index), 2)));
-                calcResultInitial.AddRange(from string brunch in calcSettings.IBrunches // Запись токов
-                                                       let index = _rastrClient.FindBranchIndexByName(brunch)
-                                                       select new CurrentResult(calculations.Id, i + 1, brunch,
-                                                        Math.Round(_rastrClient.GetParameterByIndex<double>("vetv","i_max",index), 2)));
+                calcResultInitial.AddRange(_rastrClient.GetVoltageResults(calculations.Id, i + 1, calcSettings.UNodes));
+                calcResultInitial.AddRange(_rastrClient.GetCurrentResults(calculations.Id, i + 1, calcSettings.IBrunches));
+
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;
                 CalculationProgress?.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress,

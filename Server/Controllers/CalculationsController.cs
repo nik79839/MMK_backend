@@ -52,9 +52,16 @@ namespace Server.Controllers
             var calculationSettings = _mapper.Map<CalculationSettingsRequest, CalculationSettings>(calculationSettingsRequest);
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
-            await _calculationService.StartCalculation(calculationSettings, cancellationToken, userId);
-            Console.WriteLine("Расчет завершен");
-            return Ok("Расчет завершен.");
+            try
+            {
+                await _calculationService.StartCalculation(calculationSettings, cancellationToken, userId);
+                Console.WriteLine("Расчет завершен");
+                return Ok("Расчет завершен.");
+            }
+            catch (Exception ex)
+            {
+                return Problem($"Ошибка при выполнении расчета: {ex.Message}");
+            }
         }
 
         /// <summary>
@@ -84,35 +91,42 @@ namespace Server.Controllers
         [Route("GetCalculations/{id}")]
         public async Task<IActionResult> GetCalculationsById(string? id)
         {
-            var calcResultInit = _calculationService.GetCalculationsById(id);
-            List<PowerFlowResult> powerFlowResults = new();
-            List<CurrentResult> currentResults = new();
-            List<VoltageResult> voltageResults = new();
-            foreach (var calc in calcResultInit)
+            try
             {
-                switch (calc)
+                var calcResultInit = _calculationService.GetCalculationsById(id);
+                List<PowerFlowResult> powerFlowResults = new();
+                List<CurrentResult> currentResults = new();
+                List<VoltageResult> voltageResults = new();
+                foreach (var calc in calcResultInit)
                 {
-                    case PowerFlowResult powerFlowResult:
-                        powerFlowResults.Add(powerFlowResult);
-                        break;
-                    case CurrentResult calculationResultBase:
-                        currentResults.Add(calculationResultBase);
-                        break;
-                    case VoltageResult voltageResult:
-                        voltageResults.Add(voltageResult);
-                        break;
+                    switch (calc)
+                    {
+                        case PowerFlowResult powerFlowResult:
+                            powerFlowResults.Add(powerFlowResult);
+                            break;
+                        case CurrentResult calculationResultBase:
+                            currentResults.Add(calculationResultBase);
+                            break;
+                        case VoltageResult voltageResult:
+                            voltageResults.Add(voltageResult);
+                            break;
+                    }
                 }
+                var response = new CalculationResultInfoResponse()
+                {
+                    PowerFlowResults = _mapper.Map<List<PowerFlowResult>, List<PowerFlowResultDto>>(powerFlowResults),
+                    VoltageResults = _mapper.Map<List<VoltageResult>, List<VoltageResultDto>>(voltageResults),
+                    CurrentResults = _mapper.Map<List<CurrentResult>, List<CurrentResultDto>>(currentResults),
+                    PowerFlowResultProcessed = _mapper.Map<PowerFlowResultProcessed, PowerFlowResultProcessedDto>(_processResultService.Processing(powerFlowResults) as PowerFlowResultProcessed),
+                    VoltageResultProcessed = _mapper.Map<List<VoltageResultProcessed>, List<VoltageResultProcessedDto>>(_processResultService.Processing(voltageResults) as List<VoltageResultProcessed>),
+                    CurrentResultProcessed = _mapper.Map<List<CurrentResultProcessed>, List<CurrentResultProcessedDto>>(_processResultService.Processing(currentResults) as List<CurrentResultProcessed>)
+                };
+                return Ok(response);
             }
-            var response = new CalculationResultInfoResponse()
+            catch (Exception ex)
             {
-                PowerFlowResults = _mapper.Map<List<PowerFlowResult>, List<PowerFlowResultDto>>(powerFlowResults),
-                VoltageResults = _mapper.Map<List<VoltageResult>, List<VoltageResultDto>>(voltageResults),
-                CurrentResults = _mapper.Map<List<CurrentResult>, List<CurrentResultDto>>(currentResults),
-                PowerFlowResultProcessed = _mapper.Map<PowerFlowResultProcessed, PowerFlowResultProcessedDto>(_processResultService.Processing(powerFlowResults) as PowerFlowResultProcessed),
-                VoltageResultProcessed = _mapper.Map<List<VoltageResultProcessed>, List<VoltageResultProcessedDto>>(_processResultService.Processing(voltageResults) as List<VoltageResultProcessed>),
-                CurrentResultProcessed = _mapper.Map<List<CurrentResultProcessed>, List<CurrentResultProcessedDto>>(_processResultService.Processing(currentResults) as List<CurrentResultProcessed>)
-            };
-            return Ok(response);
+                return Problem(ex.Message);
+            }
         }
 
         /// <summary>
