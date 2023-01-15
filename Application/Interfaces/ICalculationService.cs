@@ -8,7 +8,7 @@ namespace Application.Interfaces
     {
         public event EventHandler<CalculationProgressEventArgs> CalculationProgress;
         public List<Calculations> GetCalculations();
-        public IEnumerable<CalculationResultBase> GetCalculationsById(string id);
+        public IEnumerable<CalculationResultBase> GetCalculationResultById(string id);
         public Task StartCalculation(CalculationSettings calculationSettings, CancellationToken cancellationToken, int? userId = null);
         public Task DeleteCalculationById(string id);
     }

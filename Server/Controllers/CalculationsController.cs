@@ -31,7 +31,6 @@ namespace Server.Controllers
         private readonly ICalculationService _calculationService;
         private readonly IProcessResultService _processResultService;
         private readonly IBus _bus;
-        //private readonly IRabbitMQProducer _rabitMQProducer;
         private readonly IMapper _mapper;
         public CalculationsController(IHubContext<ProgressHub> hubContext, ICalculationService calculationService,
             IMapper mapper, IProcessResultService processResultService, IBus bus)
@@ -39,14 +38,12 @@ namespace Server.Controllers
             _hubContext = hubContext;
             _mapper = mapper;
             _calculationService = calculationService;
-            _calculationService.CalculationProgress += EventHandler;
             _processResultService = processResultService;
             _bus = bus;
-            //_rabitMQProducer = rabbitMQProducer;
         }
 
         /// <summary>
-        /// Начать расчет
+        /// Отправка в RabbitMQ сообщения о начале расчета
         /// </summary>
         /// <param name="calculationSettings"></param>
         /// <returns></returns>
@@ -56,24 +53,9 @@ namespace Server.Controllers
         {
             var calculationSettings = _mapper.Map<CalculationSettingsRequest, CalculationSettings>(calculationSettingsRequest);
             Uri uri = new("rabbitmq://localhost/calculation");
-            var endPoint = await _bus.GetSendEndpoint(uri);
+            var endPoint = await _bus.GetSendEndpoint(uri); //Отправка в RabbitMQ
             await endPoint.Send(calculationSettings);
             return Ok();
-            /*CancellationToken cancellationToken = HttpContext.RequestAborted;
-            int userId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier));
-            var calculationSettings = _mapper.Map<CalculationSettingsRequest, CalculationSettings>(calculationSettingsRequest);
-            calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
-            calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
-            try
-            {
-                await _calculationService.StartCalculation(calculationSettings, cancellationToken, userId);
-                Console.WriteLine("Расчет завершен");
-                return Ok("Расчет завершен.");
-            }
-            catch (Exception ex)
-            {
-                return Problem($"Ошибка при выполнении расчета: {ex.Message}");
-            }*/
         }
 
         /// <summary>
@@ -105,7 +87,7 @@ namespace Server.Controllers
         {
             try
             {
-                var calcResultInit = _calculationService.GetCalculationsById(id);
+                var calcResultInit = _calculationService.GetCalculationResultById(id);
                 List<PowerFlowResult> powerFlowResults = new();
                 List<CurrentResult> currentResults = new();
                 List<VoltageResult> voltageResults = new();
@@ -152,13 +134,6 @@ namespace Server.Controllers
         {
             await _calculationService.DeleteCalculationById(id);
             return Ok();
-        }
-
-        [NonAction]
-        public void EventHandler(object sender, CalculationProgressEventArgs e)
-        {
-            Console.WriteLine(e.Percent + "%, осталось " + e.Time + " мин");
-            _hubContext.Clients.All.SendAsync("SendProgress", e.Percent, e.CalculationId);
         }
     }
 }

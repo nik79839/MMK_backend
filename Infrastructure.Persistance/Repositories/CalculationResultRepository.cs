@@ -63,16 +63,16 @@ namespace Infrastructure.Persistance.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteCalculationsById(string? id)
+        public async Task DeleteCalculationsById(string id)
         {
             CalculationEntity calculations1 = (from calculations in _context.Calculations 
                                                where calculations.Id.ToString() == id 
                                                select calculations).FirstOrDefault();
-            List<PowerFlowResultEntity> calculationResults = (from calculations in _context.PowerFlowResults 
-                                                              where calculations.CalculationId.ToString() == id 
+            List<PowerFlowResultEntity> calculationResults = (from calculations in _context.PowerFlowResults
+                                                              where calculations.CalculationId.ToString() == id
                                                               select calculations).ToList();
-            List<VoltageResultEntity> voltageResults = (from calculations in _context.VoltageResults 
-                                                        where calculations.CalculationId.ToString() == id 
+            List<VoltageResultEntity> voltageResults = (from calculations in _context.VoltageResults
+                                                        where calculations.CalculationId.ToString() == id
                                                         select calculations).ToList();
             List<WorseningSettingsEntity> worseningSettings = (from calculations in _context.WorseningSettings
                                                         where calculations.CalculationId.ToString() == id
@@ -99,7 +99,15 @@ namespace Infrastructure.Persistance.Repositories
             return calculations;
         }
 
-        public async Task<IEnumerable<CalculationResultBase>> GetResultInitialById(string? id)
+        public async Task<Calculations> GetCalculationById(string id)
+        {
+            var calculationEntity = (from calculations in _context.Calculations
+                                      where calculations.Id.ToString() == id
+                                      select calculations).FirstOrDefault();
+            return _mapper.Map<Calculations>(calculationEntity);
+        }
+
+        public async Task<IEnumerable<CalculationResultBase>>? GetResultInitialById(string? id)
         {
             List<CalculationResultBase> calculationResults = new();
             var powerFlowResults = (from calculations in _context.PowerFlowResults

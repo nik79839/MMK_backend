@@ -37,6 +37,10 @@ namespace Infrastructure.Services
         {
             return _calculationResultRepository.GetCalculations().Result;
         }
+        private Calculations? GetCalculationById(string id)
+        {
+            return _calculationResultRepository.GetCalculationById(id).Result;
+        }
 
         /// <summary>
         /// Получить результаты расчета обработанные и исходные по id
@@ -44,7 +48,7 @@ namespace Infrastructure.Services
         /// <param name="id"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public IEnumerable<CalculationResultBase> GetCalculationsById(string id)
+        public IEnumerable<CalculationResultBase> GetCalculationResultById(string id)
         {
             IEnumerable<CalculationResultBase> calcResultInitial = _calculationResultRepository.GetResultInitialById(id).Result;
             if (calcResultInitial.ToList().Count == 0)
@@ -58,6 +62,8 @@ namespace Infrastructure.Services
         public async Task StartCalculation(CalculationSettings calcSettings, CancellationToken cancellationToken, int? userId = null)
         {
             _rastrClient.CreateInstanceRastr(calcSettings.PathToRegim, calcSettings.PathToSech);
+            List<int> numberLoadNodes = _rastrClient.AllLoadNodesToList().ConvertAll(x => x.Number); //Массив номеров узлов
+            List<CalculationResultBase> calcResultInitial = new();
             Calculations calculations = new()
             {
                 Name = calcSettings.Name,
@@ -67,20 +73,17 @@ namespace Infrastructure.Services
                 PercentForWorsening = calcSettings.PercentForWorsening,
                 SechName = _rastrClient.SechList().Find(sech => sech.Num == calcSettings.SechNumber).SechName,
             };
-            Console.WriteLine("Режим и сечения загружены.");
+            
             calculations.WorseningSettings = (from setting in calcSettings.WorseningSettings
                                        select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue)).ToList();
             await _calculationResultRepository.AddCalculation(calculations, userId);
-            List<CalculationResultBase> calcResultInitial = new();
-            List<int> numberLoadNodes = _rastrClient.AllLoadNodesToList().ConvertAll(x => x.Number); //Массив номеров узлов
+
             int exp = calcSettings.CountOfImplementations;
-                                                                  
             for (int i = 0; i < exp; i++)
             {
-                if (cancellationToken.IsCancellationRequested)
+                if (GetCalculationById(calculations.Id.ToString()) == null)
                 {
                     Console.WriteLine("Отмена расчета");
-                    await _calculationResultRepository.DeleteCalculationsById(calculations.Id.ToString());
                     return;
                 }
                 var watch = Stopwatch.StartNew();
@@ -98,12 +101,10 @@ namespace Infrastructure.Services
                 calculations.Progress = (i + 1) * 100 / exp;
                 CalculationProgress?.Invoke(this, new CalculationProgressEventArgs(calculations.Id, (int)calculations.Progress,
                     Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
-                Console.WriteLine(powerFlowValue);
             }
 
             await _calculationResultRepository.AddCalculationResults(calcResultInitial);
             await _calculationResultRepository.UpdateCalculation(calculations);
-            await _calculationResultRepository.AddWorseningSettings(calculations.WorseningSettings);
         }
     }
 }
