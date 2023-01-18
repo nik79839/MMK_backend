@@ -2,8 +2,6 @@
 using ASTRALib;
 using Domain;
 using Domain.Rastrwin3.RastrModel;
-using System.Xml.Linq;
-using System;
 using Domain.InitialResult;
 
 namespace RastrAdapter
@@ -15,21 +13,23 @@ namespace RastrAdapter
         private ITable _vetv;
         private ITable _sechen;
         private ITable _area;
-        private ICol _numberNode;
-        private ICol _nameNode;
-        private ICol _pn;
-        private ICol _qn;
-        private ICol _na;
-        private ICol _nameArea;
-        private ICol _startNode;
-        private ICol _endNode;
-        private ICol _parallel;
-        private ICol _nameVetv;
-        private ICol _tipVetv;
-        private ICol _nSech;
-        private ICol _nameSech;
-        private ICol _naArea;
-        private ICol _nameAreaArea;
+        private RastrCol<int> _numberNode;
+        private RastrCol<string> _nameNode;
+        private RastrCol<double> _pn;
+        private RastrCol<double> _qn;
+        private RastrCol<double> _voltage;
+        private RastrCol<int> _numberArea;
+        private RastrCol<string> _nameArea;
+        private RastrCol<int> _startNode;
+        private RastrCol<int> _endNode;
+        private RastrCol<int> _parallel;
+        private RastrCol<string> _nameVetv;
+        private RastrCol<int> _tipVetv;
+        private RastrCol<double> _iMax;
+        private RastrCol<int> _nSech;
+        private RastrCol<string> _nameSech;
+        private RastrCol<int> _naArea;
+        private RastrCol<string> _nameAreaArea;
 
         public RastrCOMClient(string pathToRegim, string? pathToSech = null)
         {
@@ -46,25 +46,27 @@ namespace RastrAdapter
             _node = (ITable)_rastr.Tables.Item("node");
             _vetv = (ITable)_rastr.Tables.Item("vetv");
             _area = (ITable)_rastr.Tables.Item("area");
-            _numberNode = (ICol)_node.Cols.Item("ny");
-            _nameNode = (ICol)_node.Cols.Item("name");
-            _pn = (ICol)_node.Cols.Item("pn");
-            _qn = (ICol)_node.Cols.Item("qn");
-            _na = (ICol)_node.Cols.Item("na");
-            _nameArea = (ICol)_node.Cols.Item("na_name");
-            _startNode = (ICol)_vetv.Cols.Item("ip");
-            _endNode = (ICol)_vetv.Cols.Item("iq");
-            _parallel = (ICol)_vetv.Cols.Item("np");
-            _nameVetv = (ICol)_vetv.Cols.Item("name");
-            _tipVetv = (ICol)_vetv.Cols.Item("tip");
-            _naArea = (ICol)_area.Cols.Item("na");
-            _nameAreaArea = (ICol)_area.Cols.Item("name");
+            _numberNode = new((ICol)_node.Cols.Item("ny"));
+            _nameNode = new((ICol)_node.Cols.Item("name"));
+            _pn = new((ICol)_node.Cols.Item("pn"));
+            _qn = new((ICol)_node.Cols.Item("qn"));
+            _voltage = new((ICol)_node.Cols.Item("vras"));
+            _numberArea = new((ICol)_node.Cols.Item("na"));
+            _nameArea = new((ICol)_node.Cols.Item("na_name"));
+            _startNode = new((ICol)_vetv.Cols.Item("ip"));
+            _endNode = new((ICol)_vetv.Cols.Item("iq"));
+            _parallel = new((ICol)_vetv.Cols.Item("np"));
+            _nameVetv = new((ICol)_vetv.Cols.Item("name"));
+            _tipVetv = new((ICol)_vetv.Cols.Item("tip"));
+            _iMax = new((ICol)_vetv.Cols.Item("tip"));
+            _naArea = new((ICol)_area.Cols.Item("na"));
+            _nameAreaArea = new((ICol)_area.Cols.Item("name"));
             if (!string.IsNullOrEmpty(pathToSech))
             {
                 _rastr.Load(RG_KOD.RG_REPL, pathToSech, pathToSech);
                 _sechen = (ITable)_rastr.Tables.Item("sechen");
-                _nSech = (ICol)_sechen.Cols.Item("ns");
-                _nameSech = (ICol)_sechen.Cols.Item("name");
+                _nSech = new((ICol)_sechen.Cols.Item("ns"));
+                _nameSech = new((ICol)_sechen.Cols.Item("name"));
             }
             RastrTestBalance();
         }
@@ -79,7 +81,7 @@ namespace RastrAdapter
         {
             for (int index = 0; index < _node.Count; index++)
             {
-                if ((int)_numberNode.ZN[index] == ny)
+                if (_numberNode[index] == ny)
                 {
                     return index;
                 }
@@ -99,7 +101,7 @@ namespace RastrAdapter
         {
             for (int index = 0; index < _vetv.Count; index++)
             {
-                if ((int)_startNode.ZN[index] == ip && (int)_endNode.ZN[index] == iq && (int)_parallel.ZN[index] == np)
+                if (_startNode[index] == ip && _endNode[index] == iq && _parallel[index] == np)
                 {
                     return index;
                 }
@@ -111,7 +113,7 @@ namespace RastrAdapter
         {
             for (int index = 0; index < _vetv.Count; index++)
             {
-                if (_nameVetv.ZN[index].ToString() == name)
+                if (_nameVetv[index] == name)
                 {
                     return index;
                 }
@@ -128,13 +130,13 @@ namespace RastrAdapter
             List<Node> loadNodes = new();
             for (int i = 0; i < _node.Count; i++)
             {
-                if ((double)_pn.ZN[i] != 0)
+                if (_pn[i] != 0)
                 {
                     loadNodes.Add(new Node()
                     {
-                        Number = (int)_numberNode.ZN[i],
-                        Name = _nameNode.ZN[i].ToString(),
-                        District = new District(_nameArea.ZN[i].ToString(), (int)_na.ZN[i])
+                        Number = _numberNode[i],
+                        Name = _nameNode[i],
+                        District = new District(_nameArea[i], _numberArea[i])
                     });
                 }
             }
@@ -152,9 +154,9 @@ namespace RastrAdapter
             {
                 loadNodes.Add(new Node()
                 {
-                    Number = (int)_numberNode.ZN[i],
-                    Name = _nameNode.ZN[i].ToString(),
-                    District = new District(_nameArea.ZN[i].ToString(), (int)_na.ZN[i])
+                    Number = _numberNode[i],
+                    Name = _nameNode[i],
+                    District = new District(_nameArea[i], _numberArea[i])
                 });
             }
             return loadNodes;
@@ -165,14 +167,14 @@ namespace RastrAdapter
             List<Brunch> brunches = new();
             for (int i = 0; i < _vetv.Count; i++)
             {
-                if ((int)_tipVetv.ZN[i] == 0)
+                if (_tipVetv[i] == 0)
                 {
                     brunches.Add(new Brunch()
                     {
-                        StartNode = (int)_startNode.ZN[i],
-                        EndNode = (int)_endNode.ZN[i],
-                        ParallelNumber = (int)_parallel.ZN[i],
-                        Name = _nameVetv.ZN[i].ToString(),
+                        StartNode = _startNode[i],
+                        EndNode = _endNode[i],
+                        ParallelNumber = _parallel[i],
+                        Name = _nameVetv[i],
                     });
                 }
             }
@@ -193,8 +195,8 @@ namespace RastrAdapter
             for (int i = 0; i < nodes.Count; i++)
             {
                 int index = FindNodeIndex(nodes[i]);
-                _pn.set_ZN(index, randPn.Next(100 - percent, 100 + percent) * (double)_pn.ZN[index] / 100f);
-                _qn.set_ZN(index, (double)_pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
+                _pn.Set(index, randPn.Next(100 - percent, 100 + percent) * _pn[index] / 100f);
+                _qn.Set(index, _pn[index] * ((randTg.NextDouble() * 0.14) + 0.48));
             }
         }
 
@@ -208,7 +210,7 @@ namespace RastrAdapter
             List<District> districts = new();
             for (int i = 0; i < _area.Count; i++)
             {
-                districts.Add(new District(_nameAreaArea.ZN[i].ToString(), (int)_naArea.ZN[i]));
+                districts.Add(new District(_nameAreaArea[i], _naArea[i]));
             }
             return districts;
         }
@@ -223,7 +225,7 @@ namespace RastrAdapter
             List<Sech> seches = new();
             for (int i = 0; i < _sechen.Count; i++)
             {
-                seches.Add(new Sech((int)_nSech.ZN[i], _nameSech.ZN[i].ToString()));
+                seches.Add(new Sech(_nSech[i], _nameSech[i]));
             }
             return seches;
         }
@@ -250,11 +252,11 @@ namespace RastrAdapter
                     {
                         index = FindNodeIndex(nodes[i].NodeNumber);
                         nodes[i].MaxValue ??= 10000;
-                        if ((double)_pn.ZN[index] < nodes[i].MaxValue)
+                        if (_pn[index] < nodes[i].MaxValue)
                         {
                             randomPercent = 1 + ((float)randPercent.Next(0, percent) / 100);
-                            _pn.set_ZN(index, (double)_pn.ZN[index] * randomPercent);
-                            _qn.set_ZN(index, (double)_pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
+                            _pn.Set(index, _pn[index] * randomPercent);
+                            _qn.Set(index, _pn[index] * ((randTg.NextDouble() * 0.14) + 0.48));
                         }
                     }
                     kod = _rastr.rgm("p");
@@ -265,8 +267,8 @@ namespace RastrAdapter
                     for (int i = 0; i < nodes.Count; i++)
                     {
                         index = FindNodeIndex(nodes[i].NodeNumber);
-                        _pn.set_ZN(index, (double)_pn.ZN[index] / 1.02);
-                        _qn.set_ZN(index, (double)_pn.ZN[index] * ((randTg.NextDouble() * 0.14) + 0.48));
+                        _pn.Set(index, _pn[index] / 1.02);
+                        _qn.Set(index, _pn[index] * ((randTg.NextDouble() * 0.14) + 0.48));
                     }
                     kod = _rastr.rgm("p");
                 }
@@ -293,16 +295,16 @@ namespace RastrAdapter
         {
             return (from int uNode in uNodes
                     let index = FindNodeIndex(uNode)
-                    select new VoltageResult(id, implementation + 1, uNode, GetParameterByIndex<string>("node", "name", index),
-                        Math.Round(GetParameterByIndex<double>("node", "vras", index), 2))).ToList();
+                    select new VoltageResult(id, implementation + 1, uNode, _nameNode[index], Math.Round(_voltage[index], 2))).ToList();
         }
         public List<CurrentResult> GetCurrentResults(List<string> iBrunches, Guid id, int implementation)
         {
             return (from string brunch in iBrunches // Запись токов
                     let index = FindBranchIndexByName(brunch)
-                    select new CurrentResult(id, implementation + 1, brunch,
-                         Math.Round(GetParameterByIndex<double>("vetv", "i_max", index), 2))).ToList();
+                    select new CurrentResult(id, implementation + 1, brunch, Math.Round(_iMax[index], 2))).ToList();
         }
+
+        //public object getParam<calc.NodeArea>(int index)
 
     }
 }

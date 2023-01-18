@@ -7,9 +7,9 @@ using MassTransit;
 using Microsoft.AspNetCore.SignalR;
 using Server.Hub;
 
-namespace Server
+namespace Server.Consumers
 {
-    public class CalculationConsumer: IConsumer<CalculationSettings>
+    public class CalculationConsumer : IConsumer<CalculationSettings>
     {
         private readonly ICalculationService _calculationService;
         private readonly IHubContext<ProgressHub> _hubContext;
@@ -27,7 +27,14 @@ namespace Server
             var calculationSettings = context.Message;
             calculationSettings.PathToRegim = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_СХН.rg2";
             calculationSettings.PathToSech = @"C:\Users\otrok\Desktop\Файлы ворд\Диплом_УР\Дипломмаг\Мой\СБЭК_сечения.sch";
-            await _calculationService.StartCalculation(context.Message, context.CancellationToken);
+            try
+            {
+                await _calculationService.StartCalculation(context.Message, context.CancellationToken);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
             Console.WriteLine("Конец расчета");
         }
 

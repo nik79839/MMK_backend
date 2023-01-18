@@ -83,8 +83,7 @@ namespace Infrastructure.Services
             {
                 if (GetCalculationById(calculations.Id.ToString()) == null)
                 {
-                    Console.WriteLine("Отмена расчета");
-                    return;
+                    throw new Exception("Отмена расчета");
                 }
                 var watch = Stopwatch.StartNew();
                 _rastrClient.CreateInstanceRastr(calcSettings.PathToRegim, calcSettings.PathToSech);

@@ -73,7 +73,7 @@ namespace UnitTests
                 .Verifiable();
             var service = new CalculationService(_calculationRepositoryMock.Object, _rastrMock.Object);
 
-            var result = service.GetCalculationsById("testId");
+            var result = service.GetCalculationResultById("testId");
 
             _calculationRepositoryMock.Verify(x => x.GetResultInitialById("testId"), Times.Once);
             Assert.True(result.ToList().Count > 0);
