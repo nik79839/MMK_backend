@@ -16,6 +16,7 @@ using FluentValidation.AspNetCore;
 using Application.Validation;
 using MassTransit;
 using Server.Consumers;
+using Application.Services;
 
 Log.Logger = new LoggerConfiguration().WriteTo.Console().WriteTo.File("log.txt").CreateLogger();
 Log.Information("Starting web application");

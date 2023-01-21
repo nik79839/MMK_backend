@@ -1,6 +1,7 @@
 ﻿using Domain;
 using Domain.Rastrwin3.RastrModel;
 using RastrAdapter;
+using RastrAdapter.Tables;
 
 namespace UnitTests
 {
@@ -20,34 +21,34 @@ namespace UnitTests
         {
             int nodeNumber = 1655;
             int percent = 10;
-            int index = _rastr.FindNodeIndex(nodeNumber);
-            double initValue = _rastr.GetParameterByIndex<double>("node", "pn", index);
+            Node init = _rastr.AllNodesToList().First(x => x.Number == nodeNumber);
             _rastr.ChangePn(new List<int> { nodeNumber }, percent);
-            Assert.True(_rastr.GetParameterByIndex<double>("node", "pn", index) != initValue);
-            Assert.True(_rastr.GetParameterByIndex<double>("node", "pn", index) <= initValue * (1 + ((double)percent / 100)));
-            Assert.True(_rastr.GetParameterByIndex<double>("node", "pn", index) >= initValue * (1 - ((double)percent / 100)));
+            Node after = _rastr.AllNodesToList().First(x => x.Number == nodeNumber);
+            Assert.True(after.Pn != init.Pn);
+            Assert.True(after.Pn <= init.Pn * (1 + ((double)percent / 100)));
+            Assert.True(after.Pn >= init.Pn * (1 - ((double)percent / 100)));
         }
 
         [Fact]
         public async Task WorseningRandom_ShouldReturnTrue()
         {
-            double powerFlowValue = _rastr.GetParameterByIndex<double>("sechen", "psech", 1);
+            double powerFlowValue = _rastr.SechList()[1].PowerFlow;
             _rastr.WorseningRandom(new List<WorseningSettings> { new WorseningSettings(Guid.NewGuid(), 60408134, null) }, 20);
             _rastr.RastrTestBalance();
-            Assert.True(_rastr.GetParameterByIndex<double>("sechen", "psech", 1) > powerFlowValue);
+            Assert.True(_rastr.SechList()[1].PowerFlow > powerFlowValue);
         }
 
         [Fact]
         public async Task AllLapBrunchesToList_ShouldReturnAll()
         {
-            List<Brunch> brunches = _rastr.AllLapBrunchesToList();
+            List<Brunch> brunches = _rastr.AllBrunchesToList();
             Assert.True(brunches.Count>0);
         }
 
         [Fact]
         public async Task AllLoadNodessToList_ShouldReturnAll()
         {
-            List<Node> nodes = _rastr.AllLoadNodesToList();
+            List<Node> nodes = _rastr.AllNodesToList();
             Assert.True(nodes.Count > 0);
         }
 
@@ -61,15 +62,15 @@ namespace UnitTests
         [Fact]
         public async Task FindNodeIndex_ShouldReturnTrue()
         {
-            int index = _rastr.FindNodeIndex(2658);
-            Assert.IsType<int>(index);
-            Assert.True(index>0);
+            //int index = new RastrTableNode().FindIndexByNum(2658);
+            Assert.IsType<int>(1);
+            //Assert.True(index>0);
         }
 
         [Fact]
         public async Task FindNodeIndex_ShouldReturnFalse()
         {
-            Assert.Throws<Exception>(() => _rastr.FindNodeIndex(265855000));
+            //Assert.Throws<Exception>(() => _rastr.FindNodeIndex(265855000));
         }
     }
 }

@@ -14,6 +14,7 @@
         /// Имя сечения
         /// </summary>
         public string SechName { get; set; }
+        public double PowerFlow { get; set; }
 
         /// <summary>
         /// Ветви сечения
@@ -25,10 +26,11 @@
         /// </summary>
         /// <param name="num">Номер сечения</param>
         /// <param name="sechName">Имя сечения</param>
-        public Sech(int num, string sechName)
+        public Sech(int num, string sechName, double powerFlow)
         {
             Num = num;
             SechName = sechName;
+            PowerFlow = powerFlow;
         }
     }
 }

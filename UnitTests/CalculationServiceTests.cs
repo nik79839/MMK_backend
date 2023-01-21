@@ -1,7 +1,7 @@
 ﻿using Application.Interfaces;
+using Application.Services;
 using Domain;
 using Domain.InitialResult;
-using Infrastructure.Services;
 using Moq;
 using RastrAdapter;
 

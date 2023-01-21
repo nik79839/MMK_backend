@@ -1,8 +1,8 @@
 ﻿using Application.Interfaces;
+using Application.Services;
 using Domain;
 using Domain.InitialResult;
 using Domain.ProcessedResult;
-using Infrastructure.Services;
 
 namespace UnitTests
 {

@@ -1,10 +1,11 @@
 ﻿using Application.Interfaces;
 using Domain;
+using Domain.Enums;
 using Domain.Events;
 using Domain.InitialResult;
 using System.Diagnostics;
 
-namespace Infrastructure.Services
+namespace Application.Services
 {
     public class CalculationService : ICalculationService
     {
@@ -62,7 +63,7 @@ namespace Infrastructure.Services
         public async Task StartCalculation(CalculationSettings calcSettings, CancellationToken cancellationToken, int? userId = null)
         {
             _rastrClient.CreateInstanceRastr(calcSettings.PathToRegim, calcSettings.PathToSech);
-            List<int> numberLoadNodes = _rastrClient.AllLoadNodesToList().ConvertAll(x => x.Number); //Массив номеров узлов
+            List<int> numberLoadNodes = _rastrClient.AllNodesToList().Where(x => x.Pn != 0).ToList().ConvertAll(x => x.Number); //Массив номеров узлов
             List<CalculationResultBase> calcResultInitial = new();
             Calculations calculations = new()
             {
@@ -73,9 +74,9 @@ namespace Infrastructure.Services
                 PercentForWorsening = calcSettings.PercentForWorsening,
                 SechName = _rastrClient.SechList().Find(sech => sech.Num == calcSettings.SechNumber).SechName,
             };
-            
+
             calculations.WorseningSettings = (from setting in calcSettings.WorseningSettings
-                                       select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue)).ToList();
+                                              select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue)).ToList();
             await _calculationResultRepository.AddCalculation(calculations, userId);
 
             int exp = calcSettings.CountOfImplementations;
@@ -90,11 +91,11 @@ namespace Infrastructure.Services
                 _rastrClient.ChangePn(numberLoadNodes, calculations.PercentLoad); //Случайная нагрузка
                 _rastrClient.RastrTestBalance();
                 _rastrClient.WorseningRandom(calcSettings.WorseningSettings, calculations.PercentForWorsening);
-                double powerFlowValue = Math.Round(_rastrClient.GetParameterByIndex<double>("sechen", "psech", calcSettings.SechNumber - 1), 2);
+                double powerFlowValue = Math.Round(_rastrClient.SechList()[calcSettings.SechNumber - 1].PowerFlow, 2);
 
                 calcResultInitial.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
-                calcResultInitial.AddRange(_rastrClient.GetVoltageResults(calcSettings.UNodes, calculations.Id, i + 1 ));
-                calcResultInitial.AddRange(_rastrClient.GetCurrentResults(calcSettings.IBrunches, calculations.Id, i + 1));
+                calcResultInitial.AddRange(_rastrClient.GetResults(calcSettings.UNodes, calculations.Id, i + 1, ParamType.VOLTAGE));
+                calcResultInitial.AddRange(_rastrClient.GetResults(calcSettings.IBrunches, calculations.Id, i + 1, ParamType.CURRENT));
 
                 watch.Stop();
                 calculations.Progress = (i + 1) * 100 / exp;

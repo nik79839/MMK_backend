@@ -2,7 +2,7 @@
 using Domain.InitialResult;
 using Domain.ProcessedResult;
 
-namespace Infrastructure.Services
+namespace Application.Services
 {
     public class ProcessResultService : IProcessResultService
     {
