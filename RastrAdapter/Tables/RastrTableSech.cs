@@ -8,31 +8,25 @@ using System.Threading.Tasks;
 
 namespace RastrAdapter.Tables
 {
-    public class RastrTableSech
+    public class RastrTableSech: RastrTableBase<Sech>
     {
-        private readonly ITable _table;
-        public int Count { get; }
-
         public RastrCol<int> Num { get; set; }
         public RastrCol<string> Name { get; set; }
         public RastrCol<double> PowerFlow { get; set; }
 
-
-        public RastrTableSech(ITable table)
+        public RastrTableSech(ITable table): base(table)
         {
-            _table = table;
-            Count = _table.Count;
             Num = new((ICol)_table.Cols.Item("ns"));
             Name = new((ICol)_table.Cols.Item("name"));
             PowerFlow = new((ICol)_table.Cols.Item("psech"));
         }
 
-        public List<Sech> ToList()
+        public override List<Sech> ToList()
         {
             List<Sech> districts = new();
             for (int i = 0; i < Count; i++)
             {
-                districts.Add(new Sech(Num[i], Name[i], PowerFlow[i]));
+                districts.Add(new Sech(Num[i], Name[i], Math.Round(PowerFlow[i],2)));
             }
             return districts;
         }

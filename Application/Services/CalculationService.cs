@@ -9,13 +9,13 @@ namespace Application.Services
 {
     public class CalculationService : ICalculationService
     {
-        private readonly ICalculationResultRepository _calculationResultRepository;
+        private readonly ICalculationResultRepository _calcResultRepository;
         private readonly IUserRepository _userRepository;
         private readonly ICalcModel _rastrClient;
         public event EventHandler<CalculationProgressEventArgs> CalculationProgress;
         public CalculationService(ICalculationResultRepository calculationResultRepository, ICalcModel calcModel, IUserRepository userRepository = null)
         {
-            _calculationResultRepository = calculationResultRepository;
+            _calcResultRepository = calculationResultRepository;
             _userRepository = userRepository;
             _rastrClient = calcModel;
         }
@@ -25,23 +25,15 @@ namespace Application.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public async Task DeleteCalculationById(string id)
-        {
-            await _calculationResultRepository.DeleteCalculationsById(id);
-        }
+        public async Task DeleteCalculationById(string id) => await _calcResultRepository.DeleteCalculationsById(id);
 
         /// <summary>
         /// Получить все расчеты
         /// </summary>
         /// <returns>Расчеты</returns>
-        public List<Calculations> GetCalculations()
-        {
-            return _calculationResultRepository.GetCalculations().Result;
-        }
-        private Calculations? GetCalculationById(string id)
-        {
-            return _calculationResultRepository.GetCalculationById(id).Result;
-        }
+        public List<Calculations> GetCalculations() => _calcResultRepository.GetCalculations().Result;
+
+        private Calculations? GetCalculationById(string id) => _calcResultRepository.GetCalculationById(id).Result;
 
         /// <summary>
         /// Получить результаты расчета обработанные и исходные по id
@@ -51,7 +43,7 @@ namespace Application.Services
         /// <exception cref="Exception"></exception>
         public IEnumerable<CalculationResultBase> GetCalculationResultById(string id)
         {
-            IEnumerable<CalculationResultBase> calcResultInitial = _calculationResultRepository.GetResultInitialById(id).Result;
+            IEnumerable<CalculationResultBase> calcResultInitial = _calcResultRepository.GetResultInitialById(id).Result;
             if (calcResultInitial.ToList().Count == 0)
             {
                 throw new Exception($"Ошибка. Расчета с ID {id} не существует.");
@@ -77,7 +69,7 @@ namespace Application.Services
 
             calculations.WorseningSettings = (from setting in calcSettings.WorseningSettings
                                               select new WorseningSettings(calculations.Id, setting.NodeNumber, setting.MaxValue)).ToList();
-            await _calculationResultRepository.AddCalculation(calculations, userId);
+            await _calcResultRepository.AddCalculation(calculations, userId);
 
             int exp = calcSettings.CountOfImplementations;
             for (int i = 0; i < exp; i++)
@@ -91,7 +83,7 @@ namespace Application.Services
                 _rastrClient.ChangePn(numberLoadNodes, calculations.PercentLoad); //Случайная нагрузка
                 _rastrClient.RastrTestBalance();
                 _rastrClient.WorseningRandom(calcSettings.WorseningSettings, calculations.PercentForWorsening);
-                double powerFlowValue = Math.Round(_rastrClient.SechList()[calcSettings.SechNumber - 1].PowerFlow, 2);
+                double powerFlowValue = _rastrClient.SechList()[calcSettings.SechNumber - 1].PowerFlow;
 
                 calcResultInitial.Add(new PowerFlowResult(calculations.Id, i + 1, powerFlowValue));
                 calcResultInitial.AddRange(_rastrClient.GetResults(calcSettings.UNodes, calculations.Id, i + 1, ParamType.VOLTAGE));
@@ -103,8 +95,8 @@ namespace Application.Services
                     Convert.ToInt32(watch.Elapsed.TotalMinutes * (exp - i + 1)))); //Вызов события
             }
 
-            await _calculationResultRepository.AddCalculationResults(calcResultInitial);
-            await _calculationResultRepository.UpdateCalculation(calculations);
+            await _calcResultRepository.AddCalculationResults(calcResultInitial);
+            await _calcResultRepository.UpdateCalculation(calculations);
         }
     }
 }

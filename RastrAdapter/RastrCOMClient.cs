@@ -11,10 +11,10 @@ namespace RastrAdapter
     public class RastrCOMClient : ICalcModel
     {
         private Rastr _rastr = new();
-        private RastrTableSech _sechTable;
+        private RastrTableBase<Sech> _sechTable;
         private RastrTableNode _nodeTable;
-        private RastrTableVetv _vetvTable;
-        private RastrTableArea _areaTable;
+        private RastrTableBase<Brunch> _vetvTable;
+        private RastrTableBase<District> _areaTable;
 
         public RastrCOMClient(string pathToRegim, string? pathToSech = null)
         {
@@ -28,13 +28,13 @@ namespace RastrAdapter
         public void CreateInstanceRastr(string pathToRegim, string? pathToSech = null)
         {
             _rastr.Load(RG_KOD.RG_REPL, pathToRegim, pathToRegim);
-            _nodeTable = new((ITable)_rastr.Tables.Item("node"));
-            _vetvTable = new((ITable)_rastr.Tables.Item("vetv"));
-            _areaTable = new((ITable)_rastr.Tables.Item("area"));
+            _nodeTable = new RastrTableNode((ITable)_rastr.Tables.Item("node"));
+            _vetvTable = new RastrTableVetv((ITable)_rastr.Tables.Item("vetv"));
+            _areaTable = new RastrTableArea((ITable)_rastr.Tables.Item("area"));
             if (!string.IsNullOrEmpty(pathToSech))
             {
                 _rastr.Load(RG_KOD.RG_REPL, pathToSech, pathToSech);
-                _sechTable = new((ITable)_rastr.Tables.Item("sechen"));
+                _sechTable = new RastrTableSech((ITable)_rastr.Tables.Item("sechen"));
             }
             RastrTestBalance();
         }
@@ -72,10 +72,11 @@ namespace RastrAdapter
         {
             Random randPn = new();
             Random randTg = new();
-            for (int i = 0; i < nodes.Count; i++)
+            foreach (int node in nodes)
             {
-                int index = _nodeTable.FindIndexByNum(nodes[i]);
-                _nodeTable.Pn.Set(index, randPn.Next(100 - percent, 100 + percent) * _nodeTable.Pn[index] / 100f);
+                int index = _nodeTable.FindIndexByNum(node);
+                float randomPercent = randPn.Next(100 - percent, 100 + percent) / 100;
+                _nodeTable.Pn.Set(index, _nodeTable.Pn[index] * randomPercent);
                 _nodeTable.Qn.Set(index, _nodeTable.Pn[index] * ((randTg.NextDouble() * 0.14) + 0.48));
             }
         }
@@ -93,18 +94,17 @@ namespace RastrAdapter
             Random randPercent = new();
             Random randTg = new();
             RastrRetCode kod = _rastr.rgm("p");
-            float randomPercent; int index;
             if (kod == 0)
             {
                 do // Основное утяжеление
                 {
-                    for (int i = 0; i < nodes.Count; i++)
+                    foreach (var node in nodes)
                     {
-                        index = _nodeTable.FindIndexByNum(nodes[i].NodeNumber);
-                        nodes[i].MaxValue ??= 10000;
-                        if (_nodeTable.Pn[index] < nodes[i].MaxValue)
+                        int index = _nodeTable.FindIndexByNum(node.NodeNumber);
+                        float randomPercent = 1 + ((float)randPercent.Next(0, percent) / 100);
+                        node.MaxValue ??= 10000;
+                        if (_nodeTable.Pn[index] < node.MaxValue)
                         {
-                            randomPercent = 1 + ((float)randPercent.Next(0, percent) / 100);
                             _nodeTable.Pn.Set(index, _nodeTable.Pn[index] * randomPercent);
                             _nodeTable.Qn.Set(index, _nodeTable.Pn[index] * ((randTg.NextDouble() * 0.14) + 0.48));
                         }
@@ -114,9 +114,9 @@ namespace RastrAdapter
                 while (kod == 0);
                 while (kod != 0) // Откат на последний сходяийся режим
                 {
-                    for (int i = 0; i < nodes.Count; i++)
+                    foreach (var node in nodes)
                     {
-                        index = _nodeTable.FindIndexByNum(nodes[i].NodeNumber);
+                        int index = _nodeTable.FindIndexByNum(node.NodeNumber);
                         _nodeTable.Pn.Set(index, _nodeTable.Pn[index] / 1.02);
                         _nodeTable.Qn.Set(index, _nodeTable.Pn[index] * ((randTg.NextDouble() * 0.14) + 0.48));
                     }
@@ -127,8 +127,7 @@ namespace RastrAdapter
 
         public void RastrTestBalance()
         {
-            RastrRetCode test = _rastr.rgm("p");
-            if (test == RastrRetCode.AST_NB)
+            if (_rastr.rgm("p") == RastrRetCode.AST_NB)
             {
                 throw new Exception("Итерация не завершена из-за несходимости режима.");
             }
@@ -139,11 +138,11 @@ namespace RastrAdapter
             return paramType switch
             {
                 ParamType.CURRENT => (from string brunch in parameters // Запись токов
-                                      let index = _vetvTable.FindIndexByName(brunch)
-                                      select new CurrentResult(id, implementation + 1, brunch, Math.Round(_vetvTable.CurrentMax[index], 2))).ToList(),
+                                      let vetv = _vetvTable.ToList().First(x => x.Name == brunch)
+                                      select new CurrentResult(id, implementation + 1, brunch, vetv.Current)).ToList(),
                 ParamType.VOLTAGE => (from int uNode in parameters
-                                      let index = _nodeTable.FindIndexByNum(uNode)
-                                      select new VoltageResult(id, implementation + 1, uNode, _nodeTable.Name[index], Math.Round(_nodeTable.Voltage[index], 2))).ToList(),
+                                      let node = _nodeTable.ToList().First(x => x.Number == uNode)
+                                      select new VoltageResult(id, implementation + 1, uNode, node.Name, node.Voltage)).ToList(),
                 _ => new List<CalculationResultBase>(),
             };
         }

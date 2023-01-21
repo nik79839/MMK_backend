@@ -8,43 +8,36 @@ using System.Threading.Tasks;
 
 namespace RastrAdapter.Tables
 {
-    public class RastrTableVetv
+    public class RastrTableVetv: RastrTableBase<Brunch>
     {
-        private readonly ITable _table;
-        public int Count { get; }
-
         public RastrCol<int> StartNode { get; set; }
         public RastrCol<int> EndNode { get; set; }
         public RastrCol<int> Parallel { get; set; }
         public RastrCol<string> VetvName { get; set; }
         public RastrCol<int> VetvType { get; set; }
-        public RastrCol<double> CurrentMax { get; set; }
+        public RastrCol<double> Current { get; set; }
 
-        public RastrTableVetv(ITable table)
+        public RastrTableVetv(ITable table): base(table)
         {
-            _table = table;
-            Count = _table.Count;
             StartNode = new((ICol)_table.Cols.Item("ip"));
             EndNode = new((ICol)_table.Cols.Item("iq"));
             Parallel = new((ICol)_table.Cols.Item("np"));
             VetvName = new((ICol)_table.Cols.Item("name"));
             VetvType = new((ICol)_table.Cols.Item("tip"));
-            CurrentMax = new((ICol)_table.Cols.Item("i_max"));
+            Current = new((ICol)_table.Cols.Item("i_max"));
         }
 
-        public List<Brunch> ToList()
+        public override List<Brunch> ToList()
         {
             List<Brunch> brunches = new();
             for (int i = 0; i < Count; i++)
             {
                 if (VetvType[i] == 0)
                 {
-                    brunches.Add(new Brunch(StartNode[i], EndNode[i], Parallel[i], VetvName[i], VetvType[i]));
+                    brunches.Add(new Brunch(StartNode[i], EndNode[i], Parallel[i], VetvName[i], VetvType[i], Math.Round(Current[i])));
                 }
             }
             return brunches;
         }
-
-        public int FindIndexByName(string name) => ToList().FindIndex(x => x.Name == name);
     }
 }

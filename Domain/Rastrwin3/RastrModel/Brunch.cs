@@ -7,14 +7,16 @@
         public int ParallelNumber { get; set; }
         public string Name { get; set; }
         public int Type { get; set; }
+        public double Current { get; set; }
 
-        public Brunch(int startNode, int endNode, int parallelNumber, string name, int type)
+        public Brunch(int startNode, int endNode, int parallelNumber, string name, int type, double current)
         {
             StartNode = startNode;
             EndNode = endNode;
             ParallelNumber = parallelNumber;
             Name = name;
             Type = type;
+            Current = current;
         }
     }
 }

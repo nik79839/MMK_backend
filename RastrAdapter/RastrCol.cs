@@ -20,33 +20,8 @@ namespace RastrAdapter
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public T this[int index]
-        {
-            get
-            {
-                return (T)_col.ZN[index];
-            }
-        }
+        public T this[int index] => (T)_col.ZN[index];
 
         public void Set(int index, T value) => _col.set_ZN(index, value);
-
-        public IEnumerator<T> GetEnumerator()
-        {
-            int i = 0;
-            T k;
-            while (true)
-            {
-                try
-                {
-                    k = (T)_col.ZN[i];
-                }
-                catch
-                {
-                    break;
-                }
-                yield return k;
-                i++;
-            }
-        }
     }
 }

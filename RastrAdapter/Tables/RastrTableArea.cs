@@ -1,31 +1,21 @@
 ﻿using ASTRALib;
 using Domain.Rastrwin3.RastrModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RastrAdapter.Tables
 {
-    public class RastrTableArea
+    public class RastrTableArea: RastrTableBase<District>
     {
-        private readonly ITable _table;
-        public int Count { get; }
-
         public RastrCol<int> Num { get; set; }
         public RastrCol<string> Name { get; set; }
 
 
-        public RastrTableArea(ITable table)
+        public RastrTableArea(ITable table): base(table)
         {
-            _table = table;
-            Count = _table.Count;
             Num = new((ICol)_table.Cols.Item("na"));
             Name = new((ICol)_table.Cols.Item("name"));
         }
 
-        public List<District> ToList()
+        public override List<District> ToList()
         {
             List<District> districts = new();
             for (int i = 0; i < Count; i++)
