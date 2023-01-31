@@ -37,10 +37,11 @@ namespace RastrAdapter.Tables
 
         public int FindIndexByNum(int ny) => ToList().FindIndex(x => x.Number == ny);
 
-        public override void Set(Node node)
+       /* public override void Set(Node node, double value)
         {
+            int index = FindIndexByNum(node.Number);
             Pn.Set(index, Pn[index] * 0.98);
             Qn.Set(index, Pn[index] * ((randTg.NextDouble() * 0.14) + 0.48));
-        }
+        }*/
     }
 }

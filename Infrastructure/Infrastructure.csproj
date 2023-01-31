@@ -27,7 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Application\Application.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
-    <ProjectReference Include="..\RastrAdapter\RastrAdapter.csproj" />
+    <ProjectReference Include="..\RastrAdapter\Infrastructure.RastrAdapter.csproj" />
   </ItemGroup>
 
 </Project>
