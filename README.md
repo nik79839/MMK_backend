@@ -9,3 +9,5 @@
 + Приложение использует PostgreSQL для хранения данных расчетов и данных пользователей.
 
 + Для разработки бэкенд-части был использован архитектурный стиль "Чистая архитектура".
+
++ Используемые фреймворки и программные средства: .NET 6, ASP.NET Core Web API, Entity Framework, SignalR, Swagger, MassTransit, RabbitMQ, PostgreSQL, SeriLog, xUnit.
